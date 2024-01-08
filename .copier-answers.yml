@@ -1,0 +1,19 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 0.6.0
+_src_path: gh:algorandfoundation/algokit-fullstack-template
+author_email: giorgio.ciotti@algorand.foundation
+author_name: Giorgio Ciotti
+cloud_provider: none
+contract_name: verifiable_randomness
+deployment_language: typescript
+ide_vscode: true
+preset_name: production
+project_name: verifiable-randomness
+python_linter: ruff
+use_dispenser: false
+use_github_actions: true
+use_python_black: true
+use_python_mypy: true
+use_python_pip_audit: true
+use_typescript_jest: true
+
