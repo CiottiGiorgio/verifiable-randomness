@@ -1,8 +1,9 @@
 import { algorandFixture } from '@algorandfoundation/algokit-utils/testing'
 import { VerifiableRandomnessClient } from '../smart_contracts/artifacts/verifiable_randomness/client'
 import { MockRandomnessBeaconClient } from "../smart_contracts/artifacts/mock_randomness_beacon/client";
-import { Account, Algodv2, Indexer } from 'algosdk'
+import {Account, Algodv2, algosToMicroalgos, Indexer} from 'algosdk'
 import * as algokit from '@algorandfoundation/algokit-utils'
+import {microAlgos} from "@algorandfoundation/algokit-utils";
 
 describe('verifiable randomness contract', () => {
   const localnet = algorandFixture()
@@ -50,7 +51,7 @@ describe('verifiable randomness contract', () => {
       }
     })
     
-    return { client: VRClient }
+    return { client: VRClient, mRBID: mockRBDeployment.appId }
   }
 
   test('says hello', async () => {
@@ -70,5 +71,27 @@ describe('verifiable randomness contract', () => {
     expect(result.methodResults[0].returnValue).toBe('Hello, World')
     expect(result.methodResults[1].returnValue).toBe('Hello, Jane')
     expect(result.simulateResponse.txnGroups[0].appBudgetConsumed).toBeLessThan(100)
+  })
+
+  test('commits and extracts randomness', async () => {
+    const { algod, indexer, testAccount } = localnet.context
+    const { client, mRBID } = await deploy(testAccount, algod, indexer)
+
+    const currentStatus = await algod.status().do()
+    await client.commit({
+      block_commitment: currentStatus['last-round'] + 2,
+      length: 3
+    })
+
+    const result = await client.integers({
+      block_commitment: currentStatus['last-round'] + 2,
+      randomness_beacon: mRBID
+    }, {
+      sendParams: {
+        fee: microAlgos(2_000)
+      }
+    })
+
+    expect(result.return).toStrictEqual([9076553810879439n, 16676498766615284173n, 9276153543560570338n])
   })
 })

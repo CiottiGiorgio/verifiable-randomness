@@ -1,3 +1,5 @@
+from typing import Literal
+
 import beaker
 import pyteal as pt
 from algokit_utils import DELETABLE_TEMPLATE_NAME, UPDATABLE_TEMPLATE_NAME
@@ -48,18 +50,40 @@ def hello(name: pt.abi.String, *, output: pt.abi.String) -> pt.Expr:
 def commit(block_commitment: pt.abi.Uint64, length: pt.abi.Uint64) -> pt.Expr:
     return pt.Seq(
         pt.Assert(block_commitment.get() > pt.Global.round()),
-        app.state.commitments[block_commitment.get()].set(length.encode()),
+        app.state.commitments[block_commitment.encode()].set(length.encode()),
     )
 
 
 @app.external
-def integers(block_commitment: pt.abi.Uint64, randomness_beacon: pt.abi.Application) -> pt.Expr:
+def integers(
+    block_commitment: pt.abi.Uint64,
+    randomness_beacon: pt.abi.Application,
+    *,
+    output: pt.abi.DynamicArray[pt.abi.Uint64]
+) -> pt.Expr:
     length = pt.abi.Uint64()
+    random_seed = pt.ScratchVar(pt.TealType.bytes)
 
     return pt.Seq(
         pt.Assert(block_commitment.get() <= pt.Global.round()),
-        length.decode(app.state.commitments[block_commitment.get()]),
-        # TODO:
-        # - Call randomness beacon for a seed
-        # - generate a sequence of length "length" of uint64 by iterating hash functions
+        length.decode(app.state.commitments[block_commitment.encode()]),
+
+        (user_data := pt.abi.DynamicBytes()).set(pt.Bytes("")),
+        pt.InnerTxnBuilder.ExecuteMethodCall(
+            app_id=app.state.randomness_beacon.get(),
+            method_signature="get(uint64,byte[])byte[]",
+            args=[block_commitment, user_data]
+        ),
+        random_seed.store(pt.Substring(
+            pt.InnerTxn.last_log(), pt.Int(4), pt.Int(36)
+        )),
+        (first := pt.abi.Uint64()).set(pt.ExtractUint64(random_seed.load(), pt.Int(0))),
+
+        random_seed.store(pt.Sha3_256(random_seed.load())),
+        (second := pt.abi.Uint64()).set(pt.ExtractUint64(random_seed.load(), pt.Int(0))),
+
+        random_seed.store(pt.Sha3_256(random_seed.load())),
+        (third := pt.abi.Uint64()).set(pt.ExtractUint64(random_seed.load(), pt.Int(0))),
+
+        output.set(values=[first, second, third])
     )

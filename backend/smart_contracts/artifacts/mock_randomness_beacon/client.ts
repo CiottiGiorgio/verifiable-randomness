@@ -32,14 +32,14 @@ export const APP_SPEC: AppSpec = {
         "no_op": "CALL"
       }
     },
-    "get(uint64,byte[])byte[32]": {
+    "get(uint64,byte[])byte[]": {
       "call_config": {
         "no_op": "CALL"
       }
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4IDB4MTUxZjdjNzUKdHhuIE51bUFwcEFyZ3MKaW50Y18wIC8vIDAKPT0KYm56IG1haW5fbDYKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHgwMmJlY2UxMSAvLyAiaGVsbG8oc3RyaW5nKXN0cmluZyIKPT0KYm56IG1haW5fbDUKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHgyODRiODgyMyAvLyAiZ2V0KHVpbnQ2NCxieXRlW10pYnl0ZVszMl0iCj09CmJueiBtYWluX2w0CmVycgptYWluX2w0Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIGdldGNhc3Rlcl81CmludGNfMSAvLyAxCnJldHVybgptYWluX2w1Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIGhlbGxvY2FzdGVyXzQKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDY6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KYm56IG1haW5fbDEyCnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA0IC8vIFVwZGF0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2wxMQp0eG4gT25Db21wbGV0aW9uCnB1c2hpbnQgNSAvLyBEZWxldGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sMTAKZXJyCm1haW5fbDEwOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQphc3NlcnQKY2FsbHN1YiBkZWxldGVfMQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sMTE6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CmFzc2VydApjYWxsc3ViIHVwZGF0ZV8wCmludGNfMSAvLyAxCnJldHVybgptYWluX2wxMjoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmludGNfMSAvLyAxCnJldHVybgoKLy8gdXBkYXRlCnVwZGF0ZV8wOgpwcm90byAwIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApwdXNoaW50IFRNUExfVVBEQVRBQkxFIC8vIFRNUExfVVBEQVRBQkxFCi8vIENoZWNrIGFwcCBpcyB1cGRhdGFibGUKYXNzZXJ0CnJldHN1YgoKLy8gZGVsZXRlCmRlbGV0ZV8xOgpwcm90byAwIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApwdXNoaW50IFRNUExfREVMRVRBQkxFIC8vIFRNUExfREVMRVRBQkxFCi8vIENoZWNrIGFwcCBpcyBkZWxldGFibGUKYXNzZXJ0CnJldHN1YgoKLy8gaGVsbG8KaGVsbG9fMjoKcHJvdG8gMSAxCmJ5dGVjXzAgLy8gIiIKcHVzaGJ5dGVzIDB4NDg2NTZjNmM2ZjJjMjAgLy8gIkhlbGxvLCAiCmZyYW1lX2RpZyAtMQpleHRyYWN0IDIgMApjb25jYXQKZnJhbWVfYnVyeSAwCmZyYW1lX2RpZyAwCmxlbgppdG9iCmV4dHJhY3QgNiAwCmZyYW1lX2RpZyAwCmNvbmNhdApmcmFtZV9idXJ5IDAKcmV0c3ViCgovLyBnZXQKZ2V0XzM6CnByb3RvIDIgMQpieXRlY18wIC8vICIiCnB1c2hieXRlcyAweDZlNmY3NDJkNzM2ZjJkNzI2MTZlNjQ2ZjZkMjA3MzY1NjU2NCAvLyAibm90LXNvLXJhbmRvbSBzZWVkIgpzaGEzXzI1NgpmcmFtZV9idXJ5IDAKcHVzaGludCAzMiAvLyAzMgpmcmFtZV9kaWcgMApsZW4KPT0KYXNzZXJ0CnJldHN1YgoKLy8gaGVsbG9fY2FzdGVyCmhlbGxvY2FzdGVyXzQ6CnByb3RvIDAgMApieXRlY18wIC8vICIiCmR1cAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmZyYW1lX2J1cnkgMQpmcmFtZV9kaWcgMQpjYWxsc3ViIGhlbGxvXzIKZnJhbWVfYnVyeSAwCmJ5dGVjXzEgLy8gMHgxNTFmN2M3NQpmcmFtZV9kaWcgMApjb25jYXQKbG9nCnJldHN1YgoKLy8gZ2V0X2Nhc3RlcgpnZXRjYXN0ZXJfNToKcHJvdG8gMCAwCmJ5dGVjXzAgLy8gIiIKaW50Y18wIC8vIDAKYnl0ZWNfMCAvLyAiIgp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmJ0b2kKZnJhbWVfYnVyeSAxCnR4bmEgQXBwbGljYXRpb25BcmdzIDIKZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAxCmZyYW1lX2RpZyAyCmNhbGxzdWIgZ2V0XzMKZnJhbWVfYnVyeSAwCmJ5dGVjXzEgLy8gMHgxNTFmN2M3NQpmcmFtZV9kaWcgMApjb25jYXQKbG9nCnJldHN1Yg==",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4IDB4MTUxZjdjNzUKdHhuIE51bUFwcEFyZ3MKaW50Y18wIC8vIDAKPT0KYm56IG1haW5fbDYKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHgwMmJlY2UxMSAvLyAiaGVsbG8oc3RyaW5nKXN0cmluZyIKPT0KYm56IG1haW5fbDUKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHgxODkzOTJjNSAvLyAiZ2V0KHVpbnQ2NCxieXRlW10pYnl0ZVtdIgo9PQpibnogbWFpbl9sNAplcnIKbWFpbl9sNDoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBnZXRjYXN0ZXJfNQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNToKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBoZWxsb2Nhc3Rlcl80CmludGNfMSAvLyAxCnJldHVybgptYWluX2w2Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CmJueiBtYWluX2wxMgp0eG4gT25Db21wbGV0aW9uCnB1c2hpbnQgNCAvLyBVcGRhdGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sMTEKdHhuIE9uQ29tcGxldGlvbgpwdXNoaW50IDUgLy8gRGVsZXRlQXBwbGljYXRpb24KPT0KYm56IG1haW5fbDEwCmVycgptYWluX2wxMDoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgZGVsZXRlXzEKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDExOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQphc3NlcnQKY2FsbHN1YiB1cGRhdGVfMAppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sMTI6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CmFzc2VydAppbnRjXzEgLy8gMQpyZXR1cm4KCi8vIHVwZGF0ZQp1cGRhdGVfMDoKcHJvdG8gMCAwCnR4biBTZW5kZXIKZ2xvYmFsIENyZWF0b3JBZGRyZXNzCj09Ci8vIHVuYXV0aG9yaXplZAphc3NlcnQKcHVzaGludCBUTVBMX1VQREFUQUJMRSAvLyBUTVBMX1VQREFUQUJMRQovLyBDaGVjayBhcHAgaXMgdXBkYXRhYmxlCmFzc2VydApyZXRzdWIKCi8vIGRlbGV0ZQpkZWxldGVfMToKcHJvdG8gMCAwCnR4biBTZW5kZXIKZ2xvYmFsIENyZWF0b3JBZGRyZXNzCj09Ci8vIHVuYXV0aG9yaXplZAphc3NlcnQKcHVzaGludCBUTVBMX0RFTEVUQUJMRSAvLyBUTVBMX0RFTEVUQUJMRQovLyBDaGVjayBhcHAgaXMgZGVsZXRhYmxlCmFzc2VydApyZXRzdWIKCi8vIGhlbGxvCmhlbGxvXzI6CnByb3RvIDEgMQpieXRlY18wIC8vICIiCnB1c2hieXRlcyAweDQ4NjU2YzZjNmYyYzIwIC8vICJIZWxsbywgIgpmcmFtZV9kaWcgLTEKZXh0cmFjdCAyIDAKY29uY2F0CmZyYW1lX2J1cnkgMApmcmFtZV9kaWcgMApsZW4KaXRvYgpleHRyYWN0IDYgMApmcmFtZV9kaWcgMApjb25jYXQKZnJhbWVfYnVyeSAwCnJldHN1YgoKLy8gZ2V0CmdldF8zOgpwcm90byAyIDEKYnl0ZWNfMCAvLyAiIgpwdXNoYnl0ZXMgMHg2ZTZmNzQyZDczNmYyZDcyNjE2ZTY0NmY2ZDIwNzM2NTY1NjQgLy8gIm5vdC1zby1yYW5kb20gc2VlZCIKc2hhM18yNTYKZnJhbWVfYnVyeSAwCmZyYW1lX2RpZyAwCmxlbgppdG9iCmV4dHJhY3QgNiAwCmZyYW1lX2RpZyAwCmNvbmNhdApmcmFtZV9idXJ5IDAKcmV0c3ViCgovLyBoZWxsb19jYXN0ZXIKaGVsbG9jYXN0ZXJfNDoKcHJvdG8gMCAwCmJ5dGVjXzAgLy8gIiIKZHVwCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKZnJhbWVfYnVyeSAxCmZyYW1lX2RpZyAxCmNhbGxzdWIgaGVsbG9fMgpmcmFtZV9idXJ5IDAKYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3ViCgovLyBnZXRfY2FzdGVyCmdldGNhc3Rlcl81Ogpwcm90byAwIDAKYnl0ZWNfMCAvLyAiIgppbnRjXzAgLy8gMApieXRlY18wIC8vICIiCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKYnRvaQpmcmFtZV9idXJ5IDEKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgpmcmFtZV9idXJ5IDIKZnJhbWVfZGlnIDEKZnJhbWVfZGlnIDIKY2FsbHN1YiBnZXRfMwpmcmFtZV9idXJ5IDAKYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3Vi",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
   },
   "state": {
@@ -90,7 +90,7 @@ export const APP_SPEC: AppSpec = {
           }
         ],
         "returns": {
-          "type": "byte[32]"
+          "type": "byte[]"
         }
       }
     ],
@@ -165,7 +165,7 @@ export type MockRandomnessBeacon = {
       argsTuple: [name: string]
       returns: string
     }>
-    & Record<'get(uint64,byte[])byte[32]' | 'get', {
+    & Record<'get(uint64,byte[])byte[]' | 'get', {
       argsObj: {
         block: bigint | number
         data: Uint8Array
@@ -327,15 +327,15 @@ export abstract class MockRandomnessBeaconCallFactory {
     }
   }
   /**
-   * Constructs a no op call for the get(uint64,byte[])byte[32] ABI method
+   * Constructs a no op call for the get(uint64,byte[])byte[] ABI method
    *
    * @param args Any args for the contract call
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
    */
-  static get(args: MethodArgs<'get(uint64,byte[])byte[32]'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+  static get(args: MethodArgs<'get(uint64,byte[])byte[]'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
     return {
-      method: 'get(uint64,byte[])byte[32]' as const,
+      method: 'get(uint64,byte[])byte[]' as const,
       methodArgs: Array.isArray(args) ? args : [args.block, args.data],
       ...params,
     }
@@ -490,13 +490,13 @@ export class MockRandomnessBeaconClient {
   }
 
   /**
-   * Calls the get(uint64,byte[])byte[32] ABI method.
+   * Calls the get(uint64,byte[])byte[] ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The result of the call
    */
-  public get(args: MethodArgs<'get(uint64,byte[])byte[32]'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+  public get(args: MethodArgs<'get(uint64,byte[])byte[]'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
     return this.call(MockRandomnessBeaconCallFactory.get(args, params))
   }
 
@@ -511,7 +511,7 @@ export class MockRandomnessBeaconClient {
         resultMappers.push(undefined)
         return this
       },
-      get(args: MethodArgs<'get(uint64,byte[])byte[32]'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
+      get(args: MethodArgs<'get(uint64,byte[])byte[]'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
         promiseChain = promiseChain.then(() => client.get(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
@@ -576,13 +576,13 @@ export type MockRandomnessBeaconComposer<TReturns extends [...any[]] = []> = {
   hello(args: MethodArgs<'hello(string)string'>, params?: AppClientCallCoreParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, MethodReturn<'hello(string)string'>]>
 
   /**
-   * Calls the get(uint64,byte[])byte[32] ABI method.
+   * Calls the get(uint64,byte[])byte[] ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  get(args: MethodArgs<'get(uint64,byte[])byte[32]'>, params?: AppClientCallCoreParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, MethodReturn<'get(uint64,byte[])byte[32]'>]>
+  get(args: MethodArgs<'get(uint64,byte[])byte[]'>, params?: AppClientCallCoreParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, MethodReturn<'get(uint64,byte[])byte[]'>]>
 
   /**
    * Gets available update methods

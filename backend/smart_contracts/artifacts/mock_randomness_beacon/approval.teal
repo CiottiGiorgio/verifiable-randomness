@@ -10,7 +10,7 @@ pushbytes 0x02bece11 // "hello(string)string"
 ==
 bnz main_l5
 txna ApplicationArgs 0
-pushbytes 0x284b8823 // "get(uint64,byte[])byte[32]"
+pushbytes 0x189392c5 // "get(uint64,byte[])byte[]"
 ==
 bnz main_l4
 err
@@ -127,11 +127,13 @@ bytec_0 // ""
 pushbytes 0x6e6f742d736f2d72616e646f6d2073656564 // "not-so-random seed"
 sha3_256
 frame_bury 0
-pushint 32 // 32
 frame_dig 0
 len
-==
-assert
+itob
+extract 6 0
+frame_dig 0
+concat
+frame_bury 0
 retsub
 
 // hello_caster

@@ -1,6 +1,6 @@
 #pragma version 8
 intcblock 0 1
-bytecblock 0x72616e646f6d6e6573735f626561636f6e 0x
+bytecblock 0x 0x72616e646f6d6e6573735f626561636f6e 0x151f7c75
 txn NumAppArgs
 intc_0 // 0
 ==
@@ -14,7 +14,7 @@ pushbytes 0x83e86ddc // "commit(uint64,uint64)void"
 ==
 bnz main_l6
 txna ApplicationArgs 0
-pushbytes 0xc29bdf78 // "integers(uint64,application)void"
+pushbytes 0xe424700e // "integers(uint64,application)uint64[]"
 ==
 bnz main_l5
 err
@@ -105,14 +105,14 @@ retsub
 create_1:
 proto 0 0
 intc_0 // 0
-bytec_0 // "randomness_beacon"
+bytec_1 // "randomness_beacon"
 app_global_get_ex
 store 1
 store 0
 load 1
 !
 assert
-bytec_0 // "randomness_beacon"
+bytec_1 // "randomness_beacon"
 pushint TMPL_RANDOMNESS_BEACON_APP_ID // TMPL_RANDOMNESS_BEACON_APP_ID
 app_global_put
 retsub
@@ -146,7 +146,7 @@ retsub
 // hello
 hello_4:
 proto 1 1
-bytec_1 // ""
+bytec_0 // ""
 pushbytes 0x48656c6c6f2c20 // "Hello, "
 frame_dig -1
 extract 2 0
@@ -169,6 +169,7 @@ global Round
 >
 assert
 frame_dig -2
+itob
 callsub prefixkeygen_0
 frame_dig -1
 itob
@@ -177,30 +178,97 @@ retsub
 
 // integers
 integers_6:
-proto 2 0
+proto 2 1
+bytec_0 // ""
+intc_0 // 0
+bytec_0 // ""
+intc_0 // 0
+dupn 4
+bytec_0 // ""
+dup
 intc_0 // 0
 frame_dig -2
 global Round
 <=
 assert
 frame_dig -2
+itob
 callsub prefixkeygen_0
 app_global_get
 btoi
+frame_bury 1
+bytec_0 // ""
+frame_bury 2
+frame_dig 2
+len
+itob
+extract 6 0
+frame_dig 2
+concat
+frame_bury 2
+itxn_begin
+pushint 6 // appl
+itxn_field TypeEnum
+bytec_1 // "randomness_beacon"
+app_global_get
+itxn_field ApplicationID
+pushbytes 0x189392c5 // "get(uint64,byte[])byte[]"
+itxn_field ApplicationArgs
+frame_dig -2
+itob
+itxn_field ApplicationArgs
+frame_dig 2
+itxn_field ApplicationArgs
+itxn_submit
+itxn LastLog
+extract 4 32
+store 2
+load 2
+intc_0 // 0
+extract_uint64
+frame_bury 3
+load 2
+sha3_256
+store 2
+load 2
+intc_0 // 0
+extract_uint64
+frame_bury 4
+load 2
+sha3_256
+store 2
+load 2
+intc_0 // 0
+extract_uint64
+frame_bury 5
+pushint 3 // 3
+frame_bury 10
+frame_dig 10
+itob
+extract 6 0
+frame_dig 3
+itob
+frame_dig 4
+itob
+concat
+frame_dig 5
+itob
+concat
+concat
 frame_bury 0
 retsub
 
 // hello_caster
 hellocaster_7:
 proto 0 0
-bytec_1 // ""
+bytec_0 // ""
 dup
 txna ApplicationArgs 1
 frame_bury 1
 frame_dig 1
 callsub hello_4
 frame_bury 0
-pushbytes 0x151f7c75 // 0x151f7c75
+bytec_2 // 0x151f7c75
 frame_dig 0
 concat
 log
@@ -225,16 +293,22 @@ retsub
 // integers_caster
 integerscaster_9:
 proto 0 0
+bytec_0 // ""
 intc_0 // 0
 dup
 txna ApplicationArgs 1
 btoi
-frame_bury 0
+frame_bury 1
 txna ApplicationArgs 2
 intc_0 // 0
 getbyte
-frame_bury 1
-frame_dig 0
+frame_bury 2
 frame_dig 1
+frame_dig 2
 callsub integers_6
+frame_bury 0
+bytec_2 // 0x151f7c75
+frame_dig 0
+concat
+log
 retsub

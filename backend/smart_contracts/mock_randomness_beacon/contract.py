@@ -29,5 +29,5 @@ def hello(name: pt.abi.String, *, output: pt.abi.String) -> pt.Expr:
 
 
 @app.external
-def get(block: pt.abi.Uint64, data: pt.abi.DynamicBytes, *, output: pt.abi.StaticBytes[Literal[32]]) -> pt.Expr:
+def get(block: pt.abi.Uint64, data: pt.abi.DynamicBytes, *, output: pt.abi.DynamicBytes) -> pt.Expr:
     return output.set(pt.Sha3_256(pt.Bytes("not-so-random seed")))
