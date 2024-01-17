@@ -32,25 +32,20 @@ export const APP_SPEC: AppSpec = {
         "no_op": "CALL"
       }
     },
-    "commit(uint64,uint64)void": {
-      "call_config": {
-        "no_op": "CALL"
-      }
-    },
-    "integers(uint64,application)void": {
+    "get(uint64,byte[])byte[32]": {
       "call_config": {
         "no_op": "CALL"
       }
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4NzI2MTZlNjQ2ZjZkNmU2NTczNzM1ZjYyNjU2MTYzNmY2ZSAweAp0eG4gTnVtQXBwQXJncwppbnRjXzAgLy8gMAo9PQpibnogbWFpbl9sOAp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweDAyYmVjZTExIC8vICJoZWxsbyhzdHJpbmcpc3RyaW5nIgo9PQpibnogbWFpbl9sNwp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweDgzZTg2ZGRjIC8vICJjb21taXQodWludDY0LHVpbnQ2NCl2b2lkIgo9PQpibnogbWFpbl9sNgp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweGMyOWJkZjc4IC8vICJpbnRlZ2Vycyh1aW50NjQsYXBwbGljYXRpb24pdm9pZCIKPT0KYm56IG1haW5fbDUKZXJyCm1haW5fbDU6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgaW50ZWdlcnNjYXN0ZXJfOQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNjoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBjb21taXRjYXN0ZXJfOAppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNzoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBoZWxsb2Nhc3Rlcl83CmludGNfMSAvLyAxCnJldHVybgptYWluX2w4Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CmJueiBtYWluX2wxNAp0eG4gT25Db21wbGV0aW9uCnB1c2hpbnQgNCAvLyBVcGRhdGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sMTMKdHhuIE9uQ29tcGxldGlvbgpwdXNoaW50IDUgLy8gRGVsZXRlQXBwbGljYXRpb24KPT0KYm56IG1haW5fbDEyCmVycgptYWluX2wxMjoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgZGVsZXRlXzMKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDEzOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQphc3NlcnQKY2FsbHN1YiB1cGRhdGVfMgppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sMTQ6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CmFzc2VydApjYWxsc3ViIGNyZWF0ZV8xCmludGNfMSAvLyAxCnJldHVybgoKLy8gcHJlZml4X2tleV9nZW4KcHJlZml4a2V5Z2VuXzA6CnByb3RvIDEgMQpwdXNoYnl0ZXMgMHg2MzZmNmQ2ZDY5NzQ2ZDY1NmU3NDczIC8vICJjb21taXRtZW50cyIKZnJhbWVfZGlnIC0xCmNvbmNhdApyZXRzdWIKCi8vIGNyZWF0ZQpjcmVhdGVfMToKcHJvdG8gMCAwCmludGNfMCAvLyAwCmJ5dGVjXzAgLy8gInJhbmRvbW5lc3NfYmVhY29uIgphcHBfZ2xvYmFsX2dldF9leApzdG9yZSAxCnN0b3JlIDAKbG9hZCAxCiEKYXNzZXJ0CmJ5dGVjXzAgLy8gInJhbmRvbW5lc3NfYmVhY29uIgpwdXNoaW50IFRNUExfUkFORE9NTkVTU19CRUFDT05fQVBQX0lEIC8vIFRNUExfUkFORE9NTkVTU19CRUFDT05fQVBQX0lECmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gdXBkYXRlCnVwZGF0ZV8yOgpwcm90byAwIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApwdXNoaW50IFRNUExfVVBEQVRBQkxFIC8vIFRNUExfVVBEQVRBQkxFCi8vIENoZWNrIGFwcCBpcyB1cGRhdGFibGUKYXNzZXJ0CnJldHN1YgoKLy8gZGVsZXRlCmRlbGV0ZV8zOgpwcm90byAwIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApwdXNoaW50IFRNUExfREVMRVRBQkxFIC8vIFRNUExfREVMRVRBQkxFCi8vIENoZWNrIGFwcCBpcyBkZWxldGFibGUKYXNzZXJ0CnJldHN1YgoKLy8gaGVsbG8KaGVsbG9fNDoKcHJvdG8gMSAxCmJ5dGVjXzEgLy8gIiIKcHVzaGJ5dGVzIDB4NDg2NTZjNmM2ZjJjMjAgLy8gIkhlbGxvLCAiCmZyYW1lX2RpZyAtMQpleHRyYWN0IDIgMApjb25jYXQKZnJhbWVfYnVyeSAwCmZyYW1lX2RpZyAwCmxlbgppdG9iCmV4dHJhY3QgNiAwCmZyYW1lX2RpZyAwCmNvbmNhdApmcmFtZV9idXJ5IDAKcmV0c3ViCgovLyBjb21taXQKY29tbWl0XzU6CnByb3RvIDIgMApmcmFtZV9kaWcgLTIKZ2xvYmFsIFJvdW5kCj4KYXNzZXJ0CmZyYW1lX2RpZyAtMgpjYWxsc3ViIHByZWZpeGtleWdlbl8wCmZyYW1lX2RpZyAtMQppdG9iCmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gaW50ZWdlcnMKaW50ZWdlcnNfNjoKcHJvdG8gMiAwCmludGNfMCAvLyAwCmZyYW1lX2RpZyAtMgpnbG9iYWwgUm91bmQKPD0KYXNzZXJ0CmZyYW1lX2RpZyAtMgpjYWxsc3ViIHByZWZpeGtleWdlbl8wCmFwcF9nbG9iYWxfZ2V0CmJ0b2kKZnJhbWVfYnVyeSAwCnJldHN1YgoKLy8gaGVsbG9fY2FzdGVyCmhlbGxvY2FzdGVyXzc6CnByb3RvIDAgMApieXRlY18xIC8vICIiCmR1cAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmZyYW1lX2J1cnkgMQpmcmFtZV9kaWcgMQpjYWxsc3ViIGhlbGxvXzQKZnJhbWVfYnVyeSAwCnB1c2hieXRlcyAweDE1MWY3Yzc1IC8vIDB4MTUxZjdjNzUKZnJhbWVfZGlnIDAKY29uY2F0CmxvZwpyZXRzdWIKCi8vIGNvbW1pdF9jYXN0ZXIKY29tbWl0Y2FzdGVyXzg6CnByb3RvIDAgMAppbnRjXzAgLy8gMApkdXAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpidG9pCmZyYW1lX2J1cnkgMAp0eG5hIEFwcGxpY2F0aW9uQXJncyAyCmJ0b2kKZnJhbWVfYnVyeSAxCmZyYW1lX2RpZyAwCmZyYW1lX2RpZyAxCmNhbGxzdWIgY29tbWl0XzUKcmV0c3ViCgovLyBpbnRlZ2Vyc19jYXN0ZXIKaW50ZWdlcnNjYXN0ZXJfOToKcHJvdG8gMCAwCmludGNfMCAvLyAwCmR1cAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmJ0b2kKZnJhbWVfYnVyeSAwCnR4bmEgQXBwbGljYXRpb25BcmdzIDIKaW50Y18wIC8vIDAKZ2V0Ynl0ZQpmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDAKZnJhbWVfZGlnIDEKY2FsbHN1YiBpbnRlZ2Vyc182CnJldHN1Yg==",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4IDB4MTUxZjdjNzUKdHhuIE51bUFwcEFyZ3MKaW50Y18wIC8vIDAKPT0KYm56IG1haW5fbDYKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHgwMmJlY2UxMSAvLyAiaGVsbG8oc3RyaW5nKXN0cmluZyIKPT0KYm56IG1haW5fbDUKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHgyODRiODgyMyAvLyAiZ2V0KHVpbnQ2NCxieXRlW10pYnl0ZVszMl0iCj09CmJueiBtYWluX2w0CmVycgptYWluX2w0Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIGdldGNhc3Rlcl81CmludGNfMSAvLyAxCnJldHVybgptYWluX2w1Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIGhlbGxvY2FzdGVyXzQKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDY6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KYm56IG1haW5fbDEyCnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA0IC8vIFVwZGF0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2wxMQp0eG4gT25Db21wbGV0aW9uCnB1c2hpbnQgNSAvLyBEZWxldGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sMTAKZXJyCm1haW5fbDEwOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQphc3NlcnQKY2FsbHN1YiBkZWxldGVfMQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sMTE6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CmFzc2VydApjYWxsc3ViIHVwZGF0ZV8wCmludGNfMSAvLyAxCnJldHVybgptYWluX2wxMjoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmludGNfMSAvLyAxCnJldHVybgoKLy8gdXBkYXRlCnVwZGF0ZV8wOgpwcm90byAwIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApwdXNoaW50IFRNUExfVVBEQVRBQkxFIC8vIFRNUExfVVBEQVRBQkxFCi8vIENoZWNrIGFwcCBpcyB1cGRhdGFibGUKYXNzZXJ0CnJldHN1YgoKLy8gZGVsZXRlCmRlbGV0ZV8xOgpwcm90byAwIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApwdXNoaW50IFRNUExfREVMRVRBQkxFIC8vIFRNUExfREVMRVRBQkxFCi8vIENoZWNrIGFwcCBpcyBkZWxldGFibGUKYXNzZXJ0CnJldHN1YgoKLy8gaGVsbG8KaGVsbG9fMjoKcHJvdG8gMSAxCmJ5dGVjXzAgLy8gIiIKcHVzaGJ5dGVzIDB4NDg2NTZjNmM2ZjJjMjAgLy8gIkhlbGxvLCAiCmZyYW1lX2RpZyAtMQpleHRyYWN0IDIgMApjb25jYXQKZnJhbWVfYnVyeSAwCmZyYW1lX2RpZyAwCmxlbgppdG9iCmV4dHJhY3QgNiAwCmZyYW1lX2RpZyAwCmNvbmNhdApmcmFtZV9idXJ5IDAKcmV0c3ViCgovLyBnZXQKZ2V0XzM6CnByb3RvIDIgMQpieXRlY18wIC8vICIiCnB1c2hieXRlcyAweDZlNmY3NDJkNzM2ZjJkNzI2MTZlNjQ2ZjZkMjA3MzY1NjU2NCAvLyAibm90LXNvLXJhbmRvbSBzZWVkIgpzaGEzXzI1NgpmcmFtZV9idXJ5IDAKcHVzaGludCAzMiAvLyAzMgpmcmFtZV9kaWcgMApsZW4KPT0KYXNzZXJ0CnJldHN1YgoKLy8gaGVsbG9fY2FzdGVyCmhlbGxvY2FzdGVyXzQ6CnByb3RvIDAgMApieXRlY18wIC8vICIiCmR1cAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmZyYW1lX2J1cnkgMQpmcmFtZV9kaWcgMQpjYWxsc3ViIGhlbGxvXzIKZnJhbWVfYnVyeSAwCmJ5dGVjXzEgLy8gMHgxNTFmN2M3NQpmcmFtZV9kaWcgMApjb25jYXQKbG9nCnJldHN1YgoKLy8gZ2V0X2Nhc3RlcgpnZXRjYXN0ZXJfNToKcHJvdG8gMCAwCmJ5dGVjXzAgLy8gIiIKaW50Y18wIC8vIDAKYnl0ZWNfMCAvLyAiIgp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmJ0b2kKZnJhbWVfYnVyeSAxCnR4bmEgQXBwbGljYXRpb25BcmdzIDIKZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAxCmZyYW1lX2RpZyAyCmNhbGxzdWIgZ2V0XzMKZnJhbWVfYnVyeSAwCmJ5dGVjXzEgLy8gMHgxNTFmN2M3NQpmcmFtZV9kaWcgMApjb25jYXQKbG9nCnJldHN1Yg==",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
   },
   "state": {
     "global": {
-      "num_byte_slices": 63,
-      "num_uints": 1
+      "num_byte_slices": 0,
+      "num_uints": 0
     },
     "local": {
       "num_byte_slices": 0,
@@ -59,20 +54,8 @@ export const APP_SPEC: AppSpec = {
   },
   "schema": {
     "global": {
-      "declared": {
-        "randomness_beacon": {
-          "type": "uint64",
-          "key": "randomness_beacon",
-          "descr": "Randomness beacon APP ID"
-        }
-      },
-      "reserved": {
-        "commitments": {
-          "type": "bytes",
-          "max_keys": 63,
-          "descr": "Commitments to randomness"
-        }
-      }
+      "declared": {},
+      "reserved": {}
     },
     "local": {
       "declared": {},
@@ -80,7 +63,7 @@ export const APP_SPEC: AppSpec = {
     }
   },
   "contract": {
-    "name": "verifiable_randomness",
+    "name": "mock_randomness_beacon",
     "methods": [
       {
         "name": "hello",
@@ -95,35 +78,19 @@ export const APP_SPEC: AppSpec = {
         }
       },
       {
-        "name": "commit",
+        "name": "get",
         "args": [
           {
             "type": "uint64",
-            "name": "block_commitment"
+            "name": "block"
           },
           {
-            "type": "uint64",
-            "name": "length"
+            "type": "byte[]",
+            "name": "data"
           }
         ],
         "returns": {
-          "type": "void"
-        }
-      },
-      {
-        "name": "integers",
-        "args": [
-          {
-            "type": "uint64",
-            "name": "block_commitment"
-          },
-          {
-            "type": "application",
-            "name": "randomness_beacon"
-          }
-        ],
-        "returns": {
-          "type": "void"
+          "type": "byte[32]"
         }
       }
     ],
@@ -184,9 +151,9 @@ export type BinaryState = {
 }
 
 /**
- * Defines the types of available calls and state of the VerifiableRandomness smart contract.
+ * Defines the types of available calls and state of the MockRandomnessBeacon smart contract.
  */
-export type VerifiableRandomness = {
+export type MockRandomnessBeacon = {
   /**
    * Maps method signatures / names to their argument and return types.
    */
@@ -198,42 +165,23 @@ export type VerifiableRandomness = {
       argsTuple: [name: string]
       returns: string
     }>
-    & Record<'commit(uint64,uint64)void' | 'commit', {
+    & Record<'get(uint64,byte[])byte[32]' | 'get', {
       argsObj: {
-        block_commitment: bigint | number
-        length: bigint | number
+        block: bigint | number
+        data: Uint8Array
       }
-      argsTuple: [block_commitment: bigint | number, length: bigint | number]
-      returns: void
+      argsTuple: [block: bigint | number, data: Uint8Array]
+      returns: Uint8Array
     }>
-    & Record<'integers(uint64,application)void' | 'integers', {
-      argsObj: {
-        block_commitment: bigint | number
-        randomness_beacon: number | bigint
-      }
-      argsTuple: [block_commitment: bigint | number, randomness_beacon: number | bigint]
-      returns: void
-    }>
-  /**
-   * Defines the shape of the global and local state of the application.
-   */
-  state: {
-    global: {
-      /**
-       * Randomness beacon APP ID
-       */
-      'randomness_beacon'?: IntegerState
-    }
-  }
 }
 /**
  * Defines the possible abi call signatures
  */
-export type VerifiableRandomnessSig = keyof VerifiableRandomness['methods']
+export type MockRandomnessBeaconSig = keyof MockRandomnessBeacon['methods']
 /**
  * Defines an object containing all relevant parameters for a single call to the contract. Where TSignature is undefined, a bare call is made
  */
-export type TypedCallParams<TSignature extends VerifiableRandomnessSig | undefined> = {
+export type TypedCallParams<TSignature extends MockRandomnessBeaconSig | undefined> = {
   method: TSignature
   methodArgs: TSignature extends undefined ? undefined : Array<ABIAppCallArg | undefined>
 } & AppClientCallCoreParams & CoreAppCallArgs
@@ -242,72 +190,72 @@ export type TypedCallParams<TSignature extends VerifiableRandomnessSig | undefin
  */
 export type BareCallArgs = Omit<RawAppCallArgs, keyof CoreAppCallArgs>
 /**
- * Maps a method signature from the VerifiableRandomness smart contract to the method's arguments in either tuple of struct form
+ * Maps a method signature from the MockRandomnessBeacon smart contract to the method's arguments in either tuple of struct form
  */
-export type MethodArgs<TSignature extends VerifiableRandomnessSig> = VerifiableRandomness['methods'][TSignature]['argsObj' | 'argsTuple']
+export type MethodArgs<TSignature extends MockRandomnessBeaconSig> = MockRandomnessBeacon['methods'][TSignature]['argsObj' | 'argsTuple']
 /**
- * Maps a method signature from the VerifiableRandomness smart contract to the method's return type
+ * Maps a method signature from the MockRandomnessBeacon smart contract to the method's return type
  */
-export type MethodReturn<TSignature extends VerifiableRandomnessSig> = VerifiableRandomness['methods'][TSignature]['returns']
+export type MethodReturn<TSignature extends MockRandomnessBeaconSig> = MockRandomnessBeacon['methods'][TSignature]['returns']
 
 /**
  * A factory for available 'create' calls
  */
-export type VerifiableRandomnessCreateCalls = (typeof VerifiableRandomnessCallFactory)['create']
+export type MockRandomnessBeaconCreateCalls = (typeof MockRandomnessBeaconCallFactory)['create']
 /**
  * Defines supported create methods for this smart contract
  */
-export type VerifiableRandomnessCreateCallParams =
+export type MockRandomnessBeaconCreateCallParams =
   | (TypedCallParams<undefined> & (OnCompleteNoOp))
 /**
  * A factory for available 'update' calls
  */
-export type VerifiableRandomnessUpdateCalls = (typeof VerifiableRandomnessCallFactory)['update']
+export type MockRandomnessBeaconUpdateCalls = (typeof MockRandomnessBeaconCallFactory)['update']
 /**
  * Defines supported update methods for this smart contract
  */
-export type VerifiableRandomnessUpdateCallParams =
+export type MockRandomnessBeaconUpdateCallParams =
   | TypedCallParams<undefined>
 /**
  * A factory for available 'delete' calls
  */
-export type VerifiableRandomnessDeleteCalls = (typeof VerifiableRandomnessCallFactory)['delete']
+export type MockRandomnessBeaconDeleteCalls = (typeof MockRandomnessBeaconCallFactory)['delete']
 /**
  * Defines supported delete methods for this smart contract
  */
-export type VerifiableRandomnessDeleteCallParams =
+export type MockRandomnessBeaconDeleteCallParams =
   | TypedCallParams<undefined>
 /**
  * Defines arguments required for the deploy method.
  */
-export type VerifiableRandomnessDeployArgs = {
+export type MockRandomnessBeaconDeployArgs = {
   deployTimeParams?: TealTemplateParams
   /**
    * A delegate which takes a create call factory and returns the create call params for this smart contract
    */
-  createCall?: (callFactory: VerifiableRandomnessCreateCalls) => VerifiableRandomnessCreateCallParams
+  createCall?: (callFactory: MockRandomnessBeaconCreateCalls) => MockRandomnessBeaconCreateCallParams
   /**
    * A delegate which takes a update call factory and returns the update call params for this smart contract
    */
-  updateCall?: (callFactory: VerifiableRandomnessUpdateCalls) => VerifiableRandomnessUpdateCallParams
+  updateCall?: (callFactory: MockRandomnessBeaconUpdateCalls) => MockRandomnessBeaconUpdateCallParams
   /**
    * A delegate which takes a delete call factory and returns the delete call params for this smart contract
    */
-  deleteCall?: (callFactory: VerifiableRandomnessDeleteCalls) => VerifiableRandomnessDeleteCallParams
+  deleteCall?: (callFactory: MockRandomnessBeaconDeleteCalls) => MockRandomnessBeaconDeleteCallParams
 }
 
 
 /**
  * Exposes methods for constructing all available smart contract calls
  */
-export abstract class VerifiableRandomnessCallFactory {
+export abstract class MockRandomnessBeaconCallFactory {
   /**
    * Gets available create call factories
    */
   static get create() {
     return {
       /**
-       * Constructs a create call for the verifiable_randomness smart contract using a bare call
+       * Constructs a create call for the mock_randomness_beacon smart contract using a bare call
        *
        * @param params Any parameters for the call
        * @returns A TypedCallParams object for the call
@@ -328,7 +276,7 @@ export abstract class VerifiableRandomnessCallFactory {
   static get update() {
     return {
       /**
-       * Constructs an update call for the verifiable_randomness smart contract using a bare call
+       * Constructs an update call for the mock_randomness_beacon smart contract using a bare call
        *
        * @param params Any parameters for the call
        * @returns A TypedCallParams object for the call
@@ -349,7 +297,7 @@ export abstract class VerifiableRandomnessCallFactory {
   static get delete() {
     return {
       /**
-       * Constructs a delete call for the verifiable_randomness smart contract using a bare call
+       * Constructs a delete call for the mock_randomness_beacon smart contract using a bare call
        *
        * @param params Any parameters for the call
        * @returns A TypedCallParams object for the call
@@ -379,39 +327,25 @@ export abstract class VerifiableRandomnessCallFactory {
     }
   }
   /**
-   * Constructs a no op call for the commit(uint64,uint64)void ABI method
+   * Constructs a no op call for the get(uint64,byte[])byte[32] ABI method
    *
    * @param args Any args for the contract call
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
    */
-  static commit(args: MethodArgs<'commit(uint64,uint64)void'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+  static get(args: MethodArgs<'get(uint64,byte[])byte[32]'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
     return {
-      method: 'commit(uint64,uint64)void' as const,
-      methodArgs: Array.isArray(args) ? args : [args.block_commitment, args.length],
-      ...params,
-    }
-  }
-  /**
-   * Constructs a no op call for the integers(uint64,application)void ABI method
-   *
-   * @param args Any args for the contract call
-   * @param params Any additional parameters for the call
-   * @returns A TypedCallParams object for the call
-   */
-  static integers(args: MethodArgs<'integers(uint64,application)void'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
-    return {
-      method: 'integers(uint64,application)void' as const,
-      methodArgs: Array.isArray(args) ? args : [args.block_commitment, args.randomness_beacon],
+      method: 'get(uint64,byte[])byte[32]' as const,
+      methodArgs: Array.isArray(args) ? args : [args.block, args.data],
       ...params,
     }
   }
 }
 
 /**
- * A client to make calls to the verifiable_randomness smart contract
+ * A client to make calls to the mock_randomness_beacon smart contract
  */
-export class VerifiableRandomnessClient {
+export class MockRandomnessBeaconClient {
   /**
    * The underlying `ApplicationClient` for when you want to have more flexibility
    */
@@ -420,7 +354,7 @@ export class VerifiableRandomnessClient {
   private readonly sender: SendTransactionFrom | undefined
 
   /**
-   * Creates a new instance of `VerifiableRandomnessClient`
+   * Creates a new instance of `MockRandomnessBeaconClient`
    *
    * @param appDetails appDetails The details to identify the app to deploy
    * @param algod An algod client instance
@@ -457,20 +391,20 @@ export class VerifiableRandomnessClient {
    * @param returnValueFormatter An optional delegate which when provided will be used to map non-undefined return values to the target type
    * @returns The result of the smart contract call
    */
-  public async call<TSignature extends keyof VerifiableRandomness['methods']>(typedCallParams: TypedCallParams<TSignature>, returnValueFormatter?: (value: any) => MethodReturn<TSignature>) {
+  public async call<TSignature extends keyof MockRandomnessBeacon['methods']>(typedCallParams: TypedCallParams<TSignature>, returnValueFormatter?: (value: any) => MethodReturn<TSignature>) {
     return this.mapReturnValue<MethodReturn<TSignature>>(await this.appClient.call(typedCallParams), returnValueFormatter)
   }
 
   /**
-   * Idempotently deploys the verifiable_randomness smart contract.
+   * Idempotently deploys the mock_randomness_beacon smart contract.
    *
    * @param params The arguments for the contract calls and any additional parameters for the call
    * @returns The deployment result
    */
-  public deploy(params: VerifiableRandomnessDeployArgs & AppClientDeployCoreParams = {}): ReturnType<ApplicationClient['deploy']> {
-    const createArgs = params.createCall?.(VerifiableRandomnessCallFactory.create)
-    const updateArgs = params.updateCall?.(VerifiableRandomnessCallFactory.update)
-    const deleteArgs = params.deleteCall?.(VerifiableRandomnessCallFactory.delete)
+  public deploy(params: MockRandomnessBeaconDeployArgs & AppClientDeployCoreParams = {}): ReturnType<ApplicationClient['deploy']> {
+    const createArgs = params.createCall?.(MockRandomnessBeaconCallFactory.create)
+    const updateArgs = params.updateCall?.(MockRandomnessBeaconCallFactory.update)
+    const deleteArgs = params.deleteCall?.(MockRandomnessBeaconCallFactory.delete)
     return this.appClient.deploy({
       ...params,
       updateArgs,
@@ -487,7 +421,7 @@ export class VerifiableRandomnessClient {
     const $this = this
     return {
       /**
-       * Creates a new instance of the verifiable_randomness smart contract using a bare call.
+       * Creates a new instance of the mock_randomness_beacon smart contract using a bare call.
        *
        * @param args The arguments for the bare call
        * @returns The create result
@@ -505,7 +439,7 @@ export class VerifiableRandomnessClient {
     const $this = this
     return {
       /**
-       * Updates an existing instance of the verifiable_randomness smart contract using a bare call.
+       * Updates an existing instance of the mock_randomness_beacon smart contract using a bare call.
        *
        * @param args The arguments for the bare call
        * @returns The update result
@@ -523,7 +457,7 @@ export class VerifiableRandomnessClient {
     const $this = this
     return {
       /**
-       * Deletes an existing instance of the verifiable_randomness smart contract using a bare call.
+       * Deletes an existing instance of the mock_randomness_beacon smart contract using a bare call.
        *
        * @param args The arguments for the bare call
        * @returns The delete result
@@ -535,7 +469,7 @@ export class VerifiableRandomnessClient {
   }
 
   /**
-   * Makes a clear_state call to an existing instance of the verifiable_randomness smart contract.
+   * Makes a clear_state call to an existing instance of the mock_randomness_beacon smart contract.
    *
    * @param args The arguments for the bare call
    * @returns The clear_state result
@@ -552,88 +486,21 @@ export class VerifiableRandomnessClient {
    * @returns The result of the call
    */
   public hello(args: MethodArgs<'hello(string)string'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
-    return this.call(VerifiableRandomnessCallFactory.hello(args, params))
+    return this.call(MockRandomnessBeaconCallFactory.hello(args, params))
   }
 
   /**
-   * Calls the commit(uint64,uint64)void ABI method.
+   * Calls the get(uint64,byte[])byte[32] ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The result of the call
    */
-  public commit(args: MethodArgs<'commit(uint64,uint64)void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
-    return this.call(VerifiableRandomnessCallFactory.commit(args, params))
+  public get(args: MethodArgs<'get(uint64,byte[])byte[32]'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(MockRandomnessBeaconCallFactory.get(args, params))
   }
 
-  /**
-   * Calls the integers(uint64,application)void ABI method.
-   *
-   * @param args The arguments for the contract call
-   * @param params Any additional parameters for the call
-   * @returns The result of the call
-   */
-  public integers(args: MethodArgs<'integers(uint64,application)void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
-    return this.call(VerifiableRandomnessCallFactory.integers(args, params))
-  }
-
-  /**
-   * Extracts a binary state value out of an AppState dictionary
-   *
-   * @param state The state dictionary containing the state value
-   * @param key The key of the state value
-   * @returns A BinaryState instance containing the state value, or undefined if the key was not found
-   */
-  private static getBinaryState(state: AppState, key: string): BinaryState | undefined {
-    const value = state[key]
-    if (!value) return undefined
-    if (!('valueRaw' in value))
-      throw new Error(`Failed to parse state value for ${key}; received an int when expected a byte array`)
-    return {
-      asString(): string {
-        return value.value
-      },
-      asByteArray(): Uint8Array {
-        return value.valueRaw
-      }
-    }
-  }
-
-  /**
-   * Extracts a integer state value out of an AppState dictionary
-   *
-   * @param state The state dictionary containing the state value
-   * @param key The key of the state value
-   * @returns An IntegerState instance containing the state value, or undefined if the key was not found
-   */
-  private static getIntegerState(state: AppState, key: string): IntegerState | undefined {
-    const value = state[key]
-    if (!value) return undefined
-    if ('valueRaw' in value)
-      throw new Error(`Failed to parse state value for ${key}; received a byte array when expected a number`)
-    return {
-      asBigInt() {
-        return typeof value.value === 'bigint' ? value.value : BigInt(value.value)
-      },
-      asNumber(): number {
-        return typeof value.value === 'bigint' ? Number(value.value) : value.value
-      },
-    }
-  }
-
-  /**
-   * Returns the smart contract's global state wrapped in a strongly typed accessor with options to format the stored value
-   */
-  public async getGlobalState(): Promise<VerifiableRandomness['state']['global']> {
-    const state = await this.appClient.getGlobalState()
-    return {
-      get randomness_beacon() {
-        return VerifiableRandomnessClient.getIntegerState(state, 'randomness_beacon')
-      },
-    }
-  }
-
-  public compose(): VerifiableRandomnessComposer {
+  public compose(): MockRandomnessBeaconComposer {
     const client = this
     const atc = new AtomicTransactionComposer()
     let promiseChain:Promise<unknown> = Promise.resolve()
@@ -644,13 +511,8 @@ export class VerifiableRandomnessClient {
         resultMappers.push(undefined)
         return this
       },
-      commit(args: MethodArgs<'commit(uint64,uint64)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() => client.commit(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
-        resultMappers.push(undefined)
-        return this
-      },
-      integers(args: MethodArgs<'integers(uint64,application)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() => client.integers(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+      get(args: MethodArgs<'get(uint64,byte[])byte[32]'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.get(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
@@ -700,10 +562,10 @@ export class VerifiableRandomnessClient {
           returns: result.returns?.map((val, i) => resultMappers[i] !== undefined ? resultMappers[i]!(val.returnValue) : val.returnValue)
         }
       }
-    } as unknown as VerifiableRandomnessComposer
+    } as unknown as MockRandomnessBeaconComposer
   }
 }
-export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
+export type MockRandomnessBeaconComposer<TReturns extends [...any[]] = []> = {
   /**
    * Calls the hello(string)string ABI method.
    *
@@ -711,37 +573,28 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  hello(args: MethodArgs<'hello(string)string'>, params?: AppClientCallCoreParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, MethodReturn<'hello(string)string'>]>
+  hello(args: MethodArgs<'hello(string)string'>, params?: AppClientCallCoreParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, MethodReturn<'hello(string)string'>]>
 
   /**
-   * Calls the commit(uint64,uint64)void ABI method.
+   * Calls the get(uint64,byte[])byte[32] ABI method.
    *
    * @param args The arguments for the contract call
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  commit(args: MethodArgs<'commit(uint64,uint64)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, MethodReturn<'commit(uint64,uint64)void'>]>
-
-  /**
-   * Calls the integers(uint64,application)void ABI method.
-   *
-   * @param args The arguments for the contract call
-   * @param params Any additional parameters for the call
-   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
-   */
-  integers(args: MethodArgs<'integers(uint64,application)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, MethodReturn<'integers(uint64,application)void'>]>
+  get(args: MethodArgs<'get(uint64,byte[])byte[32]'>, params?: AppClientCallCoreParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, MethodReturn<'get(uint64,byte[])byte[32]'>]>
 
   /**
    * Gets available update methods
    */
   readonly update: {
     /**
-     * Updates an existing instance of the verifiable_randomness smart contract using a bare call.
+     * Updates an existing instance of the mock_randomness_beacon smart contract using a bare call.
      *
      * @param args The arguments for the bare call
      * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
      */
-    bare(args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, undefined]>
+    bare(args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, undefined]>
   }
 
   /**
@@ -749,21 +602,21 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
    */
   readonly delete: {
     /**
-     * Deletes an existing instance of the verifiable_randomness smart contract using a bare call.
+     * Deletes an existing instance of the mock_randomness_beacon smart contract using a bare call.
      *
      * @param args The arguments for the bare call
      * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
      */
-    bare(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, undefined]>
+    bare(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, undefined]>
   }
 
   /**
-   * Makes a clear_state call to an existing instance of the verifiable_randomness smart contract.
+   * Makes a clear_state call to an existing instance of the mock_randomness_beacon smart contract.
    *
    * @param args The arguments for the bare call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  clearState(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, undefined]>
+  clearState(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, undefined]>
 
   /**
    * Adds a transaction to the composer
@@ -771,7 +624,7 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
    * @param txn One of: A TransactionWithSigner object (returned as is), a TransactionToSign object (signer is obtained from the signer property), a Transaction object (signer is extracted from the defaultSender parameter), an async SendTransactionResult returned by one of algokit utils helpers (signer is obtained from the defaultSender parameter)
    * @param defaultSender The default sender to be used to obtain a signer where the object provided to the transaction parameter does not include a signer.
    */
-  addTransaction(txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>, defaultSender?: SendTransactionFrom): VerifiableRandomnessComposer<TReturns>
+  addTransaction(txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>, defaultSender?: SendTransactionFrom): MockRandomnessBeaconComposer<TReturns>
   /**
    * Returns the underlying AtomicTransactionComposer instance
    */
@@ -779,17 +632,17 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
   /**
    * Simulates the transaction group and returns the result
    */
-  simulate(): Promise<VerifiableRandomnessComposerSimulateResult>
+  simulate(): Promise<MockRandomnessBeaconComposerSimulateResult>
   /**
    * Executes the transaction group and returns the results
    */
-  execute(): Promise<VerifiableRandomnessComposerResults<TReturns>>
+  execute(): Promise<MockRandomnessBeaconComposerResults<TReturns>>
 }
-export type VerifiableRandomnessComposerSimulateResult = {
+export type MockRandomnessBeaconComposerSimulateResult = {
   methodResults: ABIResult[]
   simulateResponse: modelsv2.SimulateResponse
 }
-export type VerifiableRandomnessComposerResults<TReturns extends [...any[]]> = {
+export type MockRandomnessBeaconComposerResults<TReturns extends [...any[]]> = {
   returns: TReturns
   groupId: string
   txIds: string[]

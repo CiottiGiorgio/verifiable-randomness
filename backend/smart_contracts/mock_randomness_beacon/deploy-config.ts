@@ -1,10 +1,9 @@
 import * as algokit from '@algorandfoundation/algokit-utils'
-import { VerifiableRandomnessClient } from '../artifacts/verifiable_randomness/client'
-import {isTestNet} from "@algorandfoundation/algokit-utils";
+import { MockRandomnessBeaconClient } from '../artifacts/mock_randomness_beacon/client'
 
 // Below is a showcase of various deployment options you can use in TypeScript Client
 export async function deploy() {
-  console.log('=== Deploying VerifiableRandomness ===')
+  console.log('=== Deploying MockRandomnessBeacon ===')
 
   const algod = algokit.getAlgoClient()
   const indexer = algokit.getAlgoIndexerClient()
@@ -17,7 +16,7 @@ export async function deploy() {
     },
     algod,
   )
-  const appClient = new VerifiableRandomnessClient(
+  const appClient = new MockRandomnessBeaconClient(
     {
       resolveBy: 'creatorAndName',
       findExistingUsing: indexer,
@@ -32,9 +31,6 @@ export async function deploy() {
     allowUpdate: !isMainNet,
     onSchemaBreak: isMainNet ? 'append' : 'replace',
     onUpdate: isMainNet ? 'append' : 'update',
-    deployTimeParams: {
-      TMPL_RANDOMNESS_BEACON_APP_ID: isMainNet ? 947957720 : 110096026
-    }
   })
   
 

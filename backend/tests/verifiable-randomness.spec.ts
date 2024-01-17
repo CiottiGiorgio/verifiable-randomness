@@ -1,5 +1,6 @@
 import { algorandFixture } from '@algorandfoundation/algokit-utils/testing'
 import { VerifiableRandomnessClient } from '../smart_contracts/artifacts/verifiable_randomness/client'
+import { MockRandomnessBeaconClient } from "../smart_contracts/artifacts/mock_randomness_beacon/client";
 import { Account, Algodv2, Indexer } from 'algosdk'
 import * as algokit from '@algorandfoundation/algokit-utils'
 
@@ -14,7 +15,7 @@ describe('verifiable randomness contract', () => {
   beforeEach(localnet.beforeEach)
 
   const deploy = async (account: Account, algod: Algodv2, indexer: Indexer) => {
-    const client = new VerifiableRandomnessClient(
+    const mockRBClient = new MockRandomnessBeaconClient(
       {
         resolveBy: 'creatorAndName',
         findExistingUsing: indexer,
@@ -23,14 +24,33 @@ describe('verifiable randomness contract', () => {
       },
       algod,
     )
-    await client.deploy({
+    const mockRBDeployment = await mockRBClient.deploy({
       allowDelete: true,
       allowUpdate: true,
       onSchemaBreak: 'replace',
       onUpdate: 'update',
     })
+
+    const VRClient = new VerifiableRandomnessClient(
+      {
+        resolveBy: 'creatorAndName',
+        findExistingUsing: indexer,
+        sender: account,
+        creatorAddress: account.addr,
+      },
+      algod,
+    )
+    await VRClient.deploy({
+      allowDelete: true,
+      allowUpdate: true,
+      onSchemaBreak: 'replace',
+      onUpdate: 'update',
+      deployTimeParams: {
+        TMPL_RANDOMNESS_BEACON_APP_ID: mockRBDeployment.appId
+      }
+    })
     
-    return { client }
+    return { client: VRClient }
   }
 
   test('says hello', async () => {

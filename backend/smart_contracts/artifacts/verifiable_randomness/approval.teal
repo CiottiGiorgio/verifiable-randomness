@@ -1,16 +1,24 @@
 #pragma version 8
 intcblock 0 1
-bytecblock 0x
+bytecblock 0x72616e646f6d6e6573735f626561636f6e 0x
 txn NumAppArgs
 intc_0 // 0
 ==
-bnz main_l4
+bnz main_l8
 txna ApplicationArgs 0
 pushbytes 0x02bece11 // "hello(string)string"
 ==
-bnz main_l3
+bnz main_l7
+txna ApplicationArgs 0
+pushbytes 0x83e86ddc // "commit(uint64,uint64)void"
+==
+bnz main_l6
+txna ApplicationArgs 0
+pushbytes 0xc29bdf78 // "integers(uint64,application)void"
+==
+bnz main_l5
 err
-main_l3:
+main_l5:
 txn OnCompletion
 intc_0 // NoOp
 ==
@@ -19,49 +27,98 @@ intc_0 // 0
 !=
 &&
 assert
-callsub hellocaster_3
+callsub integerscaster_9
 intc_1 // 1
 return
-main_l4:
+main_l6:
 txn OnCompletion
 intc_0 // NoOp
 ==
-bnz main_l10
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub commitcaster_8
+intc_1 // 1
+return
+main_l7:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub hellocaster_7
+intc_1 // 1
+return
+main_l8:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l14
 txn OnCompletion
 pushint 4 // UpdateApplication
 ==
-bnz main_l9
+bnz main_l13
 txn OnCompletion
 pushint 5 // DeleteApplication
 ==
-bnz main_l8
+bnz main_l12
 err
-main_l8:
+main_l12:
 txn ApplicationID
 intc_0 // 0
 !=
 assert
-callsub delete_1
+callsub delete_3
 intc_1 // 1
 return
-main_l9:
+main_l13:
 txn ApplicationID
 intc_0 // 0
 !=
 assert
-callsub update_0
+callsub update_2
 intc_1 // 1
 return
-main_l10:
+main_l14:
 txn ApplicationID
 intc_0 // 0
 ==
 assert
+callsub create_1
 intc_1 // 1
 return
 
+// prefix_key_gen
+prefixkeygen_0:
+proto 1 1
+pushbytes 0x636f6d6d69746d656e7473 // "commitments"
+frame_dig -1
+concat
+retsub
+
+// create
+create_1:
+proto 0 0
+intc_0 // 0
+bytec_0 // "randomness_beacon"
+app_global_get_ex
+store 1
+store 0
+load 1
+!
+assert
+bytec_0 // "randomness_beacon"
+pushint TMPL_RANDOMNESS_BEACON_APP_ID // TMPL_RANDOMNESS_BEACON_APP_ID
+app_global_put
+retsub
+
 // update
-update_0:
+update_2:
 proto 0 0
 txn Sender
 global CreatorAddress
@@ -74,7 +131,7 @@ assert
 retsub
 
 // delete
-delete_1:
+delete_3:
 proto 0 0
 txn Sender
 global CreatorAddress
@@ -87,9 +144,9 @@ assert
 retsub
 
 // hello
-hello_2:
+hello_4:
 proto 1 1
-bytec_0 // ""
+bytec_1 // ""
 pushbytes 0x48656c6c6f2c20 // "Hello, "
 frame_dig -1
 extract 2 0
@@ -104,18 +161,80 @@ concat
 frame_bury 0
 retsub
 
+// commit
+commit_5:
+proto 2 0
+frame_dig -2
+global Round
+>
+assert
+frame_dig -2
+callsub prefixkeygen_0
+frame_dig -1
+itob
+app_global_put
+retsub
+
+// integers
+integers_6:
+proto 2 0
+intc_0 // 0
+frame_dig -2
+global Round
+<=
+assert
+frame_dig -2
+callsub prefixkeygen_0
+app_global_get
+btoi
+frame_bury 0
+retsub
+
 // hello_caster
-hellocaster_3:
+hellocaster_7:
 proto 0 0
-bytec_0 // ""
+bytec_1 // ""
 dup
 txna ApplicationArgs 1
 frame_bury 1
 frame_dig 1
-callsub hello_2
+callsub hello_4
 frame_bury 0
 pushbytes 0x151f7c75 // 0x151f7c75
 frame_dig 0
 concat
 log
+retsub
+
+// commit_caster
+commitcaster_8:
+proto 0 0
+intc_0 // 0
+dup
+txna ApplicationArgs 1
+btoi
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub commit_5
+retsub
+
+// integers_caster
+integerscaster_9:
+proto 0 0
+intc_0 // 0
+dup
+txna ApplicationArgs 1
+btoi
+frame_bury 0
+txna ApplicationArgs 2
+intc_0 // 0
+getbyte
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub integers_6
 retsub
