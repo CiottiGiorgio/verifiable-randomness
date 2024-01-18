@@ -1,5 +1,3 @@
-from typing import Literal
-
 import beaker
 import pyteal as pt
 from algokit_utils import DELETABLE_TEMPLATE_NAME, UPDATABLE_TEMPLATE_NAME
@@ -42,11 +40,14 @@ def delete() -> pt.Expr:
 
 
 @app.external
-def commit(block_commitment: pt.abi.Uint64, length: pt.abi.Uint64) -> pt.Expr:
+def commit(block_commitment: pt.abi.Uint64, length: pt.abi.Uint16) -> pt.Expr:
     return pt.Seq(
         pt.Assert(block_commitment.get() > pt.Global.round()),
         app.state.commitments[block_commitment.encode()].set(length.encode()),
     )
+
+
+NEXT_UINT64_SEED = pt.ScratchVar(pt.TealType.bytes)
 
 
 @app.external
@@ -56,8 +57,10 @@ def integers(
     *,
     output: pt.abi.DynamicArray[pt.abi.Uint64]
 ) -> pt.Expr:
-    length = pt.abi.Uint64()
-    random_seed = pt.ScratchVar(pt.TealType.bytes)
+    length = pt.abi.Uint16()
+
+    i = pt.ScratchVar(pt.TealType.uint64)
+    random_ints = pt.ScratchVar(pt.TealType.bytes)
 
     return pt.Seq(
         pt.Assert(block_commitment.get() <= pt.Global.round()),
@@ -69,16 +72,31 @@ def integers(
             method_signature="get(uint64,byte[])byte[]",
             args=[block_commitment, user_data]
         ),
-        random_seed.store(pt.Substring(
+        NEXT_UINT64_SEED.store(pt.Substring(
             pt.InnerTxn.last_log(), pt.Int(4), pt.Int(36)
         )),
-        (first := pt.abi.Uint64()).set(pt.ExtractUint64(random_seed.load(), pt.Int(0))),
 
-        random_seed.store(pt.Sha3_256(random_seed.load())),
-        (second := pt.abi.Uint64()).set(pt.ExtractUint64(random_seed.load(), pt.Int(0))),
+        pt.For(
+            pt.Seq(
+                i.store(pt.Int(0)),
+                random_ints.store(pt.Bytes(""))
+            ),
+            i.load() < length.get(),
+            i.store(i.load() + pt.Int(1))
+        ).Do(pt.Seq(
+            random_ints.store(pt.Concat(random_ints.load(), pt.Itob(get_next_uint64())))
+        )),
 
-        random_seed.store(pt.Sha3_256(random_seed.load())),
-        (third := pt.abi.Uint64()).set(pt.ExtractUint64(random_seed.load(), pt.Int(0))),
+        output.decode(pt.Concat(length.encode(), random_ints.load()))
+    )
 
-        output.set(values=[first, second, third])
+
+@pt.Subroutine(pt.TealType.uint64)
+def get_next_uint64() -> pt.Expr:
+    temp = pt.ScratchVar(pt.TealType.uint64)
+
+    return pt.Seq(
+        temp.store(pt.ExtractUint64(NEXT_UINT64_SEED.load(), pt.Int(0))),
+        NEXT_UINT64_SEED.store(pt.Sha3_256(NEXT_UINT64_SEED.load())),
+        pt.Return(temp.load())
     )

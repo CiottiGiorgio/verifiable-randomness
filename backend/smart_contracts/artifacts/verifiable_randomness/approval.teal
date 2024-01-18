@@ -6,7 +6,7 @@ intc_0 // 0
 ==
 bnz main_l6
 txna ApplicationArgs 0
-pushbytes 0x83e86ddc // "commit(uint64,uint64)void"
+pushbytes 0xd71058a5 // "commit(uint64,uint16)void"
 ==
 bnz main_l5
 txna ApplicationArgs 0
@@ -23,7 +23,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub integerscaster_7
+callsub integerscaster_8
 intc_1 // 1
 return
 main_l5:
@@ -35,7 +35,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub commitcaster_6
+callsub commitcaster_7
 intc_1 // 1
 return
 main_l6:
@@ -91,9 +91,9 @@ proto 0 0
 intc_0 // 0
 bytec_1 // "randomness_beacon"
 app_global_get_ex
+store 2
 store 1
-store 0
-load 1
+load 2
 !
 assert
 bytec_1 // "randomness_beacon"
@@ -139,6 +139,7 @@ itob
 callsub prefixkeygen_0
 frame_dig -1
 itob
+extract 6 0
 app_global_put
 retsub
 
@@ -148,11 +149,6 @@ proto 2 1
 bytec_0 // ""
 intc_0 // 0
 bytec_0 // ""
-intc_0 // 0
-dupn 4
-bytec_0 // ""
-dup
-intc_0 // 0
 frame_dig -2
 global Round
 <=
@@ -161,7 +157,8 @@ frame_dig -2
 itob
 callsub prefixkeygen_0
 app_global_get
-btoi
+intc_0 // 0
+extract_uint16
 frame_bury 1
 bytec_0 // ""
 frame_bury 2
@@ -188,44 +185,50 @@ itxn_field ApplicationArgs
 itxn_submit
 itxn LastLog
 extract 4 32
-store 2
-load 2
+store 0
 intc_0 // 0
-extract_uint64
-frame_bury 3
-load 2
-sha3_256
-store 2
-load 2
-intc_0 // 0
-extract_uint64
-frame_bury 4
-load 2
-sha3_256
-store 2
-load 2
-intc_0 // 0
-extract_uint64
-frame_bury 5
-pushint 3 // 3
-frame_bury 10
-frame_dig 10
+store 3
+bytec_0 // ""
+store 4
+integers_5_l1:
+load 3
+frame_dig 1
+<
+bz integers_5_l3
+load 4
+callsub getnextuint64_6
+itob
+concat
+store 4
+load 3
+intc_1 // 1
++
+store 3
+b integers_5_l1
+integers_5_l3:
+frame_dig 1
 itob
 extract 6 0
-frame_dig 3
-itob
-frame_dig 4
-itob
-concat
-frame_dig 5
-itob
-concat
+load 4
 concat
 frame_bury 0
 retsub
 
+// get_next_uint64
+getnextuint64_6:
+proto 0 1
+load 0
+intc_0 // 0
+extract_uint64
+store 5
+load 0
+sha3_256
+store 0
+load 5
+retsub
+
 // commit_caster
-commitcaster_6:
+commitcaster_7:
 proto 0 0
 intc_0 // 0
 dup
@@ -233,7 +236,8 @@ txna ApplicationArgs 1
 btoi
 frame_bury 0
 txna ApplicationArgs 2
-btoi
+intc_0 // 0
+extract_uint16
 frame_bury 1
 frame_dig 0
 frame_dig 1
@@ -241,7 +245,7 @@ callsub commit_4
 retsub
 
 // integers_caster
-integerscaster_7:
+integerscaster_8:
 proto 0 0
 bytec_0 // ""
 intc_0 // 0

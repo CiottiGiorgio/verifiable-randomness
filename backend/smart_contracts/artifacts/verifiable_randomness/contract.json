@@ -9,7 +9,7 @@
           "name": "block_commitment"
         },
         {
-          "type": "uint64",
+          "type": "uint16",
           "name": "length"
         }
       ],

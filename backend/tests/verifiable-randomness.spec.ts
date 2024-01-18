@@ -59,14 +59,19 @@ describe('verifiable randomness contract', () => {
     return { client: VRClient, mRBID: mockRBDeployment.appId }
   }
 
-  test('commits and extracts randomness', async () => {
+  test.each([
+    [1, [9076553810879439n]],
+    [2, [9076553810879439n, 16676498766615284173n]],
+    [3, [9076553810879439n, 16676498766615284173n, 9276153543560570338n]],
+    [5, [9076553810879439n, 16676498766615284173n, 9276153543560570338n, 11035395528968976784n, 5776889151818455513n]],
+  ])('commits and extracts randomness', async (length, expected) => {
     const { algod, indexer, testAccount } = localnet.context
     const { client, mRBID } = await deploy(testAccount, algod, indexer)
 
     const currentStatus = await algod.status().do()
     await client.commit({
       block_commitment: currentStatus['last-round'] + 2,
-      length: 3,
+      length,
     })
 
     const result = await client.integers(
@@ -81,6 +86,6 @@ describe('verifiable randomness contract', () => {
       },
     )
 
-    expect(result.return).toStrictEqual([9076553810879439n, 16676498766615284173n, 9276153543560570338n])
+    expect(result.return).toStrictEqual(expected)
   })
 })
