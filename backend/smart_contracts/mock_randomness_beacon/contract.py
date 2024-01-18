@@ -24,10 +24,5 @@ def delete() -> pt.Expr:
 
 
 @app.external
-def hello(name: pt.abi.String, *, output: pt.abi.String) -> pt.Expr:
-    return output.set(pt.Concat(pt.Bytes("Hello, "), name.get()))
-
-
-@app.external
 def get(block: pt.abi.Uint64, data: pt.abi.DynamicBytes, *, output: pt.abi.DynamicBytes) -> pt.Expr:
     return output.set(pt.Sha3_256(pt.Bytes("not-so-random seed")))
