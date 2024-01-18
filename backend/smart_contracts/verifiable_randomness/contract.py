@@ -42,11 +42,6 @@ def delete() -> pt.Expr:
 
 
 @app.external
-def hello(name: pt.abi.String, *, output: pt.abi.String) -> pt.Expr:
-    return output.set(pt.Concat(pt.Bytes("Hello, "), name.get()))
-
-
-@app.external
 def commit(block_commitment: pt.abi.Uint64, length: pt.abi.Uint64) -> pt.Expr:
     return pt.Seq(
         pt.Assert(block_commitment.get() > pt.Global.round()),

@@ -2,18 +2,6 @@
     "name": "mock_randomness_beacon",
     "methods": [
         {
-            "name": "hello",
-            "args": [
-                {
-                    "type": "string",
-                    "name": "name"
-                }
-            ],
-            "returns": {
-                "type": "string"
-            }
-        },
-        {
             "name": "get",
             "args": [
                 {

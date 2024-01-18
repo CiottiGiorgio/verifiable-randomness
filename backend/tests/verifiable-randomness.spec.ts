@@ -1,7 +1,8 @@
+import { createHash } from 'crypto'
 import { algorandFixture } from '@algorandfoundation/algokit-utils/testing'
 import { VerifiableRandomnessClient } from '../smart_contracts/artifacts/verifiable_randomness/client'
 import { MockRandomnessBeaconClient } from "../smart_contracts/artifacts/mock_randomness_beacon/client";
-import {Account, Algodv2, algosToMicroalgos, Indexer} from 'algosdk'
+import {Account, Algodv2, Indexer} from 'algosdk'
 import * as algokit from '@algorandfoundation/algokit-utils'
 import {microAlgos} from "@algorandfoundation/algokit-utils";
 
@@ -25,11 +26,15 @@ describe('verifiable randomness contract', () => {
       },
       algod,
     )
+    const mockVRFOutput = createHash('sha3-512').update('not-so-random seed').digest()
     const mockRBDeployment = await mockRBClient.deploy({
       allowDelete: true,
       allowUpdate: true,
       onSchemaBreak: 'replace',
       onUpdate: 'update',
+      deployTimeParams: {
+        TMPL_MOCK_VRF_OUTPUT: mockVRFOutput
+      }
     })
 
     const VRClient = new VerifiableRandomnessClient(
@@ -54,25 +59,6 @@ describe('verifiable randomness contract', () => {
     return { client: VRClient, mRBID: mockRBDeployment.appId }
   }
 
-  test('says hello', async () => {
-    const { algod, indexer, testAccount } = localnet.context
-    const { client } = await deploy(testAccount, algod, indexer)
-
-    const result = await client.hello({ name: 'World' })
-
-    expect(result.return).toBe('Hello, World')
-  })
-
-  test('simulate says hello with correct budget consumed', async () => {
-    const { algod, indexer, testAccount } = localnet.context
-    const { client } = await deploy(testAccount, algod, indexer)
-    const result = await client.compose().hello({ name: 'World' }).hello({ name: 'Jane' }).simulate()
-
-    expect(result.methodResults[0].returnValue).toBe('Hello, World')
-    expect(result.methodResults[1].returnValue).toBe('Hello, Jane')
-    expect(result.simulateResponse.txnGroups[0].appBudgetConsumed).toBeLessThan(100)
-  })
-
   test('commits and extracts randomness', async () => {
     const { algod, indexer, testAccount } = localnet.context
     const { client, mRBID } = await deploy(testAccount, algod, indexer)
@@ -92,6 +78,6 @@ describe('verifiable randomness contract', () => {
       }
     })
 
-    expect(result.return).toStrictEqual([9076553810879439n, 16676498766615284173n, 9276153543560570338n])
+    expect(result.return).toStrictEqual([18034842832386495n, 14980785853693213735n, 2223011750819769115n,])
   })
 })

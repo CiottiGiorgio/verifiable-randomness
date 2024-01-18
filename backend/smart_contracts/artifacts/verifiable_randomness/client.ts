@@ -27,11 +27,6 @@ import type { ABIResult, TransactionWithSigner, modelsv2 } from 'algosdk'
 import { Algodv2, OnApplicationComplete, Transaction, AtomicTransactionComposer } from 'algosdk'
 export const APP_SPEC: AppSpec = {
   "hints": {
-    "hello(string)string": {
-      "call_config": {
-        "no_op": "CALL"
-      }
-    },
     "commit(uint64,uint64)void": {
       "call_config": {
         "no_op": "CALL"
@@ -44,7 +39,7 @@ export const APP_SPEC: AppSpec = {
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4IDB4NzI2MTZlNjQ2ZjZkNmU2NTczNzM1ZjYyNjU2MTYzNmY2ZSAweDE1MWY3Yzc1CnR4biBOdW1BcHBBcmdzCmludGNfMCAvLyAwCj09CmJueiBtYWluX2w4CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4MDJiZWNlMTEgLy8gImhlbGxvKHN0cmluZylzdHJpbmciCj09CmJueiBtYWluX2w3CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4ODNlODZkZGMgLy8gImNvbW1pdCh1aW50NjQsdWludDY0KXZvaWQiCj09CmJueiBtYWluX2w2CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4ZTQyNDcwMGUgLy8gImludGVnZXJzKHVpbnQ2NCxhcHBsaWNhdGlvbil1aW50NjRbXSIKPT0KYm56IG1haW5fbDUKZXJyCm1haW5fbDU6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgaW50ZWdlcnNjYXN0ZXJfOQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNjoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBjb21taXRjYXN0ZXJfOAppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNzoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBoZWxsb2Nhc3Rlcl83CmludGNfMSAvLyAxCnJldHVybgptYWluX2w4Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CmJueiBtYWluX2wxNAp0eG4gT25Db21wbGV0aW9uCnB1c2hpbnQgNCAvLyBVcGRhdGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sMTMKdHhuIE9uQ29tcGxldGlvbgpwdXNoaW50IDUgLy8gRGVsZXRlQXBwbGljYXRpb24KPT0KYm56IG1haW5fbDEyCmVycgptYWluX2wxMjoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgZGVsZXRlXzMKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDEzOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQphc3NlcnQKY2FsbHN1YiB1cGRhdGVfMgppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sMTQ6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCj09CmFzc2VydApjYWxsc3ViIGNyZWF0ZV8xCmludGNfMSAvLyAxCnJldHVybgoKLy8gcHJlZml4X2tleV9nZW4KcHJlZml4a2V5Z2VuXzA6CnByb3RvIDEgMQpwdXNoYnl0ZXMgMHg2MzZmNmQ2ZDY5NzQ2ZDY1NmU3NDczIC8vICJjb21taXRtZW50cyIKZnJhbWVfZGlnIC0xCmNvbmNhdApyZXRzdWIKCi8vIGNyZWF0ZQpjcmVhdGVfMToKcHJvdG8gMCAwCmludGNfMCAvLyAwCmJ5dGVjXzEgLy8gInJhbmRvbW5lc3NfYmVhY29uIgphcHBfZ2xvYmFsX2dldF9leApzdG9yZSAxCnN0b3JlIDAKbG9hZCAxCiEKYXNzZXJ0CmJ5dGVjXzEgLy8gInJhbmRvbW5lc3NfYmVhY29uIgpwdXNoaW50IFRNUExfUkFORE9NTkVTU19CRUFDT05fQVBQX0lEIC8vIFRNUExfUkFORE9NTkVTU19CRUFDT05fQVBQX0lECmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gdXBkYXRlCnVwZGF0ZV8yOgpwcm90byAwIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApwdXNoaW50IFRNUExfVVBEQVRBQkxFIC8vIFRNUExfVVBEQVRBQkxFCi8vIENoZWNrIGFwcCBpcyB1cGRhdGFibGUKYXNzZXJ0CnJldHN1YgoKLy8gZGVsZXRlCmRlbGV0ZV8zOgpwcm90byAwIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApwdXNoaW50IFRNUExfREVMRVRBQkxFIC8vIFRNUExfREVMRVRBQkxFCi8vIENoZWNrIGFwcCBpcyBkZWxldGFibGUKYXNzZXJ0CnJldHN1YgoKLy8gaGVsbG8KaGVsbG9fNDoKcHJvdG8gMSAxCmJ5dGVjXzAgLy8gIiIKcHVzaGJ5dGVzIDB4NDg2NTZjNmM2ZjJjMjAgLy8gIkhlbGxvLCAiCmZyYW1lX2RpZyAtMQpleHRyYWN0IDIgMApjb25jYXQKZnJhbWVfYnVyeSAwCmZyYW1lX2RpZyAwCmxlbgppdG9iCmV4dHJhY3QgNiAwCmZyYW1lX2RpZyAwCmNvbmNhdApmcmFtZV9idXJ5IDAKcmV0c3ViCgovLyBjb21taXQKY29tbWl0XzU6CnByb3RvIDIgMApmcmFtZV9kaWcgLTIKZ2xvYmFsIFJvdW5kCj4KYXNzZXJ0CmZyYW1lX2RpZyAtMgppdG9iCmNhbGxzdWIgcHJlZml4a2V5Z2VuXzAKZnJhbWVfZGlnIC0xCml0b2IKYXBwX2dsb2JhbF9wdXQKcmV0c3ViCgovLyBpbnRlZ2VycwppbnRlZ2Vyc182Ogpwcm90byAyIDEKYnl0ZWNfMCAvLyAiIgppbnRjXzAgLy8gMApieXRlY18wIC8vICIiCmludGNfMCAvLyAwCmR1cG4gNApieXRlY18wIC8vICIiCmR1cAppbnRjXzAgLy8gMApmcmFtZV9kaWcgLTIKZ2xvYmFsIFJvdW5kCjw9CmFzc2VydApmcmFtZV9kaWcgLTIKaXRvYgpjYWxsc3ViIHByZWZpeGtleWdlbl8wCmFwcF9nbG9iYWxfZ2V0CmJ0b2kKZnJhbWVfYnVyeSAxCmJ5dGVjXzAgLy8gIiIKZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAyCmxlbgppdG9iCmV4dHJhY3QgNiAwCmZyYW1lX2RpZyAyCmNvbmNhdApmcmFtZV9idXJ5IDIKaXR4bl9iZWdpbgpwdXNoaW50IDYgLy8gYXBwbAppdHhuX2ZpZWxkIFR5cGVFbnVtCmJ5dGVjXzEgLy8gInJhbmRvbW5lc3NfYmVhY29uIgphcHBfZ2xvYmFsX2dldAppdHhuX2ZpZWxkIEFwcGxpY2F0aW9uSUQKcHVzaGJ5dGVzIDB4MTg5MzkyYzUgLy8gImdldCh1aW50NjQsYnl0ZVtdKWJ5dGVbXSIKaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKZnJhbWVfZGlnIC0yCml0b2IKaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKZnJhbWVfZGlnIDIKaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKaXR4bl9zdWJtaXQKaXR4biBMYXN0TG9nCmV4dHJhY3QgNCAzMgpzdG9yZSAyCmxvYWQgMgppbnRjXzAgLy8gMApleHRyYWN0X3VpbnQ2NApmcmFtZV9idXJ5IDMKbG9hZCAyCnNoYTNfMjU2CnN0b3JlIDIKbG9hZCAyCmludGNfMCAvLyAwCmV4dHJhY3RfdWludDY0CmZyYW1lX2J1cnkgNApsb2FkIDIKc2hhM18yNTYKc3RvcmUgMgpsb2FkIDIKaW50Y18wIC8vIDAKZXh0cmFjdF91aW50NjQKZnJhbWVfYnVyeSA1CnB1c2hpbnQgMyAvLyAzCmZyYW1lX2J1cnkgMTAKZnJhbWVfZGlnIDEwCml0b2IKZXh0cmFjdCA2IDAKZnJhbWVfZGlnIDMKaXRvYgpmcmFtZV9kaWcgNAppdG9iCmNvbmNhdApmcmFtZV9kaWcgNQppdG9iCmNvbmNhdApjb25jYXQKZnJhbWVfYnVyeSAwCnJldHN1YgoKLy8gaGVsbG9fY2FzdGVyCmhlbGxvY2FzdGVyXzc6CnByb3RvIDAgMApieXRlY18wIC8vICIiCmR1cAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmZyYW1lX2J1cnkgMQpmcmFtZV9kaWcgMQpjYWxsc3ViIGhlbGxvXzQKZnJhbWVfYnVyeSAwCmJ5dGVjXzIgLy8gMHgxNTFmN2M3NQpmcmFtZV9kaWcgMApjb25jYXQKbG9nCnJldHN1YgoKLy8gY29tbWl0X2Nhc3Rlcgpjb21taXRjYXN0ZXJfODoKcHJvdG8gMCAwCmludGNfMCAvLyAwCmR1cAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmJ0b2kKZnJhbWVfYnVyeSAwCnR4bmEgQXBwbGljYXRpb25BcmdzIDIKYnRvaQpmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDAKZnJhbWVfZGlnIDEKY2FsbHN1YiBjb21taXRfNQpyZXRzdWIKCi8vIGludGVnZXJzX2Nhc3RlcgppbnRlZ2Vyc2Nhc3Rlcl85Ogpwcm90byAwIDAKYnl0ZWNfMCAvLyAiIgppbnRjXzAgLy8gMApkdXAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpidG9pCmZyYW1lX2J1cnkgMQp0eG5hIEFwcGxpY2F0aW9uQXJncyAyCmludGNfMCAvLyAwCmdldGJ5dGUKZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAxCmZyYW1lX2RpZyAyCmNhbGxzdWIgaW50ZWdlcnNfNgpmcmFtZV9idXJ5IDAKYnl0ZWNfMiAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3Vi",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4IDB4NzI2MTZlNjQ2ZjZkNmU2NTczNzM1ZjYyNjU2MTYzNmY2ZQp0eG4gTnVtQXBwQXJncwppbnRjXzAgLy8gMAo9PQpibnogbWFpbl9sNgp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweDgzZTg2ZGRjIC8vICJjb21taXQodWludDY0LHVpbnQ2NCl2b2lkIgo9PQpibnogbWFpbl9sNQp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweGU0MjQ3MDBlIC8vICJpbnRlZ2Vycyh1aW50NjQsYXBwbGljYXRpb24pdWludDY0W10iCj09CmJueiBtYWluX2w0CmVycgptYWluX2w0Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIGludGVnZXJzY2FzdGVyXzcKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDU6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgY29tbWl0Y2FzdGVyXzYKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDY6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KYm56IG1haW5fbDEyCnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA0IC8vIFVwZGF0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2wxMQp0eG4gT25Db21wbGV0aW9uCnB1c2hpbnQgNSAvLyBEZWxldGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sMTAKZXJyCm1haW5fbDEwOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQphc3NlcnQKY2FsbHN1YiBkZWxldGVfMwppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sMTE6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CmFzc2VydApjYWxsc3ViIHVwZGF0ZV8yCmludGNfMSAvLyAxCnJldHVybgptYWluX2wxMjoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmNhbGxzdWIgY3JlYXRlXzEKaW50Y18xIC8vIDEKcmV0dXJuCgovLyBwcmVmaXhfa2V5X2dlbgpwcmVmaXhrZXlnZW5fMDoKcHJvdG8gMSAxCnB1c2hieXRlcyAweDYzNmY2ZDZkNjk3NDZkNjU2ZTc0NzMgLy8gImNvbW1pdG1lbnRzIgpmcmFtZV9kaWcgLTEKY29uY2F0CnJldHN1YgoKLy8gY3JlYXRlCmNyZWF0ZV8xOgpwcm90byAwIDAKaW50Y18wIC8vIDAKYnl0ZWNfMSAvLyAicmFuZG9tbmVzc19iZWFjb24iCmFwcF9nbG9iYWxfZ2V0X2V4CnN0b3JlIDEKc3RvcmUgMApsb2FkIDEKIQphc3NlcnQKYnl0ZWNfMSAvLyAicmFuZG9tbmVzc19iZWFjb24iCnB1c2hpbnQgVE1QTF9SQU5ET01ORVNTX0JFQUNPTl9BUFBfSUQgLy8gVE1QTF9SQU5ET01ORVNTX0JFQUNPTl9BUFBfSUQKYXBwX2dsb2JhbF9wdXQKcmV0c3ViCgovLyB1cGRhdGUKdXBkYXRlXzI6CnByb3RvIDAgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CnB1c2hpbnQgVE1QTF9VUERBVEFCTEUgLy8gVE1QTF9VUERBVEFCTEUKLy8gQ2hlY2sgYXBwIGlzIHVwZGF0YWJsZQphc3NlcnQKcmV0c3ViCgovLyBkZWxldGUKZGVsZXRlXzM6CnByb3RvIDAgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CnB1c2hpbnQgVE1QTF9ERUxFVEFCTEUgLy8gVE1QTF9ERUxFVEFCTEUKLy8gQ2hlY2sgYXBwIGlzIGRlbGV0YWJsZQphc3NlcnQKcmV0c3ViCgovLyBjb21taXQKY29tbWl0XzQ6CnByb3RvIDIgMApmcmFtZV9kaWcgLTIKZ2xvYmFsIFJvdW5kCj4KYXNzZXJ0CmZyYW1lX2RpZyAtMgppdG9iCmNhbGxzdWIgcHJlZml4a2V5Z2VuXzAKZnJhbWVfZGlnIC0xCml0b2IKYXBwX2dsb2JhbF9wdXQKcmV0c3ViCgovLyBpbnRlZ2VycwppbnRlZ2Vyc181Ogpwcm90byAyIDEKYnl0ZWNfMCAvLyAiIgppbnRjXzAgLy8gMApieXRlY18wIC8vICIiCmludGNfMCAvLyAwCmR1cG4gNApieXRlY18wIC8vICIiCmR1cAppbnRjXzAgLy8gMApmcmFtZV9kaWcgLTIKZ2xvYmFsIFJvdW5kCjw9CmFzc2VydApmcmFtZV9kaWcgLTIKaXRvYgpjYWxsc3ViIHByZWZpeGtleWdlbl8wCmFwcF9nbG9iYWxfZ2V0CmJ0b2kKZnJhbWVfYnVyeSAxCmJ5dGVjXzAgLy8gIiIKZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAyCmxlbgppdG9iCmV4dHJhY3QgNiAwCmZyYW1lX2RpZyAyCmNvbmNhdApmcmFtZV9idXJ5IDIKaXR4bl9iZWdpbgpwdXNoaW50IDYgLy8gYXBwbAppdHhuX2ZpZWxkIFR5cGVFbnVtCmJ5dGVjXzEgLy8gInJhbmRvbW5lc3NfYmVhY29uIgphcHBfZ2xvYmFsX2dldAppdHhuX2ZpZWxkIEFwcGxpY2F0aW9uSUQKcHVzaGJ5dGVzIDB4MTg5MzkyYzUgLy8gImdldCh1aW50NjQsYnl0ZVtdKWJ5dGVbXSIKaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKZnJhbWVfZGlnIC0yCml0b2IKaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKZnJhbWVfZGlnIDIKaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKaXR4bl9zdWJtaXQKaXR4biBMYXN0TG9nCmV4dHJhY3QgNCAzMgpzdG9yZSAyCmxvYWQgMgppbnRjXzAgLy8gMApleHRyYWN0X3VpbnQ2NApmcmFtZV9idXJ5IDMKbG9hZCAyCnNoYTNfMjU2CnN0b3JlIDIKbG9hZCAyCmludGNfMCAvLyAwCmV4dHJhY3RfdWludDY0CmZyYW1lX2J1cnkgNApsb2FkIDIKc2hhM18yNTYKc3RvcmUgMgpsb2FkIDIKaW50Y18wIC8vIDAKZXh0cmFjdF91aW50NjQKZnJhbWVfYnVyeSA1CnB1c2hpbnQgMyAvLyAzCmZyYW1lX2J1cnkgMTAKZnJhbWVfZGlnIDEwCml0b2IKZXh0cmFjdCA2IDAKZnJhbWVfZGlnIDMKaXRvYgpmcmFtZV9kaWcgNAppdG9iCmNvbmNhdApmcmFtZV9kaWcgNQppdG9iCmNvbmNhdApjb25jYXQKZnJhbWVfYnVyeSAwCnJldHN1YgoKLy8gY29tbWl0X2Nhc3Rlcgpjb21taXRjYXN0ZXJfNjoKcHJvdG8gMCAwCmludGNfMCAvLyAwCmR1cAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmJ0b2kKZnJhbWVfYnVyeSAwCnR4bmEgQXBwbGljYXRpb25BcmdzIDIKYnRvaQpmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDAKZnJhbWVfZGlnIDEKY2FsbHN1YiBjb21taXRfNApyZXRzdWIKCi8vIGludGVnZXJzX2Nhc3RlcgppbnRlZ2Vyc2Nhc3Rlcl83Ogpwcm90byAwIDAKYnl0ZWNfMCAvLyAiIgppbnRjXzAgLy8gMApkdXAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpidG9pCmZyYW1lX2J1cnkgMQp0eG5hIEFwcGxpY2F0aW9uQXJncyAyCmludGNfMCAvLyAwCmdldGJ5dGUKZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAxCmZyYW1lX2RpZyAyCmNhbGxzdWIgaW50ZWdlcnNfNQpmcmFtZV9idXJ5IDAKcHVzaGJ5dGVzIDB4MTUxZjdjNzUgLy8gMHgxNTFmN2M3NQpmcmFtZV9kaWcgMApjb25jYXQKbG9nCnJldHN1Yg==",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
   },
   "state": {
@@ -82,18 +77,6 @@ export const APP_SPEC: AppSpec = {
   "contract": {
     "name": "verifiable_randomness",
     "methods": [
-      {
-        "name": "hello",
-        "args": [
-          {
-            "type": "string",
-            "name": "name"
-          }
-        ],
-        "returns": {
-          "type": "string"
-        }
-      },
       {
         "name": "commit",
         "args": [
@@ -191,13 +174,6 @@ export type VerifiableRandomness = {
    * Maps method signatures / names to their argument and return types.
    */
   methods:
-    & Record<'hello(string)string' | 'hello', {
-      argsObj: {
-        name: string
-      }
-      argsTuple: [name: string]
-      returns: string
-    }>
     & Record<'commit(uint64,uint64)void' | 'commit', {
       argsObj: {
         block_commitment: bigint | number
@@ -365,20 +341,6 @@ export abstract class VerifiableRandomnessCallFactory {
   }
 
   /**
-   * Constructs a no op call for the hello(string)string ABI method
-   *
-   * @param args Any args for the contract call
-   * @param params Any additional parameters for the call
-   * @returns A TypedCallParams object for the call
-   */
-  static hello(args: MethodArgs<'hello(string)string'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
-    return {
-      method: 'hello(string)string' as const,
-      methodArgs: Array.isArray(args) ? args : [args.name],
-      ...params,
-    }
-  }
-  /**
    * Constructs a no op call for the commit(uint64,uint64)void ABI method
    *
    * @param args Any args for the contract call
@@ -545,17 +507,6 @@ export class VerifiableRandomnessClient {
   }
 
   /**
-   * Calls the hello(string)string ABI method.
-   *
-   * @param args The arguments for the contract call
-   * @param params Any additional parameters for the call
-   * @returns The result of the call
-   */
-  public hello(args: MethodArgs<'hello(string)string'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
-    return this.call(VerifiableRandomnessCallFactory.hello(args, params))
-  }
-
-  /**
    * Calls the commit(uint64,uint64)void ABI method.
    *
    * @param args The arguments for the contract call
@@ -639,11 +590,6 @@ export class VerifiableRandomnessClient {
     let promiseChain:Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
-      hello(args: MethodArgs<'hello(string)string'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() => client.hello(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
-        resultMappers.push(undefined)
-        return this
-      },
       commit(args: MethodArgs<'commit(uint64,uint64)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
         promiseChain = promiseChain.then(() => client.commit(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
@@ -704,15 +650,6 @@ export class VerifiableRandomnessClient {
   }
 }
 export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
-  /**
-   * Calls the hello(string)string ABI method.
-   *
-   * @param args The arguments for the contract call
-   * @param params Any additional parameters for the call
-   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
-   */
-  hello(args: MethodArgs<'hello(string)string'>, params?: AppClientCallCoreParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, MethodReturn<'hello(string)string'>]>
-
   /**
    * Calls the commit(uint64,uint64)void ABI method.
    *

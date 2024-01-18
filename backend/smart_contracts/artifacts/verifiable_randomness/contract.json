@@ -2,18 +2,6 @@
     "name": "verifiable_randomness",
     "methods": [
         {
-            "name": "hello",
-            "args": [
-                {
-                    "type": "string",
-                    "name": "name"
-                }
-            ],
-            "returns": {
-                "type": "string"
-            }
-        },
-        {
             "name": "commit",
             "args": [
                 {

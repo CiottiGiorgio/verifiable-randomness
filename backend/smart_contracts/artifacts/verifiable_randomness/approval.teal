@@ -1,23 +1,31 @@
 #pragma version 8
 intcblock 0 1
-bytecblock 0x 0x72616e646f6d6e6573735f626561636f6e 0x151f7c75
+bytecblock 0x 0x72616e646f6d6e6573735f626561636f6e
 txn NumAppArgs
 intc_0 // 0
 ==
-bnz main_l8
-txna ApplicationArgs 0
-pushbytes 0x02bece11 // "hello(string)string"
-==
-bnz main_l7
+bnz main_l6
 txna ApplicationArgs 0
 pushbytes 0x83e86ddc // "commit(uint64,uint64)void"
 ==
-bnz main_l6
+bnz main_l5
 txna ApplicationArgs 0
 pushbytes 0xe424700e // "integers(uint64,application)uint64[]"
 ==
-bnz main_l5
+bnz main_l4
 err
+main_l4:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub integerscaster_7
+intc_1 // 1
+return
 main_l5:
 txn OnCompletion
 intc_0 // NoOp
@@ -27,48 +35,24 @@ intc_0 // 0
 !=
 &&
 assert
-callsub integerscaster_9
+callsub commitcaster_6
 intc_1 // 1
 return
 main_l6:
 txn OnCompletion
 intc_0 // NoOp
 ==
-txn ApplicationID
-intc_0 // 0
-!=
-&&
-assert
-callsub commitcaster_8
-intc_1 // 1
-return
-main_l7:
-txn OnCompletion
-intc_0 // NoOp
-==
-txn ApplicationID
-intc_0 // 0
-!=
-&&
-assert
-callsub hellocaster_7
-intc_1 // 1
-return
-main_l8:
-txn OnCompletion
-intc_0 // NoOp
-==
-bnz main_l14
+bnz main_l12
 txn OnCompletion
 pushint 4 // UpdateApplication
 ==
-bnz main_l13
+bnz main_l11
 txn OnCompletion
 pushint 5 // DeleteApplication
 ==
-bnz main_l12
+bnz main_l10
 err
-main_l12:
+main_l10:
 txn ApplicationID
 intc_0 // 0
 !=
@@ -76,7 +60,7 @@ assert
 callsub delete_3
 intc_1 // 1
 return
-main_l13:
+main_l11:
 txn ApplicationID
 intc_0 // 0
 !=
@@ -84,7 +68,7 @@ assert
 callsub update_2
 intc_1 // 1
 return
-main_l14:
+main_l12:
 txn ApplicationID
 intc_0 // 0
 ==
@@ -143,26 +127,8 @@ pushint TMPL_DELETABLE // TMPL_DELETABLE
 assert
 retsub
 
-// hello
-hello_4:
-proto 1 1
-bytec_0 // ""
-pushbytes 0x48656c6c6f2c20 // "Hello, "
-frame_dig -1
-extract 2 0
-concat
-frame_bury 0
-frame_dig 0
-len
-itob
-extract 6 0
-frame_dig 0
-concat
-frame_bury 0
-retsub
-
 // commit
-commit_5:
+commit_4:
 proto 2 0
 frame_dig -2
 global Round
@@ -177,7 +143,7 @@ app_global_put
 retsub
 
 // integers
-integers_6:
+integers_5:
 proto 2 1
 bytec_0 // ""
 intc_0 // 0
@@ -258,24 +224,8 @@ concat
 frame_bury 0
 retsub
 
-// hello_caster
-hellocaster_7:
-proto 0 0
-bytec_0 // ""
-dup
-txna ApplicationArgs 1
-frame_bury 1
-frame_dig 1
-callsub hello_4
-frame_bury 0
-bytec_2 // 0x151f7c75
-frame_dig 0
-concat
-log
-retsub
-
 // commit_caster
-commitcaster_8:
+commitcaster_6:
 proto 0 0
 intc_0 // 0
 dup
@@ -287,11 +237,11 @@ btoi
 frame_bury 1
 frame_dig 0
 frame_dig 1
-callsub commit_5
+callsub commit_4
 retsub
 
 // integers_caster
-integerscaster_9:
+integerscaster_7:
 proto 0 0
 bytec_0 // ""
 intc_0 // 0
@@ -305,9 +255,9 @@ getbyte
 frame_bury 2
 frame_dig 1
 frame_dig 2
-callsub integers_6
+callsub integers_5
 frame_bury 0
-bytec_2 // 0x151f7c75
+pushbytes 0x151f7c75 // 0x151f7c75
 frame_dig 0
 concat
 log
