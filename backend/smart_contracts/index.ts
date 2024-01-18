@@ -26,15 +26,16 @@ async function importDeployerIfExists(dir: string) {
 
 // get a list of all deployers from the subdirectories
 async function getDeployers() {
-  const directories = fs.readdirSync(baseDir, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => path.resolve(baseDir, dirent.name))
+  const directories = fs
+    .readdirSync(baseDir, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => path.resolve(baseDir, dirent.name))
 
   return Promise.all(directories.map(importDeployerIfExists))
 }
 
 // execute all the deployers
-(async () => {
+;(async () => {
   const contractDeployers = (await getDeployers()).filter(Boolean)
 
   for (const deployer of contractDeployers) {

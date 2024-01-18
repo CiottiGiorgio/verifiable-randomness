@@ -1,6 +1,6 @@
 import * as algokit from '@algorandfoundation/algokit-utils'
 import { VerifiableRandomnessClient } from '../artifacts/verifiable_randomness/client'
-import {isTestNet} from "@algorandfoundation/algokit-utils";
+import { isTestNet } from '@algorandfoundation/algokit-utils'
 
 // Below is a showcase of various deployment options you can use in TypeScript Client
 export async function deploy() {
@@ -33,10 +33,9 @@ export async function deploy() {
     onSchemaBreak: isMainNet ? 'append' : 'replace',
     onUpdate: isMainNet ? 'append' : 'update',
     deployTimeParams: {
-      TMPL_RANDOMNESS_BEACON_APP_ID: isMainNet ? 947957720 : 110096026
-    }
+      TMPL_RANDOMNESS_BEACON_APP_ID: isMainNet ? 947957720 : 110096026,
+    },
   })
-  
 
   // If app was just created fund the app account
   if (['create', 'replace'].includes(app.operationPerformed)) {

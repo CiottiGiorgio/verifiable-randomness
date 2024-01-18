@@ -1,10 +1,10 @@
 import { createHash } from 'crypto'
 import { algorandFixture } from '@algorandfoundation/algokit-utils/testing'
 import { VerifiableRandomnessClient } from '../smart_contracts/artifacts/verifiable_randomness/client'
-import { MockRandomnessBeaconClient } from "../smart_contracts/artifacts/mock_randomness_beacon/client";
-import {Account, Algodv2, Indexer} from 'algosdk'
+import { MockRandomnessBeaconClient } from '../smart_contracts/artifacts/mock_randomness_beacon/client'
+import { Account, Algodv2, Indexer } from 'algosdk'
 import * as algokit from '@algorandfoundation/algokit-utils'
-import {microAlgos} from "@algorandfoundation/algokit-utils";
+import { microAlgos } from '@algorandfoundation/algokit-utils'
 
 describe('verifiable randomness contract', () => {
   const localnet = algorandFixture()
@@ -33,8 +33,8 @@ describe('verifiable randomness contract', () => {
       onSchemaBreak: 'replace',
       onUpdate: 'update',
       deployTimeParams: {
-        TMPL_MOCK_VRF_OUTPUT: mockVRFOutput
-      }
+        TMPL_MOCK_VRF_OUTPUT: mockVRFOutput,
+      },
     })
 
     const VRClient = new VerifiableRandomnessClient(
@@ -52,10 +52,10 @@ describe('verifiable randomness contract', () => {
       onSchemaBreak: 'replace',
       onUpdate: 'update',
       deployTimeParams: {
-        TMPL_RANDOMNESS_BEACON_APP_ID: mockRBDeployment.appId
-      }
+        TMPL_RANDOMNESS_BEACON_APP_ID: mockRBDeployment.appId,
+      },
     })
-    
+
     return { client: VRClient, mRBID: mockRBDeployment.appId }
   }
 
@@ -66,18 +66,21 @@ describe('verifiable randomness contract', () => {
     const currentStatus = await algod.status().do()
     await client.commit({
       block_commitment: currentStatus['last-round'] + 2,
-      length: 3
+      length: 3,
     })
 
-    const result = await client.integers({
-      block_commitment: currentStatus['last-round'] + 2,
-      randomness_beacon: mRBID
-    }, {
-      sendParams: {
-        fee: microAlgos(2_000)
-      }
-    })
+    const result = await client.integers(
+      {
+        block_commitment: currentStatus['last-round'] + 2,
+        randomness_beacon: mRBID,
+      },
+      {
+        sendParams: {
+          fee: microAlgos(2_000),
+        },
+      },
+    )
 
-    expect(result.return).toStrictEqual([18034842832386495n, 14980785853693213735n, 2223011750819769115n,])
+    expect(result.return).toStrictEqual([18034842832386495n, 14980785853693213735n, 2223011750819769115n])
   })
 })
