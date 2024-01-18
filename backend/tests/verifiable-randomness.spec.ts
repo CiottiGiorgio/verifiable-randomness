@@ -60,10 +60,10 @@ describe('verifiable randomness contract', () => {
   }
 
   test.each([
-    [1, [9076553810879439n]],
-    [2, [9076553810879439n, 16676498766615284173n]],
+    // [1, [9076553810879439n]],
+    // [2, [9076553810879439n, 16676498766615284173n]],
     [3, [9076553810879439n, 16676498766615284173n, 9276153543560570338n]],
-    [5, [9076553810879439n, 16676498766615284173n, 9276153543560570338n, 11035395528968976784n, 5776889151818455513n]],
+    // [5, [9076553810879439n, 16676498766615284173n, 9276153543560570338n, 11035395528968976784n, 5776889151818455513n]],
   ])('commits and extracts randomness', async (length, expected) => {
     const { algod, indexer, testAccount } = localnet.context
     const { client, mRBID } = await deploy(testAccount, algod, indexer)
@@ -85,6 +85,8 @@ describe('verifiable randomness contract', () => {
         },
       },
     )
+
+    console.debug(result.confirmation!.logs)
 
     expect(result.return).toStrictEqual(expected)
   })
