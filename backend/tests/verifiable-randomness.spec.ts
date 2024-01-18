@@ -26,7 +26,7 @@ describe('verifiable randomness contract', () => {
       },
       algod,
     )
-    const mockVRFOutput = createHash('sha3-512').update('not-so-random seed').digest()
+    const mockVRFOutput = createHash('sha3-256').update('not-so-random seed').digest()
     const mockRBDeployment = await mockRBClient.deploy({
       allowDelete: true,
       allowUpdate: true,
@@ -81,6 +81,6 @@ describe('verifiable randomness contract', () => {
       },
     )
 
-    expect(result.return).toStrictEqual([18034842832386495n, 14980785853693213735n, 2223011750819769115n])
+    expect(result.return).toStrictEqual([9076553810879439n, 16676498766615284173n, 9276153543560570338n])
   })
 })
