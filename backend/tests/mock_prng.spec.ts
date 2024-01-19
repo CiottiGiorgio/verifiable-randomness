@@ -74,7 +74,17 @@ describe('mock prng contract', () => {
     10e6,
   )
 
-  test('can generate a long sequence', async () => {
+  test.each([
+    [
+      new Uint8Array(16),
+      new Uint8Array(16)
+    ],
+    // This seed somehow makes the contract crash after generating 41 random numbers?
+    // [
+    //   new Uint8Array([0, 32, 63, 19, 221, 174, 163, 207, 50, 27, 4, 143, 203, 157, 138, 254]),
+    //   new Uint8Array([150, 127, 131, 196, 81, 43, 252, 190, 172, 46, 0, 158, 185, 75, 130, 119])
+    // ],
+  ])('can generate a long sequence', async (initstate, initseq) => {
     const { algod, indexer, testAccount } = localnet.context
     const { client } = await deploy(testAccount, algod, indexer)
 
@@ -83,7 +93,7 @@ describe('mock prng contract', () => {
     const wantedSequenceLength = 127
 
     const result = await client.integers(
-      { initstate: new Uint8Array(16), initseq: new Uint8Array(16), length: wantedSequenceLength },
+      { initstate, initseq, length: wantedSequenceLength },
       { sendParams: { fee: microAlgos(31e3) } },
     )
 
