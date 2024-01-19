@@ -86,8 +86,6 @@ describe('verifiable randomness contract', () => {
       },
     )
 
-    console.debug(result.confirmation!.logs)
-
     expect(result.return).toStrictEqual(expected)
   })
 })

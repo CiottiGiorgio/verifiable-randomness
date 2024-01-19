@@ -1,0 +1,271 @@
+#pragma version 8
+intcblock 0 1 5
+bytecblock 0x0100000000000000000000000000000000 0x 0x01 0x068101
+txn NumAppArgs
+intc_0 // 0
+==
+bnz main_l4
+txna ApplicationArgs 0
+pushbytes 0x8a280b43 // "integers(byte[16],byte[16],uint16)uint64[]"
+==
+bnz main_l3
+err
+main_l3:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub integerscaster_9
+intc_1 // 1
+return
+main_l4:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l10
+txn OnCompletion
+pushint 4 // UpdateApplication
+==
+bnz main_l9
+txn OnCompletion
+intc_2 // DeleteApplication
+==
+bnz main_l8
+err
+main_l8:
+txn ApplicationID
+intc_0 // 0
+!=
+assert
+callsub delete_7
+intc_1 // 1
+return
+main_l9:
+txn ApplicationID
+intc_0 // 0
+!=
+assert
+callsub update_6
+intc_1 // 1
+return
+main_l10:
+txn ApplicationID
+intc_0 // 0
+==
+assert
+intc_1 // 1
+return
+
+// prng_init
+prnginit_0:
+proto 2 0
+pushbytes 0x00 // 0x00
+store 0
+frame_dig -1
+pushbytes 0x02 // 0x02
+b*
+bytec_2 // 0x01
+b+
+bytec_0 // 0x0100000000000000000000000000000000
+b%
+store 1
+callsub prngsetseqstep_2
+load 0
+frame_dig -2
+b+
+bytec_0 // 0x0100000000000000000000000000000000
+b%
+store 0
+callsub prngsetseqstep_2
+retsub
+
+// prng_randint
+prngrandint_1:
+proto 0 1
+callsub prngsetseqstep_2
+callsub prngrotation_5
+retsub
+
+// __prng_setseq_step
+prngsetseqstep_2:
+proto 0 0
+load 0
+pushbytes 0x2360ed051fc65da44385df649fccf645 // 0x2360ed051fc65da44385df649fccf645
+b*
+load 1
+b+
+bytec_0 // 0x0100000000000000000000000000000000
+b%
+store 0
+retsub
+
+// __twos_complement
+twoscomplement_3:
+proto 1 1
+frame_dig -1
+itob
+b~
+bytec_2 // 0x01
+b+
+store 5
+load 5
+len
+pushint 8 // 8
+==
+bnz twoscomplement_3_l2
+load 5
+intc_1 // 1
+extract_uint64
+retsub
+twoscomplement_3_l2:
+load 5
+btoi
+retsub
+
+// __prng_rotation_64
+prngrotation64_4:
+proto 2 1
+frame_dig -2
+frame_dig -1
+shr
+frame_dig -2
+frame_dig -1
+callsub twoscomplement_3
+pushint 63 // 63
+&
+shl
+|
+retsub
+
+// __prng_rotation
+prngrotation_5:
+proto 0 1
+load 0
+extract 0 8
+btoi
+load 0
+extract 8 8
+btoi
+^
+load 0
+extract 0 1
+btoi
+pushint 2 // 2
+shr
+callsub prngrotation64_4
+retsub
+
+// update
+update_6:
+proto 0 0
+txn Sender
+global CreatorAddress
+==
+// unauthorized
+assert
+pushint TMPL_UPDATABLE // TMPL_UPDATABLE
+// Check app is updatable
+assert
+retsub
+
+// delete
+delete_7:
+proto 0 0
+txn Sender
+global CreatorAddress
+==
+// unauthorized
+assert
+pushint TMPL_DELETABLE // TMPL_DELETABLE
+// Check app is deletable
+assert
+retsub
+
+// integers
+integers_8:
+proto 3 1
+bytec_1 // ""
+intc_0 // 0
+store 4
+integers_8_l1:
+load 4
+pushint 100000 // 100000
+global MinTxnFee
+/
+<
+bnz integers_8_l5
+frame_dig -3
+frame_dig -2
+callsub prnginit_0
+intc_0 // 0
+store 2
+bytec_1 // 0x
+store 3
+integers_8_l3:
+load 2
+frame_dig -1
+<
+bz integers_8_l6
+load 3
+callsub prngrandint_1
+itob
+concat
+store 3
+load 2
+intc_1 // 1
++
+store 2
+b integers_8_l3
+integers_8_l5:
+itxn_begin
+pushint 6 // appl
+itxn_field TypeEnum
+intc_2 // DeleteApplication
+itxn_field OnCompletion
+bytec_3 // 0x068101
+itxn_field ApprovalProgram
+bytec_3 // 0x068101
+itxn_field ClearStateProgram
+itxn_submit
+load 4
+intc_1 // 1
++
+store 4
+b integers_8_l1
+integers_8_l6:
+frame_dig -1
+itob
+extract 6 0
+load 3
+concat
+frame_bury 0
+retsub
+
+// integers_caster
+integerscaster_9:
+proto 0 0
+bytec_1 // ""
+dupn 2
+intc_0 // 0
+txna ApplicationArgs 1
+frame_bury 1
+txna ApplicationArgs 2
+frame_bury 2
+txna ApplicationArgs 3
+intc_0 // 0
+extract_uint16
+frame_bury 3
+frame_dig 1
+frame_dig 2
+frame_dig 3
+callsub integers_8
+frame_bury 0
+pushbytes 0x151f7c75 // 0x151f7c75
+frame_dig 0
+concat
+log
+retsub

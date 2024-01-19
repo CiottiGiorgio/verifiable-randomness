@@ -1,6 +1,6 @@
 #pragma version 8
 intcblock 0 1
-bytecblock 0x 0x72616e646f6d6e6573735f626561636f6e 0x0000000000000000 0x0100000000000000000000000000000000 0x0000000000000001
+bytecblock 0x 0x0100000000000000000000000000000000 0x72616e646f6d6e6573735f626561636f6e 0x01
 txn NumAppArgs
 intc_0 // 0
 ==
@@ -57,7 +57,7 @@ txn ApplicationID
 intc_0 // 0
 !=
 assert
-callsub delete_3
+callsub delete_9
 intc_1 // 1
 return
 main_l11:
@@ -65,7 +65,7 @@ txn ApplicationID
 intc_0 // 0
 !=
 assert
-callsub update_2
+callsub update_8
 intc_1 // 1
 return
 main_l12:
@@ -73,12 +73,111 @@ txn ApplicationID
 intc_0 // 0
 ==
 assert
-callsub create_1
+callsub create_7
 intc_1 // 1
 return
 
+// prng_init
+prnginit_0:
+proto 2 0
+pushbytes 0x00 // 0x00
+store 0
+frame_dig -1
+pushbytes 0x02 // 0x02
+b*
+bytec_3 // 0x01
+b+
+bytec_1 // 0x0100000000000000000000000000000000
+b%
+store 1
+callsub prngsetseqstep_2
+load 0
+frame_dig -2
+b+
+bytec_1 // 0x0100000000000000000000000000000000
+b%
+store 0
+callsub prngsetseqstep_2
+retsub
+
+// prng_randint
+prngrandint_1:
+proto 0 1
+callsub prngsetseqstep_2
+callsub prngrotation_5
+retsub
+
+// __prng_setseq_step
+prngsetseqstep_2:
+proto 0 0
+load 0
+pushbytes 0x2360ed051fc65da44385df649fccf645 // 0x2360ed051fc65da44385df649fccf645
+b*
+load 1
+b+
+bytec_1 // 0x0100000000000000000000000000000000
+b%
+store 0
+retsub
+
+// __twos_complement
+twoscomplement_3:
+proto 1 1
+frame_dig -1
+itob
+b~
+bytec_3 // 0x01
+b+
+store 6
+load 6
+len
+pushint 8 // 8
+==
+bnz twoscomplement_3_l2
+load 6
+intc_1 // 1
+extract_uint64
+retsub
+twoscomplement_3_l2:
+load 6
+btoi
+retsub
+
+// __prng_rotation_64
+prngrotation64_4:
+proto 2 1
+frame_dig -2
+frame_dig -1
+shr
+frame_dig -2
+frame_dig -1
+callsub twoscomplement_3
+pushint 63 // 63
+&
+shl
+|
+retsub
+
+// __prng_rotation
+prngrotation_5:
+proto 0 1
+load 0
+extract 0 8
+btoi
+load 0
+extract 8 8
+btoi
+^
+load 0
+extract 0 1
+btoi
+pushint 2 // 2
+shr
+callsub prngrotation64_4
+retsub
+
 // prefix_key_gen
-prefixkeygen_0:
+prefixkeygen_6:
 proto 1 1
 pushbytes 0x636f6d6d69746d656e7473 // "commitments"
 frame_dig -1
@@ -86,23 +185,23 @@ concat
 retsub
 
 // create
-create_1:
+create_7:
 proto 0 0
 intc_0 // 0
-bytec_1 // "randomness_beacon"
+bytec_2 // "randomness_beacon"
 app_global_get_ex
 store 3
 store 2
 load 3
 !
 assert
-bytec_1 // "randomness_beacon"
+bytec_2 // "randomness_beacon"
 pushint TMPL_RANDOMNESS_BEACON_APP_ID // TMPL_RANDOMNESS_BEACON_APP_ID
 app_global_put
 retsub
 
 // update
-update_2:
+update_8:
 proto 0 0
 txn Sender
 global CreatorAddress
@@ -115,7 +214,7 @@ assert
 retsub
 
 // delete
-delete_3:
+delete_9:
 proto 0 0
 txn Sender
 global CreatorAddress
@@ -128,7 +227,7 @@ assert
 retsub
 
 // commit
-commit_4:
+commit_10:
 proto 2 0
 frame_dig -2
 global Round
@@ -136,7 +235,7 @@ global Round
 assert
 frame_dig -2
 itob
-callsub prefixkeygen_0
+callsub prefixkeygen_6
 frame_dig -1
 itob
 extract 6 0
@@ -144,7 +243,7 @@ app_global_put
 retsub
 
 // integers
-integers_5:
+integers_11:
 proto 2 1
 bytec_0 // ""
 intc_0 // 0
@@ -155,7 +254,7 @@ global Round
 assert
 frame_dig -2
 itob
-callsub prefixkeygen_0
+callsub prefixkeygen_6
 app_global_get
 intc_0 // 0
 extract_uint16
@@ -172,7 +271,7 @@ frame_bury 2
 itxn_begin
 pushint 6 // appl
 itxn_field TypeEnum
-bytec_1 // "randomness_beacon"
+bytec_2 // "randomness_beacon"
 app_global_get
 itxn_field ApplicationID
 pushbytes 0x189392c5 // "get(uint64,byte[])byte[]"
@@ -183,20 +282,22 @@ itxn_field ApplicationArgs
 frame_dig 2
 itxn_field ApplicationArgs
 itxn_submit
-bytec_2 // 0x0000000000000000
-bytec_2 // 0x0000000000000000
-callsub prnginit_7
+itxn LastLog
+extract 4 16
+itxn LastLog
+extract 20 16
+callsub prnginit_0
 intc_0 // 0
 store 4
 bytec_0 // ""
 store 5
-integers_5_l1:
+integers_11_l1:
 load 4
 frame_dig 1
 <
-bz integers_5_l3
+bz integers_11_l3
 load 5
-callsub prngrandint_11
+callsub prngrandint_1
 itob
 concat
 store 5
@@ -204,113 +305,14 @@ load 4
 intc_1 // 1
 +
 store 4
-b integers_5_l1
-integers_5_l3:
+b integers_11_l1
+integers_11_l3:
 frame_dig 1
 itob
 extract 6 0
 load 5
 concat
 frame_bury 0
-retsub
-
-// prng_setseq_step
-prngsetseqstep_6:
-proto 0 0
-load 0
-pushbytes 0x2360ed051fc65da44385df649fccf645 // 0x2360ed051fc65da44385df649fccf645
-b*
-load 1
-b+
-bytec_3 // 0x0100000000000000000000000000000000
-b%
-store 0
-retsub
-
-// prng_init
-prnginit_7:
-proto 2 0
-bytec_2 // 0x0000000000000000
-store 0
-frame_dig -1
-pushbytes 0x0000000000000002 // 0x0000000000000002
-b*
-bytec 4 // 0x0000000000000001
-b+
-bytec_3 // 0x0100000000000000000000000000000000
-b%
-store 1
-callsub prngsetseqstep_6
-load 0
-frame_dig -2
-b+
-bytec_3 // 0x0100000000000000000000000000000000
-b%
-store 0
-callsub prngsetseqstep_6
-retsub
-
-// twos_complement
-twoscomplement_8:
-proto 1 1
-frame_dig -1
-itob
-b~
-bytec 4 // 0x0000000000000001
-b+
-store 6
-load 6
-len
-pushint 8 // 8
-==
-bnz twoscomplement_8_l2
-load 6
-intc_1 // 1
-extract_uint64
-retsub
-twoscomplement_8_l2:
-load 6
-btoi
-retsub
-
-// __prng_rotation_64
-prngrotation64_9:
-proto 2 1
-frame_dig -2
-frame_dig -1
-shr
-frame_dig -2
-frame_dig -1
-callsub twoscomplement_8
-pushint 63 // 63
-&
-shl
-|
-retsub
-
-// prng_rotation
-prngrotation_10:
-proto 0 1
-load 0
-extract 0 8
-btoi
-load 0
-extract 8 8
-btoi
-^
-load 0
-extract 0 1
-btoi
-pushint 2 // 2
-shr
-callsub prngrotation64_9
-retsub
-
-// prng_randint
-prngrandint_11:
-proto 0 1
-callsub prngsetseqstep_6
-callsub prngrotation_10
 retsub
 
 // commit_caster
@@ -327,7 +329,7 @@ extract_uint16
 frame_bury 1
 frame_dig 0
 frame_dig 1
-callsub commit_4
+callsub commit_10
 retsub
 
 // integers_caster
@@ -345,7 +347,7 @@ getbyte
 frame_bury 2
 frame_dig 1
 frame_dig 2
-callsub integers_5
+callsub integers_11
 frame_bury 0
 pushbytes 0x151f7c75 // 0x151f7c75
 frame_dig 0
