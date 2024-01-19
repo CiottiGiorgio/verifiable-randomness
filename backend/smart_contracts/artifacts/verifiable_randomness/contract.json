@@ -1,38 +1,38 @@
 {
-    "name": "verifiable_randomness",
-    "methods": [
+  "name": "verifiable_randomness",
+  "methods": [
+    {
+      "name": "commit",
+      "args": [
         {
-            "name": "commit",
-            "args": [
-                {
-                    "type": "uint64",
-                    "name": "block_commitment"
-                },
-                {
-                    "type": "uint16",
-                    "name": "length"
-                }
-            ],
-            "returns": {
-                "type": "void"
-            }
+          "type": "uint64",
+          "name": "block_commitment"
         },
         {
-            "name": "integers",
-            "args": [
-                {
-                    "type": "uint64",
-                    "name": "block_commitment"
-                },
-                {
-                    "type": "application",
-                    "name": "randomness_beacon"
-                }
-            ],
-            "returns": {
-                "type": "uint64[]"
-            }
+          "type": "uint16",
+          "name": "length"
         }
-    ],
-    "networks": {}
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "integers",
+      "args": [
+        {
+          "type": "uint64",
+          "name": "block_commitment"
+        },
+        {
+          "type": "application",
+          "name": "randomness_beacon"
+        }
+      ],
+      "returns": {
+        "type": "uint64[]"
+      }
+    }
+  ],
+  "networks": {}
 }

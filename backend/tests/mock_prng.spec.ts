@@ -2,7 +2,7 @@ import { algorandFixture } from '@algorandfoundation/algokit-utils/testing'
 import { MockPrngClient } from '../smart_contracts/artifacts/mock_prng/client'
 import { Account, Algodv2, Indexer } from 'algosdk'
 import * as algokit from '@algorandfoundation/algokit-utils'
-import {microAlgos} from "@algorandfoundation/algokit-utils";
+import { microAlgos } from '@algorandfoundation/algokit-utils'
 
 describe('mock prng contract', () => {
   const localnet = algorandFixture()
@@ -54,7 +54,7 @@ describe('mock prng contract', () => {
 
       const result = await client.integers(
         { initstate: initstate, initseq: initseq, length: 6 },
-        { sendParams: { fee: microAlgos(101e3) } }
+        { sendParams: { fee: microAlgos(101e3) } },
       )
 
       expect(result.return).toStrictEqual(expected)

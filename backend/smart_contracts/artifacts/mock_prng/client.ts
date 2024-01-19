@@ -22,100 +22,105 @@ import type {
   ApplicationClient,
 } from '@algorandfoundation/algokit-utils/types/app-client'
 import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import type { SendTransactionResult, TransactionToSign, SendTransactionFrom } from '@algorandfoundation/algokit-utils/types/transaction'
+import type {
+  SendTransactionResult,
+  TransactionToSign,
+  SendTransactionFrom,
+} from '@algorandfoundation/algokit-utils/types/transaction'
 import type { ABIResult, TransactionWithSigner, modelsv2 } from 'algosdk'
 import { Algodv2, OnApplicationComplete, Transaction, AtomicTransactionComposer } from 'algosdk'
 export const APP_SPEC: AppSpec = {
-  "hints": {
-    "integers(byte[16],byte[16],uint16)uint64[]": {
-      "call_config": {
-        "no_op": "CALL"
-      }
-    }
-  },
-  "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMSA1CmJ5dGVjYmxvY2sgMHgwMTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIDB4IDB4MDEgMHgwNjgxMDEKdHhuIE51bUFwcEFyZ3MKaW50Y18wIC8vIDAKPT0KYm56IG1haW5fbDQKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHg4YTI4MGI0MyAvLyAiaW50ZWdlcnMoYnl0ZVsxNl0sYnl0ZVsxNl0sdWludDE2KXVpbnQ2NFtdIgo9PQpibnogbWFpbl9sMwplcnIKbWFpbl9sMzoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBpbnRlZ2Vyc2Nhc3Rlcl85CmludGNfMSAvLyAxCnJldHVybgptYWluX2w0Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CmJueiBtYWluX2wxMAp0eG4gT25Db21wbGV0aW9uCnB1c2hpbnQgNCAvLyBVcGRhdGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sOQp0eG4gT25Db21wbGV0aW9uCmludGNfMiAvLyBEZWxldGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sOAplcnIKbWFpbl9sODoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgZGVsZXRlXzcKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDk6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CmFzc2VydApjYWxsc3ViIHVwZGF0ZV82CmludGNfMSAvLyAxCnJldHVybgptYWluX2wxMDoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmludGNfMSAvLyAxCnJldHVybgoKLy8gcHJuZ19pbml0CnBybmdpbml0XzA6CnByb3RvIDIgMApwdXNoYnl0ZXMgMHgwMCAvLyAweDAwCnN0b3JlIDAKZnJhbWVfZGlnIC0xCnB1c2hieXRlcyAweDAyIC8vIDB4MDIKYioKYnl0ZWNfMiAvLyAweDAxCmIrCmJ5dGVjXzAgLy8gMHgwMTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwCmIlCnN0b3JlIDEKY2FsbHN1YiBwcm5nc2V0c2Vxc3RlcF8yCmxvYWQgMApmcmFtZV9kaWcgLTIKYisKYnl0ZWNfMCAvLyAweDAxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAKYiUKc3RvcmUgMApjYWxsc3ViIHBybmdzZXRzZXFzdGVwXzIKcmV0c3ViCgovLyBwcm5nX3JhbmRpbnQKcHJuZ3JhbmRpbnRfMToKcHJvdG8gMCAxCmNhbGxzdWIgcHJuZ3NldHNlcXN0ZXBfMgpjYWxsc3ViIHBybmdyb3RhdGlvbl81CnJldHN1YgoKLy8gX19wcm5nX3NldHNlcV9zdGVwCnBybmdzZXRzZXFzdGVwXzI6CnByb3RvIDAgMApsb2FkIDAKcHVzaGJ5dGVzIDB4MjM2MGVkMDUxZmM2NWRhNDQzODVkZjY0OWZjY2Y2NDUgLy8gMHgyMzYwZWQwNTFmYzY1ZGE0NDM4NWRmNjQ5ZmNjZjY0NQpiKgpsb2FkIDEKYisKYnl0ZWNfMCAvLyAweDAxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAKYiUKc3RvcmUgMApyZXRzdWIKCi8vIF9fdHdvc19jb21wbGVtZW50CnR3b3Njb21wbGVtZW50XzM6CnByb3RvIDEgMQpmcmFtZV9kaWcgLTEKaXRvYgpifgpieXRlY18yIC8vIDB4MDEKYisKc3RvcmUgNQpsb2FkIDUKbGVuCnB1c2hpbnQgOCAvLyA4Cj09CmJueiB0d29zY29tcGxlbWVudF8zX2wyCmxvYWQgNQppbnRjXzEgLy8gMQpleHRyYWN0X3VpbnQ2NApyZXRzdWIKdHdvc2NvbXBsZW1lbnRfM19sMjoKbG9hZCA1CmJ0b2kKcmV0c3ViCgovLyBfX3Bybmdfcm90YXRpb25fNjQKcHJuZ3JvdGF0aW9uNjRfNDoKcHJvdG8gMiAxCmZyYW1lX2RpZyAtMgpmcmFtZV9kaWcgLTEKc2hyCmZyYW1lX2RpZyAtMgpmcmFtZV9kaWcgLTEKY2FsbHN1YiB0d29zY29tcGxlbWVudF8zCnB1c2hpbnQgNjMgLy8gNjMKJgpzaGwKfApyZXRzdWIKCi8vIF9fcHJuZ19yb3RhdGlvbgpwcm5ncm90YXRpb25fNToKcHJvdG8gMCAxCmxvYWQgMApleHRyYWN0IDAgOApidG9pCmxvYWQgMApleHRyYWN0IDggOApidG9pCl4KbG9hZCAwCmV4dHJhY3QgMCAxCmJ0b2kKcHVzaGludCAyIC8vIDIKc2hyCmNhbGxzdWIgcHJuZ3JvdGF0aW9uNjRfNApyZXRzdWIKCi8vIHVwZGF0ZQp1cGRhdGVfNjoKcHJvdG8gMCAwCnR4biBTZW5kZXIKZ2xvYmFsIENyZWF0b3JBZGRyZXNzCj09Ci8vIHVuYXV0aG9yaXplZAphc3NlcnQKcHVzaGludCBUTVBMX1VQREFUQUJMRSAvLyBUTVBMX1VQREFUQUJMRQovLyBDaGVjayBhcHAgaXMgdXBkYXRhYmxlCmFzc2VydApyZXRzdWIKCi8vIGRlbGV0ZQpkZWxldGVfNzoKcHJvdG8gMCAwCnR4biBTZW5kZXIKZ2xvYmFsIENyZWF0b3JBZGRyZXNzCj09Ci8vIHVuYXV0aG9yaXplZAphc3NlcnQKcHVzaGludCBUTVBMX0RFTEVUQUJMRSAvLyBUTVBMX0RFTEVUQUJMRQovLyBDaGVjayBhcHAgaXMgZGVsZXRhYmxlCmFzc2VydApyZXRzdWIKCi8vIGludGVnZXJzCmludGVnZXJzXzg6CnByb3RvIDMgMQpieXRlY18xIC8vICIiCmludGNfMCAvLyAwCnN0b3JlIDQKaW50ZWdlcnNfOF9sMToKbG9hZCA0CnB1c2hpbnQgMTAwMDAwIC8vIDEwMDAwMApnbG9iYWwgTWluVHhuRmVlCi8KPApibnogaW50ZWdlcnNfOF9sNQpmcmFtZV9kaWcgLTMKZnJhbWVfZGlnIC0yCmNhbGxzdWIgcHJuZ2luaXRfMAppbnRjXzAgLy8gMApzdG9yZSAyCmJ5dGVjXzEgLy8gMHgKc3RvcmUgMwppbnRlZ2Vyc184X2wzOgpsb2FkIDIKZnJhbWVfZGlnIC0xCjwKYnogaW50ZWdlcnNfOF9sNgpsb2FkIDMKY2FsbHN1YiBwcm5ncmFuZGludF8xCml0b2IKY29uY2F0CnN0b3JlIDMKbG9hZCAyCmludGNfMSAvLyAxCisKc3RvcmUgMgpiIGludGVnZXJzXzhfbDMKaW50ZWdlcnNfOF9sNToKaXR4bl9iZWdpbgpwdXNoaW50IDYgLy8gYXBwbAppdHhuX2ZpZWxkIFR5cGVFbnVtCmludGNfMiAvLyBEZWxldGVBcHBsaWNhdGlvbgppdHhuX2ZpZWxkIE9uQ29tcGxldGlvbgpieXRlY18zIC8vIDB4MDY4MTAxCml0eG5fZmllbGQgQXBwcm92YWxQcm9ncmFtCmJ5dGVjXzMgLy8gMHgwNjgxMDEKaXR4bl9maWVsZCBDbGVhclN0YXRlUHJvZ3JhbQppdHhuX3N1Ym1pdApsb2FkIDQKaW50Y18xIC8vIDEKKwpzdG9yZSA0CmIgaW50ZWdlcnNfOF9sMQppbnRlZ2Vyc184X2w2OgpmcmFtZV9kaWcgLTEKaXRvYgpleHRyYWN0IDYgMApsb2FkIDMKY29uY2F0CmZyYW1lX2J1cnkgMApyZXRzdWIKCi8vIGludGVnZXJzX2Nhc3RlcgppbnRlZ2Vyc2Nhc3Rlcl85Ogpwcm90byAwIDAKYnl0ZWNfMSAvLyAiIgpkdXBuIDIKaW50Y18wIC8vIDAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpmcmFtZV9idXJ5IDEKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgpmcmFtZV9idXJ5IDIKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwppbnRjXzAgLy8gMApleHRyYWN0X3VpbnQxNgpmcmFtZV9idXJ5IDMKZnJhbWVfZGlnIDEKZnJhbWVfZGlnIDIKZnJhbWVfZGlnIDMKY2FsbHN1YiBpbnRlZ2Vyc184CmZyYW1lX2J1cnkgMApwdXNoYnl0ZXMgMHgxNTFmN2M3NSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3Vi",
-    "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
-  },
-  "state": {
-    "global": {
-      "num_byte_slices": 0,
-      "num_uints": 0
+  hints: {
+    'integers(byte[16],byte[16],uint16)uint64[]': {
+      call_config: {
+        no_op: 'CALL',
+      },
     },
-    "local": {
-      "num_byte_slices": 0,
-      "num_uints": 0
-    }
   },
-  "schema": {
-    "global": {
-      "declared": {},
-      "reserved": {}
+  source: {
+    approval:
+      'I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMSA1CmJ5dGVjYmxvY2sgMHgwMTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIDB4IDB4MDEgMHgwNjgxMDEKdHhuIE51bUFwcEFyZ3MKaW50Y18wIC8vIDAKPT0KYm56IG1haW5fbDQKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHg4YTI4MGI0MyAvLyAiaW50ZWdlcnMoYnl0ZVsxNl0sYnl0ZVsxNl0sdWludDE2KXVpbnQ2NFtdIgo9PQpibnogbWFpbl9sMwplcnIKbWFpbl9sMzoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBpbnRlZ2Vyc2Nhc3Rlcl85CmludGNfMSAvLyAxCnJldHVybgptYWluX2w0Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CmJueiBtYWluX2wxMAp0eG4gT25Db21wbGV0aW9uCnB1c2hpbnQgNCAvLyBVcGRhdGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sOQp0eG4gT25Db21wbGV0aW9uCmludGNfMiAvLyBEZWxldGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sOAplcnIKbWFpbl9sODoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgZGVsZXRlXzcKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDk6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CmFzc2VydApjYWxsc3ViIHVwZGF0ZV82CmludGNfMSAvLyAxCnJldHVybgptYWluX2wxMDoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmludGNfMSAvLyAxCnJldHVybgoKLy8gcHJuZ19pbml0CnBybmdpbml0XzA6CnByb3RvIDIgMApwdXNoYnl0ZXMgMHgwMCAvLyAweDAwCnN0b3JlIDAKZnJhbWVfZGlnIC0xCnB1c2hieXRlcyAweDAyIC8vIDB4MDIKYioKYnl0ZWNfMiAvLyAweDAxCmIrCmJ5dGVjXzAgLy8gMHgwMTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwCmIlCnN0b3JlIDEKY2FsbHN1YiBwcm5nc2V0c2Vxc3RlcF8yCmxvYWQgMApmcmFtZV9kaWcgLTIKYisKYnl0ZWNfMCAvLyAweDAxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAKYiUKc3RvcmUgMApjYWxsc3ViIHBybmdzZXRzZXFzdGVwXzIKcmV0c3ViCgovLyBwcm5nX3JhbmRpbnQKcHJuZ3JhbmRpbnRfMToKcHJvdG8gMCAxCmNhbGxzdWIgcHJuZ3NldHNlcXN0ZXBfMgpjYWxsc3ViIHBybmdyb3RhdGlvbl81CnJldHN1YgoKLy8gX19wcm5nX3NldHNlcV9zdGVwCnBybmdzZXRzZXFzdGVwXzI6CnByb3RvIDAgMApsb2FkIDAKcHVzaGJ5dGVzIDB4MjM2MGVkMDUxZmM2NWRhNDQzODVkZjY0OWZjY2Y2NDUgLy8gMHgyMzYwZWQwNTFmYzY1ZGE0NDM4NWRmNjQ5ZmNjZjY0NQpiKgpsb2FkIDEKYisKYnl0ZWNfMCAvLyAweDAxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAKYiUKc3RvcmUgMApyZXRzdWIKCi8vIF9fdHdvc19jb21wbGVtZW50CnR3b3Njb21wbGVtZW50XzM6CnByb3RvIDEgMQpmcmFtZV9kaWcgLTEKaXRvYgpifgpieXRlY18yIC8vIDB4MDEKYisKc3RvcmUgNQpsb2FkIDUKbGVuCnB1c2hpbnQgOCAvLyA4Cj09CmJueiB0d29zY29tcGxlbWVudF8zX2wyCmxvYWQgNQppbnRjXzEgLy8gMQpleHRyYWN0X3VpbnQ2NApyZXRzdWIKdHdvc2NvbXBsZW1lbnRfM19sMjoKbG9hZCA1CmJ0b2kKcmV0c3ViCgovLyBfX3Bybmdfcm90YXRpb25fNjQKcHJuZ3JvdGF0aW9uNjRfNDoKcHJvdG8gMiAxCmZyYW1lX2RpZyAtMgpmcmFtZV9kaWcgLTEKc2hyCmZyYW1lX2RpZyAtMgpmcmFtZV9kaWcgLTEKY2FsbHN1YiB0d29zY29tcGxlbWVudF8zCnB1c2hpbnQgNjMgLy8gNjMKJgpzaGwKfApyZXRzdWIKCi8vIF9fcHJuZ19yb3RhdGlvbgpwcm5ncm90YXRpb25fNToKcHJvdG8gMCAxCmxvYWQgMApleHRyYWN0IDAgOApidG9pCmxvYWQgMApleHRyYWN0IDggOApidG9pCl4KbG9hZCAwCmV4dHJhY3QgMCAxCmJ0b2kKcHVzaGludCAyIC8vIDIKc2hyCmNhbGxzdWIgcHJuZ3JvdGF0aW9uNjRfNApyZXRzdWIKCi8vIHVwZGF0ZQp1cGRhdGVfNjoKcHJvdG8gMCAwCnR4biBTZW5kZXIKZ2xvYmFsIENyZWF0b3JBZGRyZXNzCj09Ci8vIHVuYXV0aG9yaXplZAphc3NlcnQKcHVzaGludCBUTVBMX1VQREFUQUJMRSAvLyBUTVBMX1VQREFUQUJMRQovLyBDaGVjayBhcHAgaXMgdXBkYXRhYmxlCmFzc2VydApyZXRzdWIKCi8vIGRlbGV0ZQpkZWxldGVfNzoKcHJvdG8gMCAwCnR4biBTZW5kZXIKZ2xvYmFsIENyZWF0b3JBZGRyZXNzCj09Ci8vIHVuYXV0aG9yaXplZAphc3NlcnQKcHVzaGludCBUTVBMX0RFTEVUQUJMRSAvLyBUTVBMX0RFTEVUQUJMRQovLyBDaGVjayBhcHAgaXMgZGVsZXRhYmxlCmFzc2VydApyZXRzdWIKCi8vIGludGVnZXJzCmludGVnZXJzXzg6CnByb3RvIDMgMQpieXRlY18xIC8vICIiCmludGNfMCAvLyAwCnN0b3JlIDQKaW50ZWdlcnNfOF9sMToKbG9hZCA0CnB1c2hpbnQgMTAwMDAwIC8vIDEwMDAwMApnbG9iYWwgTWluVHhuRmVlCi8KPApibnogaW50ZWdlcnNfOF9sNQpmcmFtZV9kaWcgLTMKZnJhbWVfZGlnIC0yCmNhbGxzdWIgcHJuZ2luaXRfMAppbnRjXzAgLy8gMApzdG9yZSAyCmJ5dGVjXzEgLy8gMHgKc3RvcmUgMwppbnRlZ2Vyc184X2wzOgpsb2FkIDIKZnJhbWVfZGlnIC0xCjwKYnogaW50ZWdlcnNfOF9sNgpsb2FkIDMKY2FsbHN1YiBwcm5ncmFuZGludF8xCml0b2IKY29uY2F0CnN0b3JlIDMKbG9hZCAyCmludGNfMSAvLyAxCisKc3RvcmUgMgpiIGludGVnZXJzXzhfbDMKaW50ZWdlcnNfOF9sNToKaXR4bl9iZWdpbgpwdXNoaW50IDYgLy8gYXBwbAppdHhuX2ZpZWxkIFR5cGVFbnVtCmludGNfMiAvLyBEZWxldGVBcHBsaWNhdGlvbgppdHhuX2ZpZWxkIE9uQ29tcGxldGlvbgpieXRlY18zIC8vIDB4MDY4MTAxCml0eG5fZmllbGQgQXBwcm92YWxQcm9ncmFtCmJ5dGVjXzMgLy8gMHgwNjgxMDEKaXR4bl9maWVsZCBDbGVhclN0YXRlUHJvZ3JhbQppdHhuX3N1Ym1pdApsb2FkIDQKaW50Y18xIC8vIDEKKwpzdG9yZSA0CmIgaW50ZWdlcnNfOF9sMQppbnRlZ2Vyc184X2w2OgpmcmFtZV9kaWcgLTEKaXRvYgpleHRyYWN0IDYgMApsb2FkIDMKY29uY2F0CmZyYW1lX2J1cnkgMApyZXRzdWIKCi8vIGludGVnZXJzX2Nhc3RlcgppbnRlZ2Vyc2Nhc3Rlcl85Ogpwcm90byAwIDAKYnl0ZWNfMSAvLyAiIgpkdXBuIDIKaW50Y18wIC8vIDAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpmcmFtZV9idXJ5IDEKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgpmcmFtZV9idXJ5IDIKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMwppbnRjXzAgLy8gMApleHRyYWN0X3VpbnQxNgpmcmFtZV9idXJ5IDMKZnJhbWVfZGlnIDEKZnJhbWVfZGlnIDIKZnJhbWVfZGlnIDMKY2FsbHN1YiBpbnRlZ2Vyc184CmZyYW1lX2J1cnkgMApwdXNoYnl0ZXMgMHgxNTFmN2M3NSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3Vi',
+    clear: 'I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu',
+  },
+  state: {
+    global: {
+      num_byte_slices: 0,
+      num_uints: 0,
     },
-    "local": {
-      "declared": {},
-      "reserved": {}
-    }
+    local: {
+      num_byte_slices: 0,
+      num_uints: 0,
+    },
   },
-  "contract": {
-    "name": "mock_prng",
-    "methods": [
+  schema: {
+    global: {
+      declared: {},
+      reserved: {},
+    },
+    local: {
+      declared: {},
+      reserved: {},
+    },
+  },
+  contract: {
+    name: 'mock_prng',
+    methods: [
       {
-        "name": "integers",
-        "args": [
+        name: 'integers',
+        args: [
           {
-            "type": "byte[16]",
-            "name": "initstate"
+            type: 'byte[16]',
+            name: 'initstate',
           },
           {
-            "type": "byte[16]",
-            "name": "initseq"
+            type: 'byte[16]',
+            name: 'initseq',
           },
           {
-            "type": "uint16",
-            "name": "length"
-          }
+            type: 'uint16',
+            name: 'length',
+          },
         ],
-        "returns": {
-          "type": "uint64[]"
-        }
-      }
+        returns: {
+          type: 'uint64[]',
+        },
+      },
     ],
-    "networks": {}
+    networks: {},
   },
-  "bare_call_config": {
-    "delete_application": "CALL",
-    "no_op": "CREATE",
-    "update_application": "CALL"
-  }
+  bare_call_config: {
+    delete_application: 'CALL',
+    no_op: 'CREATE',
+    update_application: 'CALL',
+  },
 }
 
 /**
  * Defines an onCompletionAction of 'no_op'
  */
-export type OnCompleteNoOp =  { onCompleteAction?: 'no_op' | OnApplicationComplete.NoOpOC }
+export type OnCompleteNoOp = { onCompleteAction?: 'no_op' | OnApplicationComplete.NoOpOC }
 /**
  * Defines an onCompletionAction of 'opt_in'
  */
-export type OnCompleteOptIn =  { onCompleteAction: 'opt_in' | OnApplicationComplete.OptInOC }
+export type OnCompleteOptIn = { onCompleteAction: 'opt_in' | OnApplicationComplete.OptInOC }
 /**
  * Defines an onCompletionAction of 'close_out'
  */
-export type OnCompleteCloseOut =  { onCompleteAction: 'close_out' | OnApplicationComplete.CloseOutOC }
+export type OnCompleteCloseOut = { onCompleteAction: 'close_out' | OnApplicationComplete.CloseOutOC }
 /**
  * Defines an onCompletionAction of 'delete_application'
  */
-export type OnCompleteDelApp =  { onCompleteAction: 'delete_application' | OnApplicationComplete.DeleteApplicationOC }
+export type OnCompleteDelApp = { onCompleteAction: 'delete_application' | OnApplicationComplete.DeleteApplicationOC }
 /**
  * Defines an onCompletionAction of 'update_application'
  */
-export type OnCompleteUpdApp =  { onCompleteAction: 'update_application' | OnApplicationComplete.UpdateApplicationOC }
+export type OnCompleteUpdApp = { onCompleteAction: 'update_application' | OnApplicationComplete.UpdateApplicationOC }
 /**
  * A state record containing a single unsigned integer
  */
 export type IntegerState = {
   /**
-   * Gets the state value as a BigInt 
+   * Gets the state value as a BigInt
    */
   asBigInt(): bigint
   /**
@@ -144,8 +149,9 @@ export type MockPrng = {
   /**
    * Maps method signatures / names to their argument and return types.
    */
-  methods:
-    & Record<'integers(byte[16],byte[16],uint16)uint64[]' | 'integers', {
+  methods: Record<
+    'integers(byte[16],byte[16],uint16)uint64[]' | 'integers',
+    {
       argsObj: {
         initstate: Uint8Array
         initseq: Uint8Array
@@ -153,7 +159,8 @@ export type MockPrng = {
       }
       argsTuple: [initstate: Uint8Array, initseq: Uint8Array, length: number]
       returns: bigint[]
-    }>
+    }
+  >
 }
 /**
  * Defines the possible abi call signatures
@@ -165,7 +172,8 @@ export type MockPrngSig = keyof MockPrng['methods']
 export type TypedCallParams<TSignature extends MockPrngSig | undefined> = {
   method: TSignature
   methodArgs: TSignature extends undefined ? undefined : Array<ABIAppCallArg | undefined>
-} & AppClientCallCoreParams & CoreAppCallArgs
+} & AppClientCallCoreParams &
+  CoreAppCallArgs
 /**
  * Defines the arguments required for a bare call
  */
@@ -186,8 +194,7 @@ export type MockPrngCreateCalls = (typeof MockPrngCallFactory)['create']
 /**
  * Defines supported create methods for this smart contract
  */
-export type MockPrngCreateCallParams =
-  | (TypedCallParams<undefined> & (OnCompleteNoOp))
+export type MockPrngCreateCallParams = TypedCallParams<undefined> & OnCompleteNoOp
 /**
  * A factory for available 'update' calls
  */
@@ -195,8 +202,7 @@ export type MockPrngUpdateCalls = (typeof MockPrngCallFactory)['update']
 /**
  * Defines supported update methods for this smart contract
  */
-export type MockPrngUpdateCallParams =
-  | TypedCallParams<undefined>
+export type MockPrngUpdateCallParams = TypedCallParams<undefined>
 /**
  * A factory for available 'delete' calls
  */
@@ -204,8 +210,7 @@ export type MockPrngDeleteCalls = (typeof MockPrngCallFactory)['delete']
 /**
  * Defines supported delete methods for this smart contract
  */
-export type MockPrngDeleteCallParams =
-  | TypedCallParams<undefined>
+export type MockPrngDeleteCallParams = TypedCallParams<undefined>
 /**
  * Defines arguments required for the deploy method.
  */
@@ -225,7 +230,6 @@ export type MockPrngDeployArgs = {
   deleteCall?: (callFactory: MockPrngDeleteCalls) => MockPrngDeleteCallParams
 }
 
-
 /**
  * Exposes methods for constructing all available smart contract calls
  */
@@ -241,7 +245,13 @@ export abstract class MockPrngCallFactory {
        * @param params Any parameters for the call
        * @returns A TypedCallParams object for the call
        */
-      bare(params: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs & AppClientCompilationParams & (OnCompleteNoOp) = {}) {
+      bare(
+        params: BareCallArgs &
+          AppClientCallCoreParams &
+          CoreAppCallArgs &
+          AppClientCompilationParams &
+          OnCompleteNoOp = {},
+      ) {
         return {
           method: undefined,
           methodArgs: undefined,
@@ -300,7 +310,10 @@ export abstract class MockPrngCallFactory {
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
    */
-  static integers(args: MethodArgs<'integers(byte[16],byte[16],uint16)uint64[]'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+  static integers(
+    args: MethodArgs<'integers(byte[16],byte[16],uint16)uint64[]'>,
+    params: AppClientCallCoreParams & CoreAppCallArgs,
+  ) {
     return {
       method: 'integers(byte[16],byte[16],uint16)uint64[]' as const,
       methodArgs: Array.isArray(args) ? args : [args.initstate, args.initseq, args.length],
@@ -328,10 +341,13 @@ export class MockPrngClient {
    */
   constructor(appDetails: AppDetails, private algod: Algodv2) {
     this.sender = appDetails.sender
-    this.appClient = algokit.getAppClient({
-      ...appDetails,
-      app: APP_SPEC
-    }, algod)
+    this.appClient = algokit.getAppClient(
+      {
+        ...appDetails,
+        app: APP_SPEC,
+      },
+      algod,
+    )
   }
 
   /**
@@ -341,14 +357,18 @@ export class MockPrngClient {
    * @param returnValueFormatter An optional delegate to format the return value if required
    * @returns The smart contract response with an updated return value
    */
-  protected mapReturnValue<TReturn>(result: AppCallTransactionResult, returnValueFormatter?: (value: any) => TReturn): AppCallTransactionResultOfType<TReturn> {
-    if(result.return?.decodeError) {
+  protected mapReturnValue<TReturn>(
+    result: AppCallTransactionResult,
+    returnValueFormatter?: (value: any) => TReturn,
+  ): AppCallTransactionResultOfType<TReturn> {
+    if (result.return?.decodeError) {
       throw result.return.decodeError
     }
-    const returnValue = result.return?.returnValue !== undefined && returnValueFormatter !== undefined
-      ? returnValueFormatter(result.return.returnValue)
-      : result.return?.returnValue as TReturn | undefined
-      return { ...result, return: returnValue }
+    const returnValue =
+      result.return?.returnValue !== undefined && returnValueFormatter !== undefined
+        ? returnValueFormatter(result.return.returnValue)
+        : (result.return?.returnValue as TReturn | undefined)
+    return { ...result, return: returnValue }
   }
 
   /**
@@ -358,8 +378,14 @@ export class MockPrngClient {
    * @param returnValueFormatter An optional delegate which when provided will be used to map non-undefined return values to the target type
    * @returns The result of the smart contract call
    */
-  public async call<TSignature extends keyof MockPrng['methods']>(typedCallParams: TypedCallParams<TSignature>, returnValueFormatter?: (value: any) => MethodReturn<TSignature>) {
-    return this.mapReturnValue<MethodReturn<TSignature>>(await this.appClient.call(typedCallParams), returnValueFormatter)
+  public async call<TSignature extends keyof MockPrng['methods']>(
+    typedCallParams: TypedCallParams<TSignature>,
+    returnValueFormatter?: (value: any) => MethodReturn<TSignature>,
+  ) {
+    return this.mapReturnValue<MethodReturn<TSignature>>(
+      await this.appClient.call(typedCallParams),
+      returnValueFormatter,
+    )
   }
 
   /**
@@ -393,7 +419,13 @@ export class MockPrngClient {
        * @param args The arguments for the bare call
        * @returns The create result
        */
-      bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs & (OnCompleteNoOp) = {}): Promise<AppCallTransactionResultOfType<undefined>> {
+      bare(
+        args: BareCallArgs &
+          AppClientCallCoreParams &
+          AppClientCompilationParams &
+          CoreAppCallArgs &
+          OnCompleteNoOp = {},
+      ): Promise<AppCallTransactionResultOfType<undefined>> {
         return $this.appClient.create(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
       },
     }
@@ -411,7 +443,9 @@ export class MockPrngClient {
        * @param args The arguments for the bare call
        * @returns The update result
        */
-      bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
+      bare(
+        args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs = {},
+      ): Promise<AppCallTransactionResultOfType<undefined>> {
         return $this.appClient.update(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
       },
     }
@@ -429,7 +463,9 @@ export class MockPrngClient {
        * @param args The arguments for the bare call
        * @returns The delete result
        */
-      bare(args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
+      bare(
+        args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {},
+      ): Promise<AppCallTransactionResultOfType<undefined>> {
         return $this.appClient.delete(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
       },
     }
@@ -452,18 +488,26 @@ export class MockPrngClient {
    * @param params Any additional parameters for the call
    * @returns The result of the call
    */
-  public integers(args: MethodArgs<'integers(byte[16],byte[16],uint16)uint64[]'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+  public integers(
+    args: MethodArgs<'integers(byte[16],byte[16],uint16)uint64[]'>,
+    params: AppClientCallCoreParams & CoreAppCallArgs = {},
+  ) {
     return this.call(MockPrngCallFactory.integers(args, params))
   }
 
   public compose(): MockPrngComposer {
     const client = this
     const atc = new AtomicTransactionComposer()
-    let promiseChain:Promise<unknown> = Promise.resolve()
+    let promiseChain: Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
-      integers(args: MethodArgs<'integers(byte[16],byte[16],uint16)uint64[]'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() => client.integers(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+      integers(
+        args: MethodArgs<'integers(byte[16],byte[16],uint16)uint64[]'>,
+        params?: AppClientCallCoreParams & CoreAppCallArgs,
+      ) {
+        promiseChain = promiseChain.then(() =>
+          client.integers(args, { ...params, sendParams: { ...params?.sendParams, skipSending: true, atc } }),
+        )
         resultMappers.push(undefined)
         return this
       },
@@ -471,7 +515,9 @@ export class MockPrngClient {
         const $this = this
         return {
           bare(args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs) {
-            promiseChain = promiseChain.then(() => client.update.bare({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
+            promiseChain = promiseChain.then(() =>
+              client.update.bare({ ...args, sendParams: { ...args?.sendParams, skipSending: true, atc } }),
+            )
             resultMappers.push(undefined)
             return $this
           },
@@ -481,19 +527,28 @@ export class MockPrngClient {
         const $this = this
         return {
           bare(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs) {
-            promiseChain = promiseChain.then(() => client.delete.bare({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
+            promiseChain = promiseChain.then(() =>
+              client.delete.bare({ ...args, sendParams: { ...args?.sendParams, skipSending: true, atc } }),
+            )
             resultMappers.push(undefined)
             return $this
           },
         }
       },
       clearState(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() => client.clearState({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
+        promiseChain = promiseChain.then(() =>
+          client.clearState({ ...args, sendParams: { ...args?.sendParams, skipSending: true, atc } }),
+        )
         resultMappers.push(undefined)
         return this
       },
-      addTransaction(txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>, defaultSender?: SendTransactionFrom) {
-        promiseChain = promiseChain.then(async () => atc.addTransaction(await algokit.getTransactionWithSigner(txn, defaultSender ?? client.sender)))
+      addTransaction(
+        txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>,
+        defaultSender?: SendTransactionFrom,
+      ) {
+        promiseChain = promiseChain.then(async () =>
+          atc.addTransaction(await algokit.getTransactionWithSigner(txn, defaultSender ?? client.sender)),
+        )
         return this
       },
       async atc() {
@@ -510,9 +565,11 @@ export class MockPrngClient {
         const result = await algokit.sendAtomicTransactionComposer({ atc, sendParams: {} }, client.algod)
         return {
           ...result,
-          returns: result.returns?.map((val, i) => resultMappers[i] !== undefined ? resultMappers[i]!(val.returnValue) : val.returnValue)
+          returns: result.returns?.map((val, i) =>
+            resultMappers[i] !== undefined ? resultMappers[i]!(val.returnValue) : val.returnValue,
+          ),
         }
-      }
+      },
     } as unknown as MockPrngComposer
   }
 }
@@ -524,7 +581,10 @@ export type MockPrngComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  integers(args: MethodArgs<'integers(byte[16],byte[16],uint16)uint64[]'>, params?: AppClientCallCoreParams & CoreAppCallArgs): MockPrngComposer<[...TReturns, MethodReturn<'integers(byte[16],byte[16],uint16)uint64[]'>]>
+  integers(
+    args: MethodArgs<'integers(byte[16],byte[16],uint16)uint64[]'>,
+    params?: AppClientCallCoreParams & CoreAppCallArgs,
+  ): MockPrngComposer<[...TReturns, MethodReturn<'integers(byte[16],byte[16],uint16)uint64[]'>]>
 
   /**
    * Gets available update methods
@@ -536,7 +596,9 @@ export type MockPrngComposer<TReturns extends [...any[]] = []> = {
      * @param args The arguments for the bare call
      * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
      */
-    bare(args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs): MockPrngComposer<[...TReturns, undefined]>
+    bare(
+      args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs,
+    ): MockPrngComposer<[...TReturns, undefined]>
   }
 
   /**
@@ -558,7 +620,9 @@ export type MockPrngComposer<TReturns extends [...any[]] = []> = {
    * @param args The arguments for the bare call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  clearState(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs): MockPrngComposer<[...TReturns, undefined]>
+  clearState(
+    args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs,
+  ): MockPrngComposer<[...TReturns, undefined]>
 
   /**
    * Adds a transaction to the composer
@@ -566,7 +630,10 @@ export type MockPrngComposer<TReturns extends [...any[]] = []> = {
    * @param txn One of: A TransactionWithSigner object (returned as is), a TransactionToSign object (signer is obtained from the signer property), a Transaction object (signer is extracted from the defaultSender parameter), an async SendTransactionResult returned by one of algokit utils helpers (signer is obtained from the defaultSender parameter)
    * @param defaultSender The default sender to be used to obtain a signer where the object provided to the transaction parameter does not include a signer.
    */
-  addTransaction(txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>, defaultSender?: SendTransactionFrom): MockPrngComposer<TReturns>
+  addTransaction(
+    txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>,
+    defaultSender?: SendTransactionFrom,
+  ): MockPrngComposer<TReturns>
   /**
    * Returns the underlying AtomicTransactionComposer instance
    */
