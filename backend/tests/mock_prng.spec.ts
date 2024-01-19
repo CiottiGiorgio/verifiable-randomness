@@ -46,6 +46,18 @@ describe('mock prng contract', () => {
         2597313632178997542n,
       ],
     ],
+    [
+      new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 42]),
+      new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54]),
+      [
+        9705778491962043240n,
+        1370407407632858425n,
+        11774395822783136600n,
+        17944889938176486912n,
+        14437308781460811564n,
+        6944869453235589526n
+      ]
+    ]
   ])(
     'compare SC PRNG against known correct sequence',
     async (initstate, initseq, expected) => {
