@@ -22,101 +22,96 @@ import type {
   ApplicationClient,
 } from '@algorandfoundation/algokit-utils/types/app-client'
 import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import type {
-  SendTransactionResult,
-  TransactionToSign,
-  SendTransactionFrom,
-} from '@algorandfoundation/algokit-utils/types/transaction'
+import type { SendTransactionResult, TransactionToSign, SendTransactionFrom } from '@algorandfoundation/algokit-utils/types/transaction'
 import type { ABIResult, TransactionWithSigner, modelsv2 } from 'algosdk'
 import { Algodv2, OnApplicationComplete, Transaction, AtomicTransactionComposer } from 'algosdk'
 export const APP_SPEC: AppSpec = {
-  hints: {
-    'get(uint64,byte[])byte[]': {
-      call_config: {
-        no_op: 'CALL',
-      },
-    },
+  "hints": {
+    "get(uint64,byte[])byte[]": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    }
   },
-  source: {
-    approval:
-      'I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4CnR4biBOdW1BcHBBcmdzCmludGNfMCAvLyAwCj09CmJueiBtYWluX2w0CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4MTg5MzkyYzUgLy8gImdldCh1aW50NjQsYnl0ZVtdKWJ5dGVbXSIKPT0KYm56IG1haW5fbDMKZXJyCm1haW5fbDM6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgZ2V0Y2FzdGVyXzMKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDQ6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KYm56IG1haW5fbDEwCnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA0IC8vIFVwZGF0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2w5CnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA1IC8vIERlbGV0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2w4CmVycgptYWluX2w4Ogp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQphc3NlcnQKY2FsbHN1YiBkZWxldGVfMQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sOToKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgdXBkYXRlXzAKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDEwOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAo9PQphc3NlcnQKaW50Y18xIC8vIDEKcmV0dXJuCgovLyB1cGRhdGUKdXBkYXRlXzA6CnByb3RvIDAgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CnB1c2hpbnQgVE1QTF9VUERBVEFCTEUgLy8gVE1QTF9VUERBVEFCTEUKLy8gQ2hlY2sgYXBwIGlzIHVwZGF0YWJsZQphc3NlcnQKcmV0c3ViCgovLyBkZWxldGUKZGVsZXRlXzE6CnByb3RvIDAgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CnB1c2hpbnQgVE1QTF9ERUxFVEFCTEUgLy8gVE1QTF9ERUxFVEFCTEUKLy8gQ2hlY2sgYXBwIGlzIGRlbGV0YWJsZQphc3NlcnQKcmV0c3ViCgovLyBnZXQKZ2V0XzI6CnByb3RvIDIgMQpieXRlY18wIC8vICIiCnB1c2hieXRlcyBUTVBMX01PQ0tfVlJGX09VVFBVVCAvLyBUTVBMX01PQ0tfVlJGX09VVFBVVApmcmFtZV9idXJ5IDAKZnJhbWVfZGlnIDAKbGVuCml0b2IKZXh0cmFjdCA2IDAKZnJhbWVfZGlnIDAKY29uY2F0CmZyYW1lX2J1cnkgMApyZXRzdWIKCi8vIGdldF9jYXN0ZXIKZ2V0Y2FzdGVyXzM6CnByb3RvIDAgMApieXRlY18wIC8vICIiCmludGNfMCAvLyAwCmJ5dGVjXzAgLy8gIiIKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpidG9pCmZyYW1lX2J1cnkgMQp0eG5hIEFwcGxpY2F0aW9uQXJncyAyCmZyYW1lX2J1cnkgMgpmcmFtZV9kaWcgMQpmcmFtZV9kaWcgMgpjYWxsc3ViIGdldF8yCmZyYW1lX2J1cnkgMApwdXNoYnl0ZXMgMHgxNTFmN2M3NSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3Vi',
-    clear: 'I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu',
+  "source": {
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4CnR4biBOdW1BcHBBcmdzCmludGNfMCAvLyAwCj09CmJueiBtYWluX2w0CnR4bmEgQXBwbGljYXRpb25BcmdzIDAKcHVzaGJ5dGVzIDB4MTg5MzkyYzUgLy8gImdldCh1aW50NjQsYnl0ZVtdKWJ5dGVbXSIKPT0KYm56IG1haW5fbDMKZXJyCm1haW5fbDM6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KJiYKYXNzZXJ0CmNhbGxzdWIgZ2V0Y2FzdGVyXzMKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDQ6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KYm56IG1haW5fbDEwCnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA0IC8vIFVwZGF0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2w5CnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA1IC8vIERlbGV0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2w4CmVycgptYWluX2w4Ogp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQphc3NlcnQKY2FsbHN1YiBkZWxldGVfMQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sOToKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgdXBkYXRlXzAKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDEwOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAo9PQphc3NlcnQKaW50Y18xIC8vIDEKcmV0dXJuCgovLyB1cGRhdGUKdXBkYXRlXzA6CnByb3RvIDAgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CnB1c2hpbnQgVE1QTF9VUERBVEFCTEUgLy8gVE1QTF9VUERBVEFCTEUKLy8gQ2hlY2sgYXBwIGlzIHVwZGF0YWJsZQphc3NlcnQKcmV0c3ViCgovLyBkZWxldGUKZGVsZXRlXzE6CnByb3RvIDAgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CnB1c2hpbnQgVE1QTF9ERUxFVEFCTEUgLy8gVE1QTF9ERUxFVEFCTEUKLy8gQ2hlY2sgYXBwIGlzIGRlbGV0YWJsZQphc3NlcnQKcmV0c3ViCgovLyBnZXQKZ2V0XzI6CnByb3RvIDIgMQpieXRlY18wIC8vICIiCnB1c2hieXRlcyBUTVBMX01PQ0tfVlJGX09VVFBVVCAvLyBUTVBMX01PQ0tfVlJGX09VVFBVVApmcmFtZV9idXJ5IDAKZnJhbWVfZGlnIDAKbGVuCml0b2IKZXh0cmFjdCA2IDAKZnJhbWVfZGlnIDAKY29uY2F0CmZyYW1lX2J1cnkgMApyZXRzdWIKCi8vIGdldF9jYXN0ZXIKZ2V0Y2FzdGVyXzM6CnByb3RvIDAgMApieXRlY18wIC8vICIiCmludGNfMCAvLyAwCmJ5dGVjXzAgLy8gIiIKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpidG9pCmZyYW1lX2J1cnkgMQp0eG5hIEFwcGxpY2F0aW9uQXJncyAyCmZyYW1lX2J1cnkgMgpmcmFtZV9kaWcgMQpmcmFtZV9kaWcgMgpjYWxsc3ViIGdldF8yCmZyYW1lX2J1cnkgMApwdXNoYnl0ZXMgMHgxNTFmN2M3NSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3Vi",
+    "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
   },
-  state: {
-    global: {
-      num_byte_slices: 0,
-      num_uints: 0,
+  "state": {
+    "global": {
+      "num_byte_slices": 0,
+      "num_uints": 0
     },
-    local: {
-      num_byte_slices: 0,
-      num_uints: 0,
-    },
+    "local": {
+      "num_byte_slices": 0,
+      "num_uints": 0
+    }
   },
-  schema: {
-    global: {
-      declared: {},
-      reserved: {},
+  "schema": {
+    "global": {
+      "declared": {},
+      "reserved": {}
     },
-    local: {
-      declared: {},
-      reserved: {},
-    },
+    "local": {
+      "declared": {},
+      "reserved": {}
+    }
   },
-  contract: {
-    name: 'mock_randomness_beacon',
-    methods: [
+  "contract": {
+    "name": "mock_randomness_beacon",
+    "methods": [
       {
-        name: 'get',
-        args: [
+        "name": "get",
+        "args": [
           {
-            type: 'uint64',
-            name: 'block',
+            "type": "uint64",
+            "name": "block"
           },
           {
-            type: 'byte[]',
-            name: 'data',
-          },
+            "type": "byte[]",
+            "name": "data"
+          }
         ],
-        returns: {
-          type: 'byte[]',
-        },
-      },
+        "returns": {
+          "type": "byte[]"
+        }
+      }
     ],
-    networks: {},
+    "networks": {}
   },
-  bare_call_config: {
-    delete_application: 'CALL',
-    no_op: 'CREATE',
-    update_application: 'CALL',
-  },
+  "bare_call_config": {
+    "delete_application": "CALL",
+    "no_op": "CREATE",
+    "update_application": "CALL"
+  }
 }
 
 /**
  * Defines an onCompletionAction of 'no_op'
  */
-export type OnCompleteNoOp = { onCompleteAction?: 'no_op' | OnApplicationComplete.NoOpOC }
+export type OnCompleteNoOp =  { onCompleteAction?: 'no_op' | OnApplicationComplete.NoOpOC }
 /**
  * Defines an onCompletionAction of 'opt_in'
  */
-export type OnCompleteOptIn = { onCompleteAction: 'opt_in' | OnApplicationComplete.OptInOC }
+export type OnCompleteOptIn =  { onCompleteAction: 'opt_in' | OnApplicationComplete.OptInOC }
 /**
  * Defines an onCompletionAction of 'close_out'
  */
-export type OnCompleteCloseOut = { onCompleteAction: 'close_out' | OnApplicationComplete.CloseOutOC }
+export type OnCompleteCloseOut =  { onCompleteAction: 'close_out' | OnApplicationComplete.CloseOutOC }
 /**
  * Defines an onCompletionAction of 'delete_application'
  */
-export type OnCompleteDelApp = { onCompleteAction: 'delete_application' | OnApplicationComplete.DeleteApplicationOC }
+export type OnCompleteDelApp =  { onCompleteAction: 'delete_application' | OnApplicationComplete.DeleteApplicationOC }
 /**
  * Defines an onCompletionAction of 'update_application'
  */
-export type OnCompleteUpdApp = { onCompleteAction: 'update_application' | OnApplicationComplete.UpdateApplicationOC }
+export type OnCompleteUpdApp =  { onCompleteAction: 'update_application' | OnApplicationComplete.UpdateApplicationOC }
 /**
  * A state record containing a single unsigned integer
  */
 export type IntegerState = {
   /**
-   * Gets the state value as a BigInt
+   * Gets the state value as a BigInt 
    */
   asBigInt(): bigint
   /**
@@ -145,17 +140,15 @@ export type MockRandomnessBeacon = {
   /**
    * Maps method signatures / names to their argument and return types.
    */
-  methods: Record<
-    'get(uint64,byte[])byte[]' | 'get',
-    {
+  methods:
+    & Record<'get(uint64,byte[])byte[]' | 'get', {
       argsObj: {
         block: bigint | number
         data: Uint8Array
       }
       argsTuple: [block: bigint | number, data: Uint8Array]
       returns: Uint8Array
-    }
-  >
+    }>
 }
 /**
  * Defines the possible abi call signatures
@@ -167,8 +160,7 @@ export type MockRandomnessBeaconSig = keyof MockRandomnessBeacon['methods']
 export type TypedCallParams<TSignature extends MockRandomnessBeaconSig | undefined> = {
   method: TSignature
   methodArgs: TSignature extends undefined ? undefined : Array<ABIAppCallArg | undefined>
-} & AppClientCallCoreParams &
-  CoreAppCallArgs
+} & AppClientCallCoreParams & CoreAppCallArgs
 /**
  * Defines the arguments required for a bare call
  */
@@ -176,14 +168,11 @@ export type BareCallArgs = Omit<RawAppCallArgs, keyof CoreAppCallArgs>
 /**
  * Maps a method signature from the MockRandomnessBeacon smart contract to the method's arguments in either tuple of struct form
  */
-export type MethodArgs<TSignature extends MockRandomnessBeaconSig> = MockRandomnessBeacon['methods'][TSignature][
-  | 'argsObj'
-  | 'argsTuple']
+export type MethodArgs<TSignature extends MockRandomnessBeaconSig> = MockRandomnessBeacon['methods'][TSignature]['argsObj' | 'argsTuple']
 /**
  * Maps a method signature from the MockRandomnessBeacon smart contract to the method's return type
  */
-export type MethodReturn<TSignature extends MockRandomnessBeaconSig> =
-  MockRandomnessBeacon['methods'][TSignature]['returns']
+export type MethodReturn<TSignature extends MockRandomnessBeaconSig> = MockRandomnessBeacon['methods'][TSignature]['returns']
 
 /**
  * A factory for available 'create' calls
@@ -192,7 +181,8 @@ export type MockRandomnessBeaconCreateCalls = (typeof MockRandomnessBeaconCallFa
 /**
  * Defines supported create methods for this smart contract
  */
-export type MockRandomnessBeaconCreateCallParams = TypedCallParams<undefined> & OnCompleteNoOp
+export type MockRandomnessBeaconCreateCallParams =
+  | (TypedCallParams<undefined> & (OnCompleteNoOp))
 /**
  * A factory for available 'update' calls
  */
@@ -200,7 +190,8 @@ export type MockRandomnessBeaconUpdateCalls = (typeof MockRandomnessBeaconCallFa
 /**
  * Defines supported update methods for this smart contract
  */
-export type MockRandomnessBeaconUpdateCallParams = TypedCallParams<undefined>
+export type MockRandomnessBeaconUpdateCallParams =
+  | TypedCallParams<undefined>
 /**
  * A factory for available 'delete' calls
  */
@@ -208,7 +199,8 @@ export type MockRandomnessBeaconDeleteCalls = (typeof MockRandomnessBeaconCallFa
 /**
  * Defines supported delete methods for this smart contract
  */
-export type MockRandomnessBeaconDeleteCallParams = TypedCallParams<undefined>
+export type MockRandomnessBeaconDeleteCallParams =
+  | TypedCallParams<undefined>
 /**
  * Defines arguments required for the deploy method.
  */
@@ -228,6 +220,7 @@ export type MockRandomnessBeaconDeployArgs = {
   deleteCall?: (callFactory: MockRandomnessBeaconDeleteCalls) => MockRandomnessBeaconDeleteCallParams
 }
 
+
 /**
  * Exposes methods for constructing all available smart contract calls
  */
@@ -243,13 +236,7 @@ export abstract class MockRandomnessBeaconCallFactory {
        * @param params Any parameters for the call
        * @returns A TypedCallParams object for the call
        */
-      bare(
-        params: BareCallArgs &
-          AppClientCallCoreParams &
-          CoreAppCallArgs &
-          AppClientCompilationParams &
-          OnCompleteNoOp = {},
-      ) {
+      bare(params: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs & AppClientCompilationParams & (OnCompleteNoOp) = {}) {
         return {
           method: undefined,
           methodArgs: undefined,
@@ -336,13 +323,10 @@ export class MockRandomnessBeaconClient {
    */
   constructor(appDetails: AppDetails, private algod: Algodv2) {
     this.sender = appDetails.sender
-    this.appClient = algokit.getAppClient(
-      {
-        ...appDetails,
-        app: APP_SPEC,
-      },
-      algod,
-    )
+    this.appClient = algokit.getAppClient({
+      ...appDetails,
+      app: APP_SPEC
+    }, algod)
   }
 
   /**
@@ -352,18 +336,14 @@ export class MockRandomnessBeaconClient {
    * @param returnValueFormatter An optional delegate to format the return value if required
    * @returns The smart contract response with an updated return value
    */
-  protected mapReturnValue<TReturn>(
-    result: AppCallTransactionResult,
-    returnValueFormatter?: (value: any) => TReturn,
-  ): AppCallTransactionResultOfType<TReturn> {
-    if (result.return?.decodeError) {
+  protected mapReturnValue<TReturn>(result: AppCallTransactionResult, returnValueFormatter?: (value: any) => TReturn): AppCallTransactionResultOfType<TReturn> {
+    if(result.return?.decodeError) {
       throw result.return.decodeError
     }
-    const returnValue =
-      result.return?.returnValue !== undefined && returnValueFormatter !== undefined
-        ? returnValueFormatter(result.return.returnValue)
-        : (result.return?.returnValue as TReturn | undefined)
-    return { ...result, return: returnValue }
+    const returnValue = result.return?.returnValue !== undefined && returnValueFormatter !== undefined
+      ? returnValueFormatter(result.return.returnValue)
+      : result.return?.returnValue as TReturn | undefined
+      return { ...result, return: returnValue }
   }
 
   /**
@@ -373,14 +353,8 @@ export class MockRandomnessBeaconClient {
    * @param returnValueFormatter An optional delegate which when provided will be used to map non-undefined return values to the target type
    * @returns The result of the smart contract call
    */
-  public async call<TSignature extends keyof MockRandomnessBeacon['methods']>(
-    typedCallParams: TypedCallParams<TSignature>,
-    returnValueFormatter?: (value: any) => MethodReturn<TSignature>,
-  ) {
-    return this.mapReturnValue<MethodReturn<TSignature>>(
-      await this.appClient.call(typedCallParams),
-      returnValueFormatter,
-    )
+  public async call<TSignature extends keyof MockRandomnessBeacon['methods']>(typedCallParams: TypedCallParams<TSignature>, returnValueFormatter?: (value: any) => MethodReturn<TSignature>) {
+    return this.mapReturnValue<MethodReturn<TSignature>>(await this.appClient.call(typedCallParams), returnValueFormatter)
   }
 
   /**
@@ -389,9 +363,7 @@ export class MockRandomnessBeaconClient {
    * @param params The arguments for the contract calls and any additional parameters for the call
    * @returns The deployment result
    */
-  public deploy(
-    params: MockRandomnessBeaconDeployArgs & AppClientDeployCoreParams = {},
-  ): ReturnType<ApplicationClient['deploy']> {
+  public deploy(params: MockRandomnessBeaconDeployArgs & AppClientDeployCoreParams = {}): ReturnType<ApplicationClient['deploy']> {
     const createArgs = params.createCall?.(MockRandomnessBeaconCallFactory.create)
     const updateArgs = params.updateCall?.(MockRandomnessBeaconCallFactory.update)
     const deleteArgs = params.deleteCall?.(MockRandomnessBeaconCallFactory.delete)
@@ -416,13 +388,7 @@ export class MockRandomnessBeaconClient {
        * @param args The arguments for the bare call
        * @returns The create result
        */
-      bare(
-        args: BareCallArgs &
-          AppClientCallCoreParams &
-          AppClientCompilationParams &
-          CoreAppCallArgs &
-          OnCompleteNoOp = {},
-      ): Promise<AppCallTransactionResultOfType<undefined>> {
+      bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs & (OnCompleteNoOp) = {}): Promise<AppCallTransactionResultOfType<undefined>> {
         return $this.appClient.create(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
       },
     }
@@ -440,9 +406,7 @@ export class MockRandomnessBeaconClient {
        * @param args The arguments for the bare call
        * @returns The update result
        */
-      bare(
-        args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs = {},
-      ): Promise<AppCallTransactionResultOfType<undefined>> {
+      bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
         return $this.appClient.update(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
       },
     }
@@ -460,9 +424,7 @@ export class MockRandomnessBeaconClient {
        * @param args The arguments for the bare call
        * @returns The delete result
        */
-      bare(
-        args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {},
-      ): Promise<AppCallTransactionResultOfType<undefined>> {
+      bare(args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
         return $this.appClient.delete(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
       },
     }
@@ -492,13 +454,11 @@ export class MockRandomnessBeaconClient {
   public compose(): MockRandomnessBeaconComposer {
     const client = this
     const atc = new AtomicTransactionComposer()
-    let promiseChain: Promise<unknown> = Promise.resolve()
+    let promiseChain:Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
       get(args: MethodArgs<'get(uint64,byte[])byte[]'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() =>
-          client.get(args, { ...params, sendParams: { ...params?.sendParams, skipSending: true, atc } }),
-        )
+        promiseChain = promiseChain.then(() => client.get(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
@@ -506,9 +466,7 @@ export class MockRandomnessBeaconClient {
         const $this = this
         return {
           bare(args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs) {
-            promiseChain = promiseChain.then(() =>
-              client.update.bare({ ...args, sendParams: { ...args?.sendParams, skipSending: true, atc } }),
-            )
+            promiseChain = promiseChain.then(() => client.update.bare({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
             resultMappers.push(undefined)
             return $this
           },
@@ -518,28 +476,19 @@ export class MockRandomnessBeaconClient {
         const $this = this
         return {
           bare(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs) {
-            promiseChain = promiseChain.then(() =>
-              client.delete.bare({ ...args, sendParams: { ...args?.sendParams, skipSending: true, atc } }),
-            )
+            promiseChain = promiseChain.then(() => client.delete.bare({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
             resultMappers.push(undefined)
             return $this
           },
         }
       },
       clearState(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() =>
-          client.clearState({ ...args, sendParams: { ...args?.sendParams, skipSending: true, atc } }),
-        )
+        promiseChain = promiseChain.then(() => client.clearState({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
-      addTransaction(
-        txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>,
-        defaultSender?: SendTransactionFrom,
-      ) {
-        promiseChain = promiseChain.then(async () =>
-          atc.addTransaction(await algokit.getTransactionWithSigner(txn, defaultSender ?? client.sender)),
-        )
+      addTransaction(txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>, defaultSender?: SendTransactionFrom) {
+        promiseChain = promiseChain.then(async () => atc.addTransaction(await algokit.getTransactionWithSigner(txn, defaultSender ?? client.sender)))
         return this
       },
       async atc() {
@@ -556,11 +505,9 @@ export class MockRandomnessBeaconClient {
         const result = await algokit.sendAtomicTransactionComposer({ atc, sendParams: {} }, client.algod)
         return {
           ...result,
-          returns: result.returns?.map((val, i) =>
-            resultMappers[i] !== undefined ? resultMappers[i]!(val.returnValue) : val.returnValue,
-          ),
+          returns: result.returns?.map((val, i) => resultMappers[i] !== undefined ? resultMappers[i]!(val.returnValue) : val.returnValue)
         }
-      },
+      }
     } as unknown as MockRandomnessBeaconComposer
   }
 }
@@ -572,10 +519,7 @@ export type MockRandomnessBeaconComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  get(
-    args: MethodArgs<'get(uint64,byte[])byte[]'>,
-    params?: AppClientCallCoreParams & CoreAppCallArgs,
-  ): MockRandomnessBeaconComposer<[...TReturns, MethodReturn<'get(uint64,byte[])byte[]'>]>
+  get(args: MethodArgs<'get(uint64,byte[])byte[]'>, params?: AppClientCallCoreParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, MethodReturn<'get(uint64,byte[])byte[]'>]>
 
   /**
    * Gets available update methods
@@ -587,9 +531,7 @@ export type MockRandomnessBeaconComposer<TReturns extends [...any[]] = []> = {
      * @param args The arguments for the bare call
      * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
      */
-    bare(
-      args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs,
-    ): MockRandomnessBeaconComposer<[...TReturns, undefined]>
+    bare(args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, undefined]>
   }
 
   /**
@@ -602,9 +544,7 @@ export type MockRandomnessBeaconComposer<TReturns extends [...any[]] = []> = {
      * @param args The arguments for the bare call
      * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
      */
-    bare(
-      args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs,
-    ): MockRandomnessBeaconComposer<[...TReturns, undefined]>
+    bare(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, undefined]>
   }
 
   /**
@@ -613,9 +553,7 @@ export type MockRandomnessBeaconComposer<TReturns extends [...any[]] = []> = {
    * @param args The arguments for the bare call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  clearState(
-    args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs,
-  ): MockRandomnessBeaconComposer<[...TReturns, undefined]>
+  clearState(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs): MockRandomnessBeaconComposer<[...TReturns, undefined]>
 
   /**
    * Adds a transaction to the composer
@@ -623,10 +561,7 @@ export type MockRandomnessBeaconComposer<TReturns extends [...any[]] = []> = {
    * @param txn One of: A TransactionWithSigner object (returned as is), a TransactionToSign object (signer is obtained from the signer property), a Transaction object (signer is extracted from the defaultSender parameter), an async SendTransactionResult returned by one of algokit utils helpers (signer is obtained from the defaultSender parameter)
    * @param defaultSender The default sender to be used to obtain a signer where the object provided to the transaction parameter does not include a signer.
    */
-  addTransaction(
-    txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>,
-    defaultSender?: SendTransactionFrom,
-  ): MockRandomnessBeaconComposer<TReturns>
+  addTransaction(txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>, defaultSender?: SendTransactionFrom): MockRandomnessBeaconComposer<TReturns>
   /**
    * Returns the underlying AtomicTransactionComposer instance
    */

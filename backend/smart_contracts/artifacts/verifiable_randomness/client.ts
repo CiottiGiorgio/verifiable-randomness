@@ -22,134 +22,129 @@ import type {
   ApplicationClient,
 } from '@algorandfoundation/algokit-utils/types/app-client'
 import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import type {
-  SendTransactionResult,
-  TransactionToSign,
-  SendTransactionFrom,
-} from '@algorandfoundation/algokit-utils/types/transaction'
+import type { SendTransactionResult, TransactionToSign, SendTransactionFrom } from '@algorandfoundation/algokit-utils/types/transaction'
 import type { ABIResult, TransactionWithSigner, modelsv2 } from 'algosdk'
 import { Algodv2, OnApplicationComplete, Transaction, AtomicTransactionComposer } from 'algosdk'
 export const APP_SPEC: AppSpec = {
-  hints: {
-    'commit(uint64,uint16)void': {
-      call_config: {
-        no_op: 'CALL',
-      },
+  "hints": {
+    "commit(uint64,uint16)void": {
+      "call_config": {
+        "no_op": "CALL"
+      }
     },
-    'integers(uint64,application)uint64[]': {
-      call_config: {
-        no_op: 'CALL',
-      },
-    },
+    "integers(uint64,application)uint64[]": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    }
   },
-  source: {
-    approval:
-      'I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMQpieXRlY2Jsb2NrIDB4IDB4MDEwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCAweDcyNjE2ZTY0NmY2ZDZlNjU3MzczNWY2MjY1NjE2MzZmNmUgMHgwMQp0eG4gTnVtQXBwQXJncwppbnRjXzAgLy8gMAo9PQpibnogbWFpbl9sNgp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweGQ3MTA1OGE1IC8vICJjb21taXQodWludDY0LHVpbnQxNil2b2lkIgo9PQpibnogbWFpbl9sNQp0eG5hIEFwcGxpY2F0aW9uQXJncyAwCnB1c2hieXRlcyAweGU0MjQ3MDBlIC8vICJpbnRlZ2Vycyh1aW50NjQsYXBwbGljYXRpb24pdWludDY0W10iCj09CmJueiBtYWluX2w0CmVycgptYWluX2w0Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIGludGVnZXJzY2FzdGVyXzEzCmludGNfMSAvLyAxCnJldHVybgptYWluX2w1Ogp0eG4gT25Db21wbGV0aW9uCmludGNfMCAvLyBOb09wCj09CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CiYmCmFzc2VydApjYWxsc3ViIGNvbW1pdGNhc3Rlcl8xMgppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNjoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQpibnogbWFpbl9sMTIKdHhuIE9uQ29tcGxldGlvbgpwdXNoaW50IDQgLy8gVXBkYXRlQXBwbGljYXRpb24KPT0KYm56IG1haW5fbDExCnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA1IC8vIERlbGV0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2wxMAplcnIKbWFpbl9sMTA6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CmFzc2VydApjYWxsc3ViIGRlbGV0ZV85CmludGNfMSAvLyAxCnJldHVybgptYWluX2wxMToKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKIT0KYXNzZXJ0CmNhbGxzdWIgdXBkYXRlXzgKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDEyOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAo9PQphc3NlcnQKY2FsbHN1YiBjcmVhdGVfNwppbnRjXzEgLy8gMQpyZXR1cm4KCi8vIHBybmdfaW5pdApwcm5naW5pdF8wOgpwcm90byAyIDAKcHVzaGJ5dGVzIDB4MDAgLy8gMHgwMApzdG9yZSAwCmZyYW1lX2RpZyAtMQpwdXNoYnl0ZXMgMHgwMiAvLyAweDAyCmIqCmJ5dGVjXzMgLy8gMHgwMQpiKwpieXRlY18xIC8vIDB4MDEwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMApiJQpzdG9yZSAxCmNhbGxzdWIgcHJuZ3NldHNlcXN0ZXBfMgpsb2FkIDAKZnJhbWVfZGlnIC0yCmIrCmJ5dGVjXzEgLy8gMHgwMTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwCmIlCnN0b3JlIDAKY2FsbHN1YiBwcm5nc2V0c2Vxc3RlcF8yCnJldHN1YgoKLy8gcHJuZ19yYW5kaW50CnBybmdyYW5kaW50XzE6CnByb3RvIDAgMQpjYWxsc3ViIHBybmdzZXRzZXFzdGVwXzIKY2FsbHN1YiBwcm5ncm90YXRpb25fNQpyZXRzdWIKCi8vIF9fcHJuZ19zZXRzZXFfc3RlcApwcm5nc2V0c2Vxc3RlcF8yOgpwcm90byAwIDAKbG9hZCAwCnB1c2hieXRlcyAweDIzNjBlZDA1MWZjNjVkYTQ0Mzg1ZGY2NDlmY2NmNjQ1IC8vIDB4MjM2MGVkMDUxZmM2NWRhNDQzODVkZjY0OWZjY2Y2NDUKYioKbG9hZCAxCmIrCmJ5dGVjXzEgLy8gMHgwMTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwCmIlCnN0b3JlIDAKcmV0c3ViCgovLyBfX3R3b3NfY29tcGxlbWVudAp0d29zY29tcGxlbWVudF8zOgpwcm90byAxIDEKZnJhbWVfZGlnIC0xCml0b2IKYn4KYnl0ZWNfMyAvLyAweDAxCmIrCnN0b3JlIDYKbG9hZCA2CmxlbgpwdXNoaW50IDggLy8gOAo9PQpibnogdHdvc2NvbXBsZW1lbnRfM19sMgpsb2FkIDYKaW50Y18xIC8vIDEKZXh0cmFjdF91aW50NjQKcmV0c3ViCnR3b3Njb21wbGVtZW50XzNfbDI6CmxvYWQgNgpidG9pCnJldHN1YgoKLy8gX19wcm5nX3JvdGF0aW9uXzY0CnBybmdyb3RhdGlvbjY0XzQ6CnByb3RvIDIgMQpmcmFtZV9kaWcgLTIKZnJhbWVfZGlnIC0xCnNocgpmcmFtZV9kaWcgLTIKZnJhbWVfZGlnIC0xCmNhbGxzdWIgdHdvc2NvbXBsZW1lbnRfMwpwdXNoaW50IDYzIC8vIDYzCiYKc2hsCnwKcmV0c3ViCgovLyBfX3Bybmdfcm90YXRpb24KcHJuZ3JvdGF0aW9uXzU6CnByb3RvIDAgMQpsb2FkIDAKZXh0cmFjdCAwIDgKYnRvaQpsb2FkIDAKZXh0cmFjdCA4IDgKYnRvaQpeCmxvYWQgMApleHRyYWN0IDAgMQpidG9pCnB1c2hpbnQgMiAvLyAyCnNocgpjYWxsc3ViIHBybmdyb3RhdGlvbjY0XzQKcmV0c3ViCgovLyBwcmVmaXhfa2V5X2dlbgpwcmVmaXhrZXlnZW5fNjoKcHJvdG8gMSAxCnB1c2hieXRlcyAweDYzNmY2ZDZkNjk3NDZkNjU2ZTc0NzMgLy8gImNvbW1pdG1lbnRzIgpmcmFtZV9kaWcgLTEKY29uY2F0CnJldHN1YgoKLy8gY3JlYXRlCmNyZWF0ZV83Ogpwcm90byAwIDAKaW50Y18wIC8vIDAKYnl0ZWNfMiAvLyAicmFuZG9tbmVzc19iZWFjb24iCmFwcF9nbG9iYWxfZ2V0X2V4CnN0b3JlIDMKc3RvcmUgMgpsb2FkIDMKIQphc3NlcnQKYnl0ZWNfMiAvLyAicmFuZG9tbmVzc19iZWFjb24iCnB1c2hpbnQgVE1QTF9SQU5ET01ORVNTX0JFQUNPTl9BUFBfSUQgLy8gVE1QTF9SQU5ET01ORVNTX0JFQUNPTl9BUFBfSUQKYXBwX2dsb2JhbF9wdXQKcmV0c3ViCgovLyB1cGRhdGUKdXBkYXRlXzg6CnByb3RvIDAgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CnB1c2hpbnQgVE1QTF9VUERBVEFCTEUgLy8gVE1QTF9VUERBVEFCTEUKLy8gQ2hlY2sgYXBwIGlzIHVwZGF0YWJsZQphc3NlcnQKcmV0c3ViCgovLyBkZWxldGUKZGVsZXRlXzk6CnByb3RvIDAgMAp0eG4gU2VuZGVyCmdsb2JhbCBDcmVhdG9yQWRkcmVzcwo9PQovLyB1bmF1dGhvcml6ZWQKYXNzZXJ0CnB1c2hpbnQgVE1QTF9ERUxFVEFCTEUgLy8gVE1QTF9ERUxFVEFCTEUKLy8gQ2hlY2sgYXBwIGlzIGRlbGV0YWJsZQphc3NlcnQKcmV0c3ViCgovLyBjb21taXQKY29tbWl0XzEwOgpwcm90byAyIDAKZnJhbWVfZGlnIC0yCmdsb2JhbCBSb3VuZAo+CmFzc2VydApmcmFtZV9kaWcgLTIKaXRvYgpjYWxsc3ViIHByZWZpeGtleWdlbl82CmZyYW1lX2RpZyAtMQppdG9iCmV4dHJhY3QgNiAwCmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gaW50ZWdlcnMKaW50ZWdlcnNfMTE6CnByb3RvIDIgMQpieXRlY18wIC8vICIiCmludGNfMCAvLyAwCmJ5dGVjXzAgLy8gIiIKZnJhbWVfZGlnIC0yCmdsb2JhbCBSb3VuZAo8PQphc3NlcnQKZnJhbWVfZGlnIC0yCml0b2IKY2FsbHN1YiBwcmVmaXhrZXlnZW5fNgphcHBfZ2xvYmFsX2dldAppbnRjXzAgLy8gMApleHRyYWN0X3VpbnQxNgpmcmFtZV9idXJ5IDEKYnl0ZWNfMCAvLyAiIgpmcmFtZV9idXJ5IDIKZnJhbWVfZGlnIDIKbGVuCml0b2IKZXh0cmFjdCA2IDAKZnJhbWVfZGlnIDIKY29uY2F0CmZyYW1lX2J1cnkgMgppdHhuX2JlZ2luCnB1c2hpbnQgNiAvLyBhcHBsCml0eG5fZmllbGQgVHlwZUVudW0KYnl0ZWNfMiAvLyAicmFuZG9tbmVzc19iZWFjb24iCmFwcF9nbG9iYWxfZ2V0Cml0eG5fZmllbGQgQXBwbGljYXRpb25JRApwdXNoYnl0ZXMgMHgxODkzOTJjNSAvLyAiZ2V0KHVpbnQ2NCxieXRlW10pYnl0ZVtdIgppdHhuX2ZpZWxkIEFwcGxpY2F0aW9uQXJncwpmcmFtZV9kaWcgLTIKaXRvYgppdHhuX2ZpZWxkIEFwcGxpY2F0aW9uQXJncwpmcmFtZV9kaWcgMgppdHhuX2ZpZWxkIEFwcGxpY2F0aW9uQXJncwppdHhuX3N1Ym1pdAppdHhuIExhc3RMb2cKZXh0cmFjdCA0IDE2Cml0eG4gTGFzdExvZwpleHRyYWN0IDIwIDE2CmNhbGxzdWIgcHJuZ2luaXRfMAppbnRjXzAgLy8gMApzdG9yZSA0CmJ5dGVjXzAgLy8gIiIKc3RvcmUgNQppbnRlZ2Vyc18xMV9sMToKbG9hZCA0CmZyYW1lX2RpZyAxCjwKYnogaW50ZWdlcnNfMTFfbDMKbG9hZCA1CmNhbGxzdWIgcHJuZ3JhbmRpbnRfMQppdG9iCmNvbmNhdApzdG9yZSA1CmxvYWQgNAppbnRjXzEgLy8gMQorCnN0b3JlIDQKYiBpbnRlZ2Vyc18xMV9sMQppbnRlZ2Vyc18xMV9sMzoKZnJhbWVfZGlnIDEKaXRvYgpleHRyYWN0IDYgMApsb2FkIDUKY29uY2F0CmZyYW1lX2J1cnkgMApyZXRzdWIKCi8vIGNvbW1pdF9jYXN0ZXIKY29tbWl0Y2FzdGVyXzEyOgpwcm90byAwIDAKaW50Y18wIC8vIDAKZHVwCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKYnRvaQpmcmFtZV9idXJ5IDAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgppbnRjXzAgLy8gMApleHRyYWN0X3VpbnQxNgpmcmFtZV9idXJ5IDEKZnJhbWVfZGlnIDAKZnJhbWVfZGlnIDEKY2FsbHN1YiBjb21taXRfMTAKcmV0c3ViCgovLyBpbnRlZ2Vyc19jYXN0ZXIKaW50ZWdlcnNjYXN0ZXJfMTM6CnByb3RvIDAgMApieXRlY18wIC8vICIiCmludGNfMCAvLyAwCmR1cAp0eG5hIEFwcGxpY2F0aW9uQXJncyAxCmJ0b2kKZnJhbWVfYnVyeSAxCnR4bmEgQXBwbGljYXRpb25BcmdzIDIKaW50Y18wIC8vIDAKZ2V0Ynl0ZQpmcmFtZV9idXJ5IDIKZnJhbWVfZGlnIDEKZnJhbWVfZGlnIDIKY2FsbHN1YiBpbnRlZ2Vyc18xMQpmcmFtZV9idXJ5IDAKcHVzaGJ5dGVzIDB4MTUxZjdjNzUgLy8gMHgxNTFmN2M3NQpmcmFtZV9kaWcgMApjb25jYXQKbG9nCnJldHN1Yg==',
-    clear: 'I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu',
+  "source": {
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDgKaW50Y2Jsb2NrIDAgMSA1IDYKYnl0ZWNibG9jayAweCAweDAxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAgMHg3MjYxNmU2NDZmNmQ2ZTY1NzM3MzVmNjI2NTYxNjM2ZjZlIDB4MDEgMHgwNjgxMDEKdHhuIE51bUFwcEFyZ3MKaW50Y18wIC8vIDAKPT0KYm56IG1haW5fbDYKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHhkNzEwNThhNSAvLyAiY29tbWl0KHVpbnQ2NCx1aW50MTYpdm9pZCIKPT0KYm56IG1haW5fbDUKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMApwdXNoYnl0ZXMgMHhlNDI0NzAwZSAvLyAiaW50ZWdlcnModWludDY0LGFwcGxpY2F0aW9uKXVpbnQ2NFtdIgo9PQpibnogbWFpbl9sNAplcnIKbWFpbl9sNDoKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBpbnRlZ2Vyc2Nhc3Rlcl8xMwppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sNToKdHhuIE9uQ29tcGxldGlvbgppbnRjXzAgLy8gTm9PcAo9PQp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQomJgphc3NlcnQKY2FsbHN1YiBjb21taXRjYXN0ZXJfMTIKaW50Y18xIC8vIDEKcmV0dXJuCm1haW5fbDY6CnR4biBPbkNvbXBsZXRpb24KaW50Y18wIC8vIE5vT3AKPT0KYm56IG1haW5fbDEyCnR4biBPbkNvbXBsZXRpb24KcHVzaGludCA0IC8vIFVwZGF0ZUFwcGxpY2F0aW9uCj09CmJueiBtYWluX2wxMQp0eG4gT25Db21wbGV0aW9uCmludGNfMiAvLyBEZWxldGVBcHBsaWNhdGlvbgo9PQpibnogbWFpbl9sMTAKZXJyCm1haW5fbDEwOgp0eG4gQXBwbGljYXRpb25JRAppbnRjXzAgLy8gMAohPQphc3NlcnQKY2FsbHN1YiBkZWxldGVfOQppbnRjXzEgLy8gMQpyZXR1cm4KbWFpbl9sMTE6CnR4biBBcHBsaWNhdGlvbklECmludGNfMCAvLyAwCiE9CmFzc2VydApjYWxsc3ViIHVwZGF0ZV84CmludGNfMSAvLyAxCnJldHVybgptYWluX2wxMjoKdHhuIEFwcGxpY2F0aW9uSUQKaW50Y18wIC8vIDAKPT0KYXNzZXJ0CmNhbGxzdWIgY3JlYXRlXzcKaW50Y18xIC8vIDEKcmV0dXJuCgovLyBwcm5nX2luaXQKcHJuZ2luaXRfMDoKcHJvdG8gMiAwCnB1c2hieXRlcyAweDAwIC8vIDB4MDAKc3RvcmUgMApmcmFtZV9kaWcgLTEKcHVzaGJ5dGVzIDB4MDIgLy8gMHgwMgpiKgpieXRlY18zIC8vIDB4MDEKYisKYnl0ZWNfMSAvLyAweDAxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAKYiUKc3RvcmUgMQpjYWxsc3ViIHBybmdzZXRzZXFzdGVwXzIKbG9hZCAwCmZyYW1lX2RpZyAtMgpiKwpieXRlY18xIC8vIDB4MDEwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMApiJQpzdG9yZSAwCmNhbGxzdWIgcHJuZ3NldHNlcXN0ZXBfMgpyZXRzdWIKCi8vIHBybmdfcmFuZGludApwcm5ncmFuZGludF8xOgpwcm90byAwIDEKY2FsbHN1YiBwcm5nc2V0c2Vxc3RlcF8yCmNhbGxzdWIgcHJuZ3JvdGF0aW9uXzUKcmV0c3ViCgovLyBfX3Bybmdfc2V0c2VxX3N0ZXAKcHJuZ3NldHNlcXN0ZXBfMjoKcHJvdG8gMCAwCmxvYWQgMApwdXNoYnl0ZXMgMHgyMzYwZWQwNTFmYzY1ZGE0NDM4NWRmNjQ5ZmNjZjY0NSAvLyAweDIzNjBlZDA1MWZjNjVkYTQ0Mzg1ZGY2NDlmY2NmNjQ1CmIqCmxvYWQgMQpiKwpieXRlY18xIC8vIDB4MDEwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMApiJQpzdG9yZSAwCnJldHN1YgoKLy8gX190d29zX2NvbXBsZW1lbnQKdHdvc2NvbXBsZW1lbnRfMzoKcHJvdG8gMSAxCmZyYW1lX2RpZyAtMQppdG9iCmJ+CmJ5dGVjXzMgLy8gMHgwMQpiKwpzdG9yZSA3CmxvYWQgNwpsZW4KcHVzaGludCA4IC8vIDgKPT0KYm56IHR3b3Njb21wbGVtZW50XzNfbDIKbG9hZCA3CmludGNfMSAvLyAxCmV4dHJhY3RfdWludDY0CnJldHN1Ygp0d29zY29tcGxlbWVudF8zX2wyOgpsb2FkIDcKYnRvaQpyZXRzdWIKCi8vIF9fcHJuZ19yb3RhdGlvbl82NApwcm5ncm90YXRpb242NF80Ogpwcm90byAyIDEKZnJhbWVfZGlnIC0yCmZyYW1lX2RpZyAtMQpzaHIKZnJhbWVfZGlnIC0yCmZyYW1lX2RpZyAtMQpjYWxsc3ViIHR3b3Njb21wbGVtZW50XzMKcHVzaGludCA2MyAvLyA2MwomCnNobAp8CnJldHN1YgoKLy8gX19wcm5nX3JvdGF0aW9uCnBybmdyb3RhdGlvbl81Ogpwcm90byAwIDEKbG9hZCAwCmV4dHJhY3QgMCA4CmJ0b2kKbG9hZCAwCmV4dHJhY3QgOCA4CmJ0b2kKXgpsb2FkIDAKZXh0cmFjdCAwIDEKYnRvaQpwdXNoaW50IDIgLy8gMgpzaHIKY2FsbHN1YiBwcm5ncm90YXRpb242NF80CnJldHN1YgoKLy8gcHJlZml4X2tleV9nZW4KcHJlZml4a2V5Z2VuXzY6CnByb3RvIDEgMQpwdXNoYnl0ZXMgMHg2MzZmNmQ2ZDY5NzQ2ZDY1NmU3NDczIC8vICJjb21taXRtZW50cyIKZnJhbWVfZGlnIC0xCmNvbmNhdApyZXRzdWIKCi8vIGNyZWF0ZQpjcmVhdGVfNzoKcHJvdG8gMCAwCmludGNfMCAvLyAwCmJ5dGVjXzIgLy8gInJhbmRvbW5lc3NfYmVhY29uIgphcHBfZ2xvYmFsX2dldF9leApzdG9yZSAzCnN0b3JlIDIKbG9hZCAzCiEKYXNzZXJ0CmJ5dGVjXzIgLy8gInJhbmRvbW5lc3NfYmVhY29uIgpwdXNoaW50IFRNUExfUkFORE9NTkVTU19CRUFDT05fQVBQX0lEIC8vIFRNUExfUkFORE9NTkVTU19CRUFDT05fQVBQX0lECmFwcF9nbG9iYWxfcHV0CnJldHN1YgoKLy8gdXBkYXRlCnVwZGF0ZV84Ogpwcm90byAwIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApwdXNoaW50IFRNUExfVVBEQVRBQkxFIC8vIFRNUExfVVBEQVRBQkxFCi8vIENoZWNrIGFwcCBpcyB1cGRhdGFibGUKYXNzZXJ0CnJldHN1YgoKLy8gZGVsZXRlCmRlbGV0ZV85Ogpwcm90byAwIDAKdHhuIFNlbmRlcgpnbG9iYWwgQ3JlYXRvckFkZHJlc3MKPT0KLy8gdW5hdXRob3JpemVkCmFzc2VydApwdXNoaW50IFRNUExfREVMRVRBQkxFIC8vIFRNUExfREVMRVRBQkxFCi8vIENoZWNrIGFwcCBpcyBkZWxldGFibGUKYXNzZXJ0CnJldHN1YgoKLy8gY29tbWl0CmNvbW1pdF8xMDoKcHJvdG8gMiAwCmZyYW1lX2RpZyAtMgpnbG9iYWwgUm91bmQKPgphc3NlcnQKZnJhbWVfZGlnIC0yCml0b2IKY2FsbHN1YiBwcmVmaXhrZXlnZW5fNgpmcmFtZV9kaWcgLTEKaXRvYgpleHRyYWN0IDYgMAphcHBfZ2xvYmFsX3B1dApyZXRzdWIKCi8vIGludGVnZXJzCmludGVnZXJzXzExOgpwcm90byAyIDEKYnl0ZWNfMCAvLyAiIgppbnRjXzAgLy8gMApieXRlY18wIC8vICIiCmZyYW1lX2RpZyAtMgpnbG9iYWwgUm91bmQKPD0KYXNzZXJ0CmZyYW1lX2RpZyAtMgppdG9iCmNhbGxzdWIgcHJlZml4a2V5Z2VuXzYKYXBwX2dsb2JhbF9nZXQKaW50Y18wIC8vIDAKZXh0cmFjdF91aW50MTYKZnJhbWVfYnVyeSAxCmJ5dGVjXzAgLy8gIiIKZnJhbWVfYnVyeSAyCmZyYW1lX2RpZyAyCmxlbgppdG9iCmV4dHJhY3QgNiAwCmZyYW1lX2RpZyAyCmNvbmNhdApmcmFtZV9idXJ5IDIKaXR4bl9iZWdpbgppbnRjXzMgLy8gYXBwbAppdHhuX2ZpZWxkIFR5cGVFbnVtCmJ5dGVjXzIgLy8gInJhbmRvbW5lc3NfYmVhY29uIgphcHBfZ2xvYmFsX2dldAppdHhuX2ZpZWxkIEFwcGxpY2F0aW9uSUQKcHVzaGJ5dGVzIDB4MTg5MzkyYzUgLy8gImdldCh1aW50NjQsYnl0ZVtdKWJ5dGVbXSIKaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKZnJhbWVfZGlnIC0yCml0b2IKaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKZnJhbWVfZGlnIDIKaXR4bl9maWVsZCBBcHBsaWNhdGlvbkFyZ3MKaXR4bl9zdWJtaXQKaXR4biBMYXN0TG9nCmV4dHJhY3QgNiAxNgppdHhuIExhc3RMb2cKZXh0cmFjdCAyMCAxOApjYWxsc3ViIHBybmdpbml0XzAKaW50Y18wIC8vIDAKc3RvcmUgNApieXRlY18wIC8vIDB4CnN0b3JlIDUKaW50ZWdlcnNfMTFfbDE6CmxvYWQgNApmcmFtZV9kaWcgMQo8CmJ6IGludGVnZXJzXzExX2w2CnB1c2hpbnQgMTUwIC8vIDE1MApwdXNoaW50IDEwIC8vIDEwCisKc3RvcmUgNgppbnRlZ2Vyc18xMV9sMzoKbG9hZCA2Cmdsb2JhbCBPcGNvZGVCdWRnZXQKPgpibnogaW50ZWdlcnNfMTFfbDUKbG9hZCA1CmNhbGxzdWIgcHJuZ3JhbmRpbnRfMQppdG9iCmNvbmNhdApzdG9yZSA1CmxvYWQgNAppbnRjXzEgLy8gMQorCnN0b3JlIDQKYiBpbnRlZ2Vyc18xMV9sMQppbnRlZ2Vyc18xMV9sNToKaXR4bl9iZWdpbgppbnRjXzMgLy8gYXBwbAppdHhuX2ZpZWxkIFR5cGVFbnVtCmludGNfMiAvLyBEZWxldGVBcHBsaWNhdGlvbgppdHhuX2ZpZWxkIE9uQ29tcGxldGlvbgpieXRlYyA0IC8vIDB4MDY4MTAxCml0eG5fZmllbGQgQXBwcm92YWxQcm9ncmFtCmJ5dGVjIDQgLy8gMHgwNjgxMDEKaXR4bl9maWVsZCBDbGVhclN0YXRlUHJvZ3JhbQppdHhuX3N1Ym1pdApiIGludGVnZXJzXzExX2wzCmludGVnZXJzXzExX2w2OgpmcmFtZV9kaWcgMQppdG9iCmV4dHJhY3QgNiAwCmxvYWQgNQpjb25jYXQKZnJhbWVfYnVyeSAwCnJldHN1YgoKLy8gY29tbWl0X2Nhc3Rlcgpjb21taXRjYXN0ZXJfMTI6CnByb3RvIDAgMAppbnRjXzAgLy8gMApkdXAKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQpidG9pCmZyYW1lX2J1cnkgMAp0eG5hIEFwcGxpY2F0aW9uQXJncyAyCmludGNfMCAvLyAwCmV4dHJhY3RfdWludDE2CmZyYW1lX2J1cnkgMQpmcmFtZV9kaWcgMApmcmFtZV9kaWcgMQpjYWxsc3ViIGNvbW1pdF8xMApyZXRzdWIKCi8vIGludGVnZXJzX2Nhc3RlcgppbnRlZ2Vyc2Nhc3Rlcl8xMzoKcHJvdG8gMCAwCmJ5dGVjXzAgLy8gIiIKaW50Y18wIC8vIDAKZHVwCnR4bmEgQXBwbGljYXRpb25BcmdzIDEKYnRvaQpmcmFtZV9idXJ5IDEKdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgppbnRjXzAgLy8gMApnZXRieXRlCmZyYW1lX2J1cnkgMgpmcmFtZV9kaWcgMQpmcmFtZV9kaWcgMgpjYWxsc3ViIGludGVnZXJzXzExCmZyYW1lX2J1cnkgMApwdXNoYnl0ZXMgMHgxNTFmN2M3NSAvLyAweDE1MWY3Yzc1CmZyYW1lX2RpZyAwCmNvbmNhdApsb2cKcmV0c3Vi",
+    "clear": "I3ByYWdtYSB2ZXJzaW9uIDgKcHVzaGludCAwIC8vIDAKcmV0dXJu"
   },
-  state: {
-    global: {
-      num_byte_slices: 63,
-      num_uints: 1,
+  "state": {
+    "global": {
+      "num_byte_slices": 63,
+      "num_uints": 1
     },
-    local: {
-      num_byte_slices: 0,
-      num_uints: 0,
-    },
+    "local": {
+      "num_byte_slices": 0,
+      "num_uints": 0
+    }
   },
-  schema: {
-    global: {
-      declared: {
-        randomness_beacon: {
-          type: 'uint64',
-          key: 'randomness_beacon',
-          descr: 'Randomness beacon APP ID',
-        },
+  "schema": {
+    "global": {
+      "declared": {
+        "randomness_beacon": {
+          "type": "uint64",
+          "key": "randomness_beacon",
+          "descr": "Randomness beacon APP ID"
+        }
       },
-      reserved: {
-        commitments: {
-          type: 'bytes',
-          max_keys: 63,
-          descr: 'Commitments to randomness',
-        },
-      },
+      "reserved": {
+        "commitments": {
+          "type": "bytes",
+          "max_keys": 63,
+          "descr": "Commitments to randomness"
+        }
+      }
     },
-    local: {
-      declared: {},
-      reserved: {},
-    },
+    "local": {
+      "declared": {},
+      "reserved": {}
+    }
   },
-  contract: {
-    name: 'verifiable_randomness',
-    methods: [
+  "contract": {
+    "name": "verifiable_randomness",
+    "methods": [
       {
-        name: 'commit',
-        args: [
+        "name": "commit",
+        "args": [
           {
-            type: 'uint64',
-            name: 'block_commitment',
+            "type": "uint64",
+            "name": "block_commitment"
           },
           {
-            type: 'uint16',
-            name: 'length',
-          },
+            "type": "uint16",
+            "name": "length"
+          }
         ],
-        returns: {
-          type: 'void',
-        },
+        "returns": {
+          "type": "void"
+        }
       },
       {
-        name: 'integers',
-        args: [
+        "name": "integers",
+        "args": [
           {
-            type: 'uint64',
-            name: 'block_commitment',
+            "type": "uint64",
+            "name": "block_commitment"
           },
           {
-            type: 'application',
-            name: 'randomness_beacon',
-          },
+            "type": "application",
+            "name": "randomness_beacon"
+          }
         ],
-        returns: {
-          type: 'uint64[]',
-        },
-      },
+        "returns": {
+          "type": "uint64[]"
+        }
+      }
     ],
-    networks: {},
+    "networks": {}
   },
-  bare_call_config: {
-    delete_application: 'CALL',
-    no_op: 'CREATE',
-    update_application: 'CALL',
-  },
+  "bare_call_config": {
+    "delete_application": "CALL",
+    "no_op": "CREATE",
+    "update_application": "CALL"
+  }
 }
 
 /**
  * Defines an onCompletionAction of 'no_op'
  */
-export type OnCompleteNoOp = { onCompleteAction?: 'no_op' | OnApplicationComplete.NoOpOC }
+export type OnCompleteNoOp =  { onCompleteAction?: 'no_op' | OnApplicationComplete.NoOpOC }
 /**
  * Defines an onCompletionAction of 'opt_in'
  */
-export type OnCompleteOptIn = { onCompleteAction: 'opt_in' | OnApplicationComplete.OptInOC }
+export type OnCompleteOptIn =  { onCompleteAction: 'opt_in' | OnApplicationComplete.OptInOC }
 /**
  * Defines an onCompletionAction of 'close_out'
  */
-export type OnCompleteCloseOut = { onCompleteAction: 'close_out' | OnApplicationComplete.CloseOutOC }
+export type OnCompleteCloseOut =  { onCompleteAction: 'close_out' | OnApplicationComplete.CloseOutOC }
 /**
  * Defines an onCompletionAction of 'delete_application'
  */
-export type OnCompleteDelApp = { onCompleteAction: 'delete_application' | OnApplicationComplete.DeleteApplicationOC }
+export type OnCompleteDelApp =  { onCompleteAction: 'delete_application' | OnApplicationComplete.DeleteApplicationOC }
 /**
  * Defines an onCompletionAction of 'update_application'
  */
-export type OnCompleteUpdApp = { onCompleteAction: 'update_application' | OnApplicationComplete.UpdateApplicationOC }
+export type OnCompleteUpdApp =  { onCompleteAction: 'update_application' | OnApplicationComplete.UpdateApplicationOC }
 /**
  * A state record containing a single unsigned integer
  */
 export type IntegerState = {
   /**
-   * Gets the state value as a BigInt
+   * Gets the state value as a BigInt 
    */
   asBigInt(): bigint
   /**
@@ -178,28 +173,23 @@ export type VerifiableRandomness = {
   /**
    * Maps method signatures / names to their argument and return types.
    */
-  methods: Record<
-    'commit(uint64,uint16)void' | 'commit',
-    {
+  methods:
+    & Record<'commit(uint64,uint16)void' | 'commit', {
       argsObj: {
         block_commitment: bigint | number
         length: number
       }
       argsTuple: [block_commitment: bigint | number, length: number]
       returns: void
-    }
-  > &
-    Record<
-      'integers(uint64,application)uint64[]' | 'integers',
-      {
-        argsObj: {
-          block_commitment: bigint | number
-          randomness_beacon: number | bigint
-        }
-        argsTuple: [block_commitment: bigint | number, randomness_beacon: number | bigint]
-        returns: bigint[]
+    }>
+    & Record<'integers(uint64,application)uint64[]' | 'integers', {
+      argsObj: {
+        block_commitment: bigint | number
+        randomness_beacon: number | bigint
       }
-    >
+      argsTuple: [block_commitment: bigint | number, randomness_beacon: number | bigint]
+      returns: bigint[]
+    }>
   /**
    * Defines the shape of the global and local state of the application.
    */
@@ -208,7 +198,7 @@ export type VerifiableRandomness = {
       /**
        * Randomness beacon APP ID
        */
-      randomness_beacon?: IntegerState
+      'randomness_beacon'?: IntegerState
     }
   }
 }
@@ -222,8 +212,7 @@ export type VerifiableRandomnessSig = keyof VerifiableRandomness['methods']
 export type TypedCallParams<TSignature extends VerifiableRandomnessSig | undefined> = {
   method: TSignature
   methodArgs: TSignature extends undefined ? undefined : Array<ABIAppCallArg | undefined>
-} & AppClientCallCoreParams &
-  CoreAppCallArgs
+} & AppClientCallCoreParams & CoreAppCallArgs
 /**
  * Defines the arguments required for a bare call
  */
@@ -231,14 +220,11 @@ export type BareCallArgs = Omit<RawAppCallArgs, keyof CoreAppCallArgs>
 /**
  * Maps a method signature from the VerifiableRandomness smart contract to the method's arguments in either tuple of struct form
  */
-export type MethodArgs<TSignature extends VerifiableRandomnessSig> = VerifiableRandomness['methods'][TSignature][
-  | 'argsObj'
-  | 'argsTuple']
+export type MethodArgs<TSignature extends VerifiableRandomnessSig> = VerifiableRandomness['methods'][TSignature]['argsObj' | 'argsTuple']
 /**
  * Maps a method signature from the VerifiableRandomness smart contract to the method's return type
  */
-export type MethodReturn<TSignature extends VerifiableRandomnessSig> =
-  VerifiableRandomness['methods'][TSignature]['returns']
+export type MethodReturn<TSignature extends VerifiableRandomnessSig> = VerifiableRandomness['methods'][TSignature]['returns']
 
 /**
  * A factory for available 'create' calls
@@ -247,7 +233,8 @@ export type VerifiableRandomnessCreateCalls = (typeof VerifiableRandomnessCallFa
 /**
  * Defines supported create methods for this smart contract
  */
-export type VerifiableRandomnessCreateCallParams = TypedCallParams<undefined> & OnCompleteNoOp
+export type VerifiableRandomnessCreateCallParams =
+  | (TypedCallParams<undefined> & (OnCompleteNoOp))
 /**
  * A factory for available 'update' calls
  */
@@ -255,7 +242,8 @@ export type VerifiableRandomnessUpdateCalls = (typeof VerifiableRandomnessCallFa
 /**
  * Defines supported update methods for this smart contract
  */
-export type VerifiableRandomnessUpdateCallParams = TypedCallParams<undefined>
+export type VerifiableRandomnessUpdateCallParams =
+  | TypedCallParams<undefined>
 /**
  * A factory for available 'delete' calls
  */
@@ -263,7 +251,8 @@ export type VerifiableRandomnessDeleteCalls = (typeof VerifiableRandomnessCallFa
 /**
  * Defines supported delete methods for this smart contract
  */
-export type VerifiableRandomnessDeleteCallParams = TypedCallParams<undefined>
+export type VerifiableRandomnessDeleteCallParams =
+  | TypedCallParams<undefined>
 /**
  * Defines arguments required for the deploy method.
  */
@@ -283,6 +272,7 @@ export type VerifiableRandomnessDeployArgs = {
   deleteCall?: (callFactory: VerifiableRandomnessDeleteCalls) => VerifiableRandomnessDeleteCallParams
 }
 
+
 /**
  * Exposes methods for constructing all available smart contract calls
  */
@@ -298,13 +288,7 @@ export abstract class VerifiableRandomnessCallFactory {
        * @param params Any parameters for the call
        * @returns A TypedCallParams object for the call
        */
-      bare(
-        params: BareCallArgs &
-          AppClientCallCoreParams &
-          CoreAppCallArgs &
-          AppClientCompilationParams &
-          OnCompleteNoOp = {},
-      ) {
+      bare(params: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs & AppClientCompilationParams & (OnCompleteNoOp) = {}) {
         return {
           method: undefined,
           methodArgs: undefined,
@@ -377,10 +361,7 @@ export abstract class VerifiableRandomnessCallFactory {
    * @param params Any additional parameters for the call
    * @returns A TypedCallParams object for the call
    */
-  static integers(
-    args: MethodArgs<'integers(uint64,application)uint64[]'>,
-    params: AppClientCallCoreParams & CoreAppCallArgs,
-  ) {
+  static integers(args: MethodArgs<'integers(uint64,application)uint64[]'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
     return {
       method: 'integers(uint64,application)uint64[]' as const,
       methodArgs: Array.isArray(args) ? args : [args.block_commitment, args.randomness_beacon],
@@ -408,13 +389,10 @@ export class VerifiableRandomnessClient {
    */
   constructor(appDetails: AppDetails, private algod: Algodv2) {
     this.sender = appDetails.sender
-    this.appClient = algokit.getAppClient(
-      {
-        ...appDetails,
-        app: APP_SPEC,
-      },
-      algod,
-    )
+    this.appClient = algokit.getAppClient({
+      ...appDetails,
+      app: APP_SPEC
+    }, algod)
   }
 
   /**
@@ -424,18 +402,14 @@ export class VerifiableRandomnessClient {
    * @param returnValueFormatter An optional delegate to format the return value if required
    * @returns The smart contract response with an updated return value
    */
-  protected mapReturnValue<TReturn>(
-    result: AppCallTransactionResult,
-    returnValueFormatter?: (value: any) => TReturn,
-  ): AppCallTransactionResultOfType<TReturn> {
-    if (result.return?.decodeError) {
+  protected mapReturnValue<TReturn>(result: AppCallTransactionResult, returnValueFormatter?: (value: any) => TReturn): AppCallTransactionResultOfType<TReturn> {
+    if(result.return?.decodeError) {
       throw result.return.decodeError
     }
-    const returnValue =
-      result.return?.returnValue !== undefined && returnValueFormatter !== undefined
-        ? returnValueFormatter(result.return.returnValue)
-        : (result.return?.returnValue as TReturn | undefined)
-    return { ...result, return: returnValue }
+    const returnValue = result.return?.returnValue !== undefined && returnValueFormatter !== undefined
+      ? returnValueFormatter(result.return.returnValue)
+      : result.return?.returnValue as TReturn | undefined
+      return { ...result, return: returnValue }
   }
 
   /**
@@ -445,14 +419,8 @@ export class VerifiableRandomnessClient {
    * @param returnValueFormatter An optional delegate which when provided will be used to map non-undefined return values to the target type
    * @returns The result of the smart contract call
    */
-  public async call<TSignature extends keyof VerifiableRandomness['methods']>(
-    typedCallParams: TypedCallParams<TSignature>,
-    returnValueFormatter?: (value: any) => MethodReturn<TSignature>,
-  ) {
-    return this.mapReturnValue<MethodReturn<TSignature>>(
-      await this.appClient.call(typedCallParams),
-      returnValueFormatter,
-    )
+  public async call<TSignature extends keyof VerifiableRandomness['methods']>(typedCallParams: TypedCallParams<TSignature>, returnValueFormatter?: (value: any) => MethodReturn<TSignature>) {
+    return this.mapReturnValue<MethodReturn<TSignature>>(await this.appClient.call(typedCallParams), returnValueFormatter)
   }
 
   /**
@@ -461,9 +429,7 @@ export class VerifiableRandomnessClient {
    * @param params The arguments for the contract calls and any additional parameters for the call
    * @returns The deployment result
    */
-  public deploy(
-    params: VerifiableRandomnessDeployArgs & AppClientDeployCoreParams = {},
-  ): ReturnType<ApplicationClient['deploy']> {
+  public deploy(params: VerifiableRandomnessDeployArgs & AppClientDeployCoreParams = {}): ReturnType<ApplicationClient['deploy']> {
     const createArgs = params.createCall?.(VerifiableRandomnessCallFactory.create)
     const updateArgs = params.updateCall?.(VerifiableRandomnessCallFactory.update)
     const deleteArgs = params.deleteCall?.(VerifiableRandomnessCallFactory.delete)
@@ -488,13 +454,7 @@ export class VerifiableRandomnessClient {
        * @param args The arguments for the bare call
        * @returns The create result
        */
-      bare(
-        args: BareCallArgs &
-          AppClientCallCoreParams &
-          AppClientCompilationParams &
-          CoreAppCallArgs &
-          OnCompleteNoOp = {},
-      ): Promise<AppCallTransactionResultOfType<undefined>> {
+      bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs & (OnCompleteNoOp) = {}): Promise<AppCallTransactionResultOfType<undefined>> {
         return $this.appClient.create(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
       },
     }
@@ -512,9 +472,7 @@ export class VerifiableRandomnessClient {
        * @param args The arguments for the bare call
        * @returns The update result
        */
-      bare(
-        args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs = {},
-      ): Promise<AppCallTransactionResultOfType<undefined>> {
+      bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
         return $this.appClient.update(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
       },
     }
@@ -532,9 +490,7 @@ export class VerifiableRandomnessClient {
        * @param args The arguments for the bare call
        * @returns The delete result
        */
-      bare(
-        args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {},
-      ): Promise<AppCallTransactionResultOfType<undefined>> {
+      bare(args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
         return $this.appClient.delete(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
       },
     }
@@ -568,10 +524,7 @@ export class VerifiableRandomnessClient {
    * @param params Any additional parameters for the call
    * @returns The result of the call
    */
-  public integers(
-    args: MethodArgs<'integers(uint64,application)uint64[]'>,
-    params: AppClientCallCoreParams & CoreAppCallArgs = {},
-  ) {
+  public integers(args: MethodArgs<'integers(uint64,application)uint64[]'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
     return this.call(VerifiableRandomnessCallFactory.integers(args, params))
   }
 
@@ -593,7 +546,7 @@ export class VerifiableRandomnessClient {
       },
       asByteArray(): Uint8Array {
         return value.valueRaw
-      },
+      }
     }
   }
 
@@ -634,23 +587,16 @@ export class VerifiableRandomnessClient {
   public compose(): VerifiableRandomnessComposer {
     const client = this
     const atc = new AtomicTransactionComposer()
-    let promiseChain: Promise<unknown> = Promise.resolve()
+    let promiseChain:Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
       commit(args: MethodArgs<'commit(uint64,uint16)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() =>
-          client.commit(args, { ...params, sendParams: { ...params?.sendParams, skipSending: true, atc } }),
-        )
+        promiseChain = promiseChain.then(() => client.commit(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
-      integers(
-        args: MethodArgs<'integers(uint64,application)uint64[]'>,
-        params?: AppClientCallCoreParams & CoreAppCallArgs,
-      ) {
-        promiseChain = promiseChain.then(() =>
-          client.integers(args, { ...params, sendParams: { ...params?.sendParams, skipSending: true, atc } }),
-        )
+      integers(args: MethodArgs<'integers(uint64,application)uint64[]'>, params?: AppClientCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.integers(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
@@ -658,9 +604,7 @@ export class VerifiableRandomnessClient {
         const $this = this
         return {
           bare(args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs) {
-            promiseChain = promiseChain.then(() =>
-              client.update.bare({ ...args, sendParams: { ...args?.sendParams, skipSending: true, atc } }),
-            )
+            promiseChain = promiseChain.then(() => client.update.bare({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
             resultMappers.push(undefined)
             return $this
           },
@@ -670,28 +614,19 @@ export class VerifiableRandomnessClient {
         const $this = this
         return {
           bare(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs) {
-            promiseChain = promiseChain.then(() =>
-              client.delete.bare({ ...args, sendParams: { ...args?.sendParams, skipSending: true, atc } }),
-            )
+            promiseChain = promiseChain.then(() => client.delete.bare({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
             resultMappers.push(undefined)
             return $this
           },
         }
       },
       clearState(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs) {
-        promiseChain = promiseChain.then(() =>
-          client.clearState({ ...args, sendParams: { ...args?.sendParams, skipSending: true, atc } }),
-        )
+        promiseChain = promiseChain.then(() => client.clearState({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
         return this
       },
-      addTransaction(
-        txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>,
-        defaultSender?: SendTransactionFrom,
-      ) {
-        promiseChain = promiseChain.then(async () =>
-          atc.addTransaction(await algokit.getTransactionWithSigner(txn, defaultSender ?? client.sender)),
-        )
+      addTransaction(txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>, defaultSender?: SendTransactionFrom) {
+        promiseChain = promiseChain.then(async () => atc.addTransaction(await algokit.getTransactionWithSigner(txn, defaultSender ?? client.sender)))
         return this
       },
       async atc() {
@@ -708,11 +643,9 @@ export class VerifiableRandomnessClient {
         const result = await algokit.sendAtomicTransactionComposer({ atc, sendParams: {} }, client.algod)
         return {
           ...result,
-          returns: result.returns?.map((val, i) =>
-            resultMappers[i] !== undefined ? resultMappers[i]!(val.returnValue) : val.returnValue,
-          ),
+          returns: result.returns?.map((val, i) => resultMappers[i] !== undefined ? resultMappers[i]!(val.returnValue) : val.returnValue)
         }
-      },
+      }
     } as unknown as VerifiableRandomnessComposer
   }
 }
@@ -724,10 +657,7 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  commit(
-    args: MethodArgs<'commit(uint64,uint16)void'>,
-    params?: AppClientCallCoreParams & CoreAppCallArgs,
-  ): VerifiableRandomnessComposer<[...TReturns, MethodReturn<'commit(uint64,uint16)void'>]>
+  commit(args: MethodArgs<'commit(uint64,uint16)void'>, params?: AppClientCallCoreParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, MethodReturn<'commit(uint64,uint16)void'>]>
 
   /**
    * Calls the integers(uint64,application)uint64[] ABI method.
@@ -736,10 +666,7 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
    * @param params Any additional parameters for the call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  integers(
-    args: MethodArgs<'integers(uint64,application)uint64[]'>,
-    params?: AppClientCallCoreParams & CoreAppCallArgs,
-  ): VerifiableRandomnessComposer<[...TReturns, MethodReturn<'integers(uint64,application)uint64[]'>]>
+  integers(args: MethodArgs<'integers(uint64,application)uint64[]'>, params?: AppClientCallCoreParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, MethodReturn<'integers(uint64,application)uint64[]'>]>
 
   /**
    * Gets available update methods
@@ -751,9 +678,7 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
      * @param args The arguments for the bare call
      * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
      */
-    bare(
-      args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs,
-    ): VerifiableRandomnessComposer<[...TReturns, undefined]>
+    bare(args?: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, undefined]>
   }
 
   /**
@@ -766,9 +691,7 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
      * @param args The arguments for the bare call
      * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
      */
-    bare(
-      args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs,
-    ): VerifiableRandomnessComposer<[...TReturns, undefined]>
+    bare(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, undefined]>
   }
 
   /**
@@ -777,9 +700,7 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
    * @param args The arguments for the bare call
    * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
    */
-  clearState(
-    args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs,
-  ): VerifiableRandomnessComposer<[...TReturns, undefined]>
+  clearState(args?: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs): VerifiableRandomnessComposer<[...TReturns, undefined]>
 
   /**
    * Adds a transaction to the composer
@@ -787,10 +708,7 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
    * @param txn One of: A TransactionWithSigner object (returned as is), a TransactionToSign object (signer is obtained from the signer property), a Transaction object (signer is extracted from the defaultSender parameter), an async SendTransactionResult returned by one of algokit utils helpers (signer is obtained from the defaultSender parameter)
    * @param defaultSender The default sender to be used to obtain a signer where the object provided to the transaction parameter does not include a signer.
    */
-  addTransaction(
-    txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>,
-    defaultSender?: SendTransactionFrom,
-  ): VerifiableRandomnessComposer<TReturns>
+  addTransaction(txn: TransactionWithSigner | TransactionToSign | Transaction | Promise<SendTransactionResult>, defaultSender?: SendTransactionFrom): VerifiableRandomnessComposer<TReturns>
   /**
    * Returns the underlying AtomicTransactionComposer instance
    */

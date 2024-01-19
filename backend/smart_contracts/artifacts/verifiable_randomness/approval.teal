@@ -1,6 +1,6 @@
 #pragma version 8
-intcblock 0 1
-bytecblock 0x 0x0100000000000000000000000000000000 0x72616e646f6d6e6573735f626561636f6e 0x01
+intcblock 0 1 5 6
+bytecblock 0x 0x0100000000000000000000000000000000 0x72616e646f6d6e6573735f626561636f6e 0x01 0x068101
 txn NumAppArgs
 intc_0 // 0
 ==
@@ -48,7 +48,7 @@ pushint 4 // UpdateApplication
 ==
 bnz main_l11
 txn OnCompletion
-pushint 5 // DeleteApplication
+intc_2 // DeleteApplication
 ==
 bnz main_l10
 err
@@ -128,18 +128,18 @@ itob
 b~
 bytec_3 // 0x01
 b+
-store 6
-load 6
+store 7
+load 7
 len
 pushint 8 // 8
 ==
 bnz twoscomplement_3_l2
-load 6
+load 7
 intc_1 // 1
 extract_uint64
 retsub
 twoscomplement_3_l2:
-load 6
+load 7
 btoi
 retsub
 
@@ -269,7 +269,7 @@ frame_dig 2
 concat
 frame_bury 2
 itxn_begin
-pushint 6 // appl
+intc_3 // appl
 itxn_field TypeEnum
 bytec_2 // "randomness_beacon"
 app_global_get
@@ -283,19 +283,28 @@ frame_dig 2
 itxn_field ApplicationArgs
 itxn_submit
 itxn LastLog
-extract 4 16
+extract 6 16
 itxn LastLog
-extract 20 16
+extract 20 18
 callsub prnginit_0
 intc_0 // 0
 store 4
-bytec_0 // ""
+bytec_0 // 0x
 store 5
 integers_11_l1:
 load 4
 frame_dig 1
 <
-bz integers_11_l3
+bz integers_11_l6
+pushint 150 // 150
+pushint 10 // 10
++
+store 6
+integers_11_l3:
+load 6
+global OpcodeBudget
+>
+bnz integers_11_l5
 load 5
 callsub prngrandint_1
 itob
@@ -306,7 +315,19 @@ intc_1 // 1
 +
 store 4
 b integers_11_l1
-integers_11_l3:
+integers_11_l5:
+itxn_begin
+intc_3 // appl
+itxn_field TypeEnum
+intc_2 // DeleteApplication
+itxn_field OnCompletion
+bytec 4 // 0x068101
+itxn_field ApprovalProgram
+bytec 4 // 0x068101
+itxn_field ClearStateProgram
+itxn_submit
+b integers_11_l3
+integers_11_l6:
 frame_dig 1
 itob
 extract 6 0

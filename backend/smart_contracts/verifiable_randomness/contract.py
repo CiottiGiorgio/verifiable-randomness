@@ -10,19 +10,16 @@ class VerifiableRandomnessState:
         stack_type=pt.TealType.uint64,
         default=pt.Tmpl.Int("TMPL_RANDOMNESS_BEACON_APP_ID"),
         static=True,
-        descr="Randomness beacon APP ID"
+        descr="Randomness beacon APP ID",
     )
     commitments = beaker.state.ReservedGlobalStateValue(
-        stack_type=pt.TealType.bytes,
-        max_keys=63,
-        descr="Commitments to randomness"
+        stack_type=pt.TealType.bytes, max_keys=63, descr="Commitments to randomness"
     )
 
 
-app = (
-    beaker.Application("verifiable_randomness", state=VerifiableRandomnessState())
-    .apply(beaker.unconditional_create_approval, initialize_global_state=True)
-)
+app = beaker.Application(
+    "verifiable_randomness", state=VerifiableRandomnessState()
+).apply(beaker.unconditional_create_approval, initialize_global_state=True)
 
 
 @app.update(authorize=beaker.Authorize.only_creator(), bare=True)
@@ -54,8 +51,10 @@ def integers(
     block_commitment: pt.abi.Uint64,
     randomness_beacon: pt.abi.Application,
     *,
-    output: pt.abi.DynamicArray[pt.abi.Uint64]
+    output: pt.abi.DynamicArray[pt.abi.Uint64],
 ) -> pt.Expr:
+    opup = pt.OpUp(pt.OpUpMode.OnCall)
+
     length = pt.abi.Uint16()
 
     i = pt.ScratchVar(pt.TealType.uint64)
@@ -64,28 +63,36 @@ def integers(
     return pt.Seq(
         pt.Assert(block_commitment.get() <= pt.Global.round()),
         length.decode(app.state.commitments[block_commitment.encode()]),
-
         (user_data := pt.abi.DynamicBytes()).set(pt.Bytes("")),
         pt.InnerTxnBuilder.ExecuteMethodCall(
             app_id=app.state.randomness_beacon.get(),
             method_signature="get(uint64,byte[])byte[]",
-            args=[block_commitment, user_data]
+            args=[block_commitment, user_data],
         ),
+        # This costs roughly 200 opcode budget.
         prng_init(
-            pt.Substring(pt.InnerTxn.last_log(), pt.Int(4), pt.Int(16+4)),
-            pt.Substring(pt.InnerTxn.last_log(), pt.Int(16+4), pt.Int(2*16+4))
+            pt.Substring(pt.InnerTxn.last_log(), pt.Int(6), pt.Int(16 + 6)),
+            pt.Substring(pt.InnerTxn.last_log(), pt.Int(16 + 4), pt.Int(2 * 16 + 6)),
         ),
-
         pt.For(
-            pt.Seq(
-                i.store(pt.Int(0)),
-                random_ints.store(pt.Bytes(""))
-            ),
+            pt.Seq(i.store(pt.Int(0)), random_ints.store(pt.Bytes(b""))),
             i.load() < length.get(),
-            i.store(i.load() + pt.Int(1))
-        ).Do(pt.Seq(
-            random_ints.store(pt.Concat(random_ints.load(), pt.Itob(prng_randint())))
-        )),
-
-        output.decode(pt.Concat(length.encode(), random_ints.load()))
+            i.store(i.load() + pt.Int(1)),
+        ).Do(
+            pt.Seq(
+                # Based on the cost of generating a new number, let's say we need at least 150 opcode budget to get
+                #  to the next iteration
+                opup.ensure_budget(pt.Int(150)),
+                # prng_randint costs about 110 opcode budget.
+                random_ints.store(
+                    pt.Concat(random_ints.load(), pt.Itob(prng_randint()))
+                ),
+            )
+        ),
+        output.decode(
+            pt.Concat(
+                length.encode(),
+                random_ints.load(),
+            )
+        ),
     )

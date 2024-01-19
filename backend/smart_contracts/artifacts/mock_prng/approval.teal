@@ -193,7 +193,7 @@ intc_0 // 0
 store 4
 integers_8_l1:
 load 4
-pushint 100000 // 100000
+pushint 30000 // 30000
 global MinTxnFee
 /
 <

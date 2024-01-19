@@ -55,9 +55,9 @@ describe('mock prng contract', () => {
         11774395822783136600n,
         17944889938176486912n,
         14437308781460811564n,
-        6944869453235589526n
-      ]
-    ]
+        6944869453235589526n,
+      ],
+    ],
   ])(
     'compare SC PRNG against known correct sequence',
     async (initstate, initseq, expected) => {
@@ -66,11 +66,27 @@ describe('mock prng contract', () => {
 
       const result = await client.integers(
         { initstate: initstate, initseq: initseq, length: 6 },
-        { sendParams: { fee: microAlgos(101e3) } },
+        { sendParams: { fee: microAlgos(31e3) } },
       )
 
       expect(result.return).toStrictEqual(expected)
     },
     10e6,
   )
+
+  test('can generate a long sequence', async () => {
+    const { algod, indexer, testAccount } = localnet.context
+    const { client } = await deploy(testAccount, algod, indexer)
+
+    // Max log size = 1024 B which means that, if 4 B are used for the return selector and 2 B for the array length,
+    //  we have floor((1024 - 6) / 8) = 127.
+    const wantedSequenceLength = 127
+
+    const result = await client.integers(
+      { initstate: new Uint8Array(16), initseq: new Uint8Array(16), length: wantedSequenceLength },
+      { sendParams: { fee: microAlgos(31e3) } },
+    )
+
+    expect(result.return!.length).toBe(wantedSequenceLength)
+  })
 })

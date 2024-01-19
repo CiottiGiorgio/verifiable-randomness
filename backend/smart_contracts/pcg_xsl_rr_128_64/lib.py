@@ -7,6 +7,9 @@ PRNG_STATE = pt.ScratchVar(pt.TealType.bytes)
 PRNG_INC = pt.ScratchVar(pt.TealType.bytes)
 
 
+# Best case cost analysis:
+# tot: 2 * BytesMod + 2 * BytesAdd + BytesMul + 2 * step + single cost opcodes =
+# = 40 + 20 + 20 + 110 + 10 = 200 opcode budget
 # https://github.com/imneme/pcg-c/blob/83252d9c23df9c82ecb42210afed61a7b42402d7/include/pcg_variants.h#L830
 @pt.Subroutine(pt.TealType.none)
 def prng_init(initstate, initseq) -> pt.Expr:
@@ -47,6 +50,8 @@ def prng_init(initstate, initseq) -> pt.Expr:
     )
 
 
+# Best case cost analysis:
+# tot: step + rotation + single cost opcodes = 55 + 50 + 3 = 108 opcode budget
 # https://github.com/imneme/pcg-c/blob/83252d9c23df9c82ecb42210afed61a7b42402d7/include/pcg_variants.h#L2185
 @pt.Subroutine(pt.TealType.uint64)
 def prng_randint() -> pt.Expr:
@@ -59,6 +64,8 @@ def prng_randint() -> pt.Expr:
     )
 
 
+# Best case cost analysis:
+# tot: BytesMod + BytesAdd + BytesMul + single cost opcodes = 20 + 10 + 20 + 5 = 55 opcode budget
 # https://github.com/imneme/pcg-c/blob/83252d9c23df9c82ecb42210afed61a7b42402d7/include/pcg_variants.h#L650
 @pt.Subroutine(pt.TealType.none)
 def __prng_setseq_step() -> pt.Expr:
@@ -77,6 +84,8 @@ def __prng_setseq_step() -> pt.Expr:
     )
 
 
+# Best case cost analysis:
+# tot: BytesAdd + BytesNot + single cost opcodes = 10 + 4 + 9 = 23 opcode budget
 @pt.Subroutine(pt.TealType.uint64)
 def __twos_complement(value) -> pt.Expr:
     temp = pt.ScratchVar(pt.TealType.bytes)
@@ -94,6 +103,8 @@ def __twos_complement(value) -> pt.Expr:
     )
 
 
+# Best case cost analysis:
+# tot: twos_complement + single cost opcodes = 23 + 9 = 32
 # https://github.com/imneme/pcg-c/blob/master/include/pcg_variants.h#L96
 @pt.Subroutine(pt.TealType.uint64)
 def __prng_rotation_64(value, rot) -> pt.Expr:
@@ -115,6 +126,8 @@ def __prng_rotation_64(value, rot) -> pt.Expr:
     )
 
 
+# Best case cost analysis:
+# tot: rotation + single cost opcodes = 32 + 18 = 50
 # https://github.com/imneme/pcg-c/blob/master/include/pcg_variants.h#L243
 @pt.Subroutine(pt.TealType.uint64)
 def __prng_rotation() -> pt.Expr:

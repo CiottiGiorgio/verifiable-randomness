@@ -39,7 +39,7 @@ def integers(
     result = pt.ScratchVar(pt.TealType.bytes)
 
     return pt.Seq(
-        opup.maximize_budget(pt.Int(100_000)),
+        opup.maximize_budget(pt.Int(30_000)),
 
         prng_init(initstate.get(), initseq.get()),
 
