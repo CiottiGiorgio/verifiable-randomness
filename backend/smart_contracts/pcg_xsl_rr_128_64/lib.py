@@ -9,7 +9,7 @@ PRNG_INC = pt.ScratchVar(pt.TealType.bytes)
 
 # Best case cost analysis:
 # tot: 2 * BytesMod + 2 * BytesAdd + BytesMul + 2 * step + single cost opcodes =
-# = 40 + 20 + 20 + 110 + 10 = 200 opcode budget
+# = 40 + 20 + 20 + 126 + 10 = 216 opcode budget
 # https://github.com/imneme/pcg-c/blob/83252d9c23df9c82ecb42210afed61a7b42402d7/include/pcg_variants.h#L830
 @pt.Subroutine(pt.TealType.none)
 def prng_init(initstate, initseq) -> pt.Expr:
@@ -51,7 +51,7 @@ def prng_init(initstate, initseq) -> pt.Expr:
 
 
 # Best case cost analysis:
-# tot: step + rotation + single cost opcodes = 55 + 50 + 3 = 108 opcode budget
+# tot: step + rotation + single cost opcodes = 63 + 50 + 3 = 116 opcode budget
 # https://github.com/imneme/pcg-c/blob/83252d9c23df9c82ecb42210afed61a7b42402d7/include/pcg_variants.h#L2185
 @pt.Subroutine(pt.TealType.uint64)
 def prng_randint() -> pt.Expr:
@@ -65,21 +65,31 @@ def prng_randint() -> pt.Expr:
 
 
 # Best case cost analysis:
-# tot: BytesMod + BytesAdd + BytesMul + single cost opcodes = 20 + 10 + 20 + 5 = 55 opcode budget
+# tot: BytesMod + BytesAdd + BytesMul + BytesOr + single cost opcodes = 20 + 10 + 20 + 6 + 7 = 63 opcode budget
 # https://github.com/imneme/pcg-c/blob/83252d9c23df9c82ecb42210afed61a7b42402d7/include/pcg_variants.h#L650
 @pt.Subroutine(pt.TealType.none)
 def __prng_setseq_step() -> pt.Expr:
-    return PRNG_STATE.store(
-        # L652
-        pt.BytesMod(
-            pt.BytesAdd(
-                pt.BytesMul(
-                    PRNG_STATE.load(),
-                    PRNG_DEFAULT_MULTIPLIER
+    return pt.Seq(
+        PRNG_STATE.store(
+            # L652
+            pt.BytesMod(
+                pt.BytesAdd(
+                    pt.BytesMul(
+                        PRNG_STATE.load(),
+                        PRNG_DEFAULT_MULTIPLIER
+                    ),
+                    PRNG_INC.load()
                 ),
-                PRNG_INC.load()
-            ),
-            PRNG_STATE_LENGTH
+                PRNG_STATE_LENGTH
+            )
+        ),
+
+        # This must always be 16 bytes long because some operations rely on the length of this bytearray.
+        PRNG_STATE.store(
+            pt.BytesOr(
+                pt.Bytes(b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"),
+                PRNG_STATE.load()
+            )
         )
     )
 
