@@ -5,7 +5,8 @@ import { useWallet } from '@txnlab/use-wallet'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
 import { VerifiableRandomnessClient } from '../contracts/verifiable_randomness'
-import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
+import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
+import { useImmer } from 'use-immer'
 
 interface AppCallsInterface {
   openModal: boolean
@@ -14,20 +15,20 @@ interface AppCallsInterface {
 
 const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
   const [loading, setLoading] = useState<boolean>(false)
-  const [contractInput, setContractInput] = useState<string>('')
+  const [integersArgs, updateIntegersArgs] = useImmer<{
+    round?: number
+    user_data?: Uint8Array
+    randomness_beacon: bigint
+    length?: number
+  }>({
+    randomness_beacon: BigInt(import.meta.env.VITE_RANDOMNESS_BEACON_ID),
+  })
 
   const algodConfig = getAlgodConfigFromViteEnvironment()
   const algodClient = algokit.getAlgoClient({
     server: algodConfig.server,
     port: algodConfig.port,
     token: algodConfig.token,
-  })
-
-  const indexerConfig = getIndexerConfigFromViteEnvironment()
-  const indexer = algokit.getAlgoIndexerClient({
-    server: indexerConfig.server,
-    port: indexerConfig.port,
-    token: indexerConfig.token,
   })
 
   const { enqueueSnackbar } = useSnackbar()
@@ -37,10 +38,9 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
     setLoading(true)
 
     const appDetails = {
-      resolveBy: 'creatorAndName',
+      resolveBy: 'id',
+      id: BigInt(import.meta.env.VITE_VERIFIABLE_RANDOMNESS_ID),
       sender: { signer, addr: activeAddress } as TransactionSignerAccount,
-      creatorAddress: activeAddress,
-      findExistingUsing: indexer,
     } as AppDetails
 
     const appClient = new VerifiableRandomnessClient(appDetails, algodClient)
@@ -50,41 +50,65 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
     // Instead, you would deploy your contract on your backend and reference it by id.
     // Given the simplicity of the starter contract, we are deploying it on the frontend
     // for demonstration purposes.
-    const isLocal = await algokit.isLocalNet(algodClient)
-    const deployParams: Parameters<typeof appClient.deploy>[0] = {
-      allowDelete: isLocal,
-      allowUpdate: isLocal,
-      onSchemaBreak: isLocal ? 'replace' : 'fail',
-      onUpdate: isLocal ? 'update' : 'fail',
+    // const isLocal = await algokit.isLocalNet(algodClient)
+    // const deployParams: Parameters<typeof appClient.deploy>[0] = {
+    //   allowDelete: isLocal,
+    //   allowUpdate: isLocal,
+    //   onSchemaBreak: isLocal ? 'replace' : 'fail',
+    //   onUpdate: isLocal ? 'update' : 'fail',
+    // }
+    // await appClient.deploy(deployParams).catch((e: Error) => {
+    //   enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
+    //   setLoading(false)
+    //   return
+    // })
+
+    if (integersArgs.round !== undefined && integersArgs.length !== undefined) {
+      const response = await appClient.integers({ user_data: new Uint8Array(), ...integersArgs })
+      enqueueSnackbar(`Response from the contract: ${response?.return}`, { variant: 'success' })
+      setLoading(false)
+      return
     }
-    await appClient.deploy(deployParams).catch((e: Error) => {
-      enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
-      setLoading(false)
-      return
-    })
-
-    const response = await appClient.hello({ name: contractInput }).catch((e: Error) => {
-      enqueueSnackbar(`Error calling the contract: ${e.message}`, { variant: 'error' })
-      setLoading(false)
-      return
-    })
-
-    enqueueSnackbar(`Response from the contract: ${response?.return}`, { variant: 'success' })
+    enqueueSnackbar('Must set all fields', { variant: 'error' })
     setLoading(false)
   }
 
   return (
     <dialog id="appcalls_modal" className={`modal ${openModal ? 'modal-open' : ''} bg-slate-200`}>
       <form method="dialog" className="modal-box">
-        <h3 className="font-bold text-lg">Say hello to your Algorand smart contract</h3>
+        <h3 className="font-bold text-lg">Extract a sequence of random uint64</h3>
         <br />
         <input
           type="text"
-          placeholder="Provide input to hello function"
+          placeholder="Round number"
           className="input input-bordered w-full"
-          value={contractInput}
+          // value={integersArgs.round}
           onChange={(e) => {
-            setContractInput(e.target.value)
+            updateIntegersArgs((draft) => {
+              draft.round = parseInt(e.target.value)
+            })
+          }}
+        />
+        <input
+          type="text"
+          placeholder="User data"
+          className="input input-bordered w-full"
+          // value={integersArgs.user_data}
+          onChange={(e) => {
+            updateIntegersArgs((draft) => {
+              draft.user_data = Buffer.from(e.target.value)
+            })
+          }}
+        />
+        <input
+          type="text"
+          placeholder="Sequence length"
+          className="input input-bordered w-full"
+          // value={integersArgs.length}
+          onChange={(e) => {
+            updateIntegersArgs((draft) => {
+              draft.length = parseInt(e.target.value)
+            })
           }}
         />
         <div className="modal-action ">
