@@ -39,7 +39,7 @@ export async function deploy() {
 
   // If app was just created fund the app account
   if (['create', 'replace'].includes(app.operationPerformed)) {
-    algokit.transferAlgos(
+    await algokit.transferAlgos(
       {
         amount: algokit.algos(1),
         from: deployer,
@@ -48,8 +48,4 @@ export async function deploy() {
       algod,
     )
   }
-
-  const method = 'hello'
-  const response = await appClient.hello({ name: 'world' })
-  console.log(`Called ${method} on ${app.name} (${app.appId}) with name = world, received: ${response.return}`)
 }
