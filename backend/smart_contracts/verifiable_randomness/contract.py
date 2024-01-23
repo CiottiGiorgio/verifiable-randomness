@@ -39,35 +39,24 @@ def delete() -> pt.Expr:
 
 
 @app.external
-def commit(block_commitment: pt.abi.Uint64, length: pt.abi.Uint16) -> pt.Expr:
-    return pt.Seq(
-        pt.Assert(block_commitment.get() > pt.Global.round()),
-        app.state.commitments[block_commitment.encode()].set(length.encode()),
-    )
-
-
-@app.external
 def integers(
-    block_commitment: pt.abi.Uint64,
+    round: pt.abi.Uint64,
+    user_data: pt.abi.DynamicBytes,
     randomness_beacon: pt.abi.Application,
+    length: pt.abi.Uint16,
     *,
     output: pt.abi.DynamicArray[pt.abi.Uint64],
 ) -> pt.Expr:
     opup = pt.OpUp(pt.OpUpMode.OnCall)
 
-    length = pt.abi.Uint16()
-
     i = pt.ScratchVar(pt.TealType.uint64)
-    random_ints = pt.ScratchVar(pt.TealType.bytes)
+    random_uints = pt.ScratchVar(pt.TealType.bytes)
 
     return pt.Seq(
-        pt.Assert(block_commitment.get() <= pt.Global.round()),
-        length.decode(app.state.commitments[block_commitment.encode()]),
-        (user_data := pt.abi.DynamicBytes()).set(pt.Bytes("")),
         pt.InnerTxnBuilder.ExecuteMethodCall(
             app_id=app.state.randomness_beacon.get(),
-            method_signature="get(uint64,byte[])byte[]",
-            args=[block_commitment, user_data],
+            method_signature="must_get(uint64,byte[])byte[]",
+            args=[round, user_data],
         ),
         # This costs roughly 200 opcode budget.
         prng_init(
@@ -75,7 +64,7 @@ def integers(
             pt.Substring(pt.InnerTxn.last_log(), pt.Int(16 + 4), pt.Int(2 * 16 + 6)),
         ),
         pt.For(
-            pt.Seq(i.store(pt.Int(0)), random_ints.store(pt.Bytes(b""))),
+            pt.Seq(i.store(pt.Int(0)), random_uints.store(pt.Bytes(b""))),
             i.load() < length.get(),
             i.store(i.load() + pt.Int(1)),
         ).Do(
@@ -84,15 +73,15 @@ def integers(
                 #  to the next iteration
                 opup.ensure_budget(pt.Int(150)),
                 # prng_randint costs about 110 opcode budget.
-                random_ints.store(
-                    pt.Concat(random_ints.load(), pt.Itob(prng_randint()))
+                random_uints.store(
+                    pt.Concat(random_uints.load(), pt.Itob(prng_randint()))
                 ),
             )
         ),
         output.decode(
             pt.Concat(
                 length.encode(),
-                random_ints.load(),
+                random_uints.load(),
             )
         ),
     )

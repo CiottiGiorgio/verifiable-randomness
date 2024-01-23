@@ -24,5 +24,5 @@ def delete() -> pt.Expr:
 
 
 @app.external
-def get(block: pt.abi.Uint64, data: pt.abi.DynamicBytes, *, output: pt.abi.DynamicBytes) -> pt.Expr:
+def must_get(block: pt.abi.Uint64, user_data: pt.abi.DynamicBytes, *, output: pt.abi.DynamicBytes) -> pt.Expr:
     return output.set(pt.Tmpl.Bytes("TMPL_MOCK_VRF_OUTPUT"))

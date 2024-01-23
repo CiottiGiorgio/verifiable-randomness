@@ -6,7 +6,7 @@ intc_0 // 0
 ==
 bnz main_l4
 txna ApplicationArgs 0
-pushbytes 0x189392c5 // "get(uint64,byte[])byte[]"
+pushbytes 0x47c20c23 // "must_get(uint64,byte[])byte[]"
 ==
 bnz main_l3
 err
@@ -19,7 +19,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub getcaster_3
+callsub mustgetcaster_3
 intc_1 // 1
 return
 main_l4:
@@ -86,8 +86,8 @@ pushint TMPL_DELETABLE // TMPL_DELETABLE
 assert
 retsub
 
-// get
-get_2:
+// must_get
+mustget_2:
 proto 2 1
 bytec_0 // ""
 pushbytes TMPL_MOCK_VRF_OUTPUT // TMPL_MOCK_VRF_OUTPUT
@@ -101,8 +101,8 @@ concat
 frame_bury 0
 retsub
 
-// get_caster
-getcaster_3:
+// must_get_caster
+mustgetcaster_3:
 proto 0 0
 bytec_0 // ""
 intc_0 // 0
@@ -114,7 +114,7 @@ txna ApplicationArgs 2
 frame_bury 2
 frame_dig 1
 frame_dig 2
-callsub get_2
+callsub mustget_2
 frame_bury 0
 pushbytes 0x151f7c75 // 0x151f7c75
 frame_dig 0

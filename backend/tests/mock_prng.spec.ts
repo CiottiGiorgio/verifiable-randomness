@@ -75,10 +75,7 @@ describe('mock prng contract', () => {
   )
 
   test.each([
-    [
-      new Uint8Array(16),
-      new Uint8Array(16)
-    ],
+    [new Uint8Array(16), new Uint8Array(16)],
     // This seed used to be a pathological case for our PRNG because, after 41 number generations,
     //  the internal state becomes a 15 bytes number (instead of 16).
     // This is because any bytes math operation in the AVM will strip all 0 bytes to the left of the MSB.
@@ -86,7 +83,7 @@ describe('mock prng contract', () => {
     // This seed must always be a test case to make sure that we don't regress.
     [
       new Uint8Array([0, 32, 63, 19, 221, 174, 163, 207, 50, 27, 4, 143, 203, 157, 138, 254]),
-      new Uint8Array([150, 127, 131, 196, 81, 43, 252, 190, 172, 46, 0, 158, 185, 75, 130, 119])
+      new Uint8Array([150, 127, 131, 196, 81, 43, 252, 190, 172, 46, 0, 158, 185, 75, 130, 119]),
     ],
   ])('can generate a long sequence', async (initstate, initseq) => {
     const { algod, indexer, testAccount } = localnet.context

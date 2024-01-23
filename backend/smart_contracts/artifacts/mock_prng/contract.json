@@ -1,26 +1,26 @@
 {
-    "name": "mock_prng",
-    "methods": [
+  "name": "mock_prng",
+  "methods": [
+    {
+      "name": "integers",
+      "args": [
         {
-            "name": "integers",
-            "args": [
-                {
-                    "type": "byte[16]",
-                    "name": "initstate"
-                },
-                {
-                    "type": "byte[16]",
-                    "name": "initseq"
-                },
-                {
-                    "type": "uint16",
-                    "name": "length"
-                }
-            ],
-            "returns": {
-                "type": "uint64[]"
-            }
+          "type": "byte[16]",
+          "name": "initstate"
+        },
+        {
+          "type": "byte[16]",
+          "name": "initseq"
+        },
+        {
+          "type": "uint16",
+          "name": "length"
         }
-    ],
-    "networks": {}
+      ],
+      "returns": {
+        "type": "uint64[]"
+      }
+    }
+  ],
+  "networks": {}
 }
