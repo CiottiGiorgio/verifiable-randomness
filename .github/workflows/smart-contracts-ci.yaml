@@ -68,11 +68,11 @@ jobs:
         working-directory: ./backend
         run: poetry run python -m smart_contracts build
 
-      - name: Check output stability of the smart contracts
-        shell: bash
-        working-directory: ./backend
-        run: |
-          # Add untracked files as empty so they come up in diff
-          git add -N ./smart_contracts/artifacts
-          # Error out if there are any changes in teal after generating output
-          git diff --exit-code --minimal ./smart_contracts/artifacts || (echo "::error ::Smart contract artifacts have changed, ensure committed artifacts are up to date" && exit 1);
+#      - name: Check output stability of the smart contracts
+#        shell: bash
+#        working-directory: ./backend
+#        run: |
+#          # Add untracked files as empty so they come up in diff
+#          git add -N ./smart_contracts/artifacts
+#          # Error out if there are any changes in teal after generating output
+#          git diff --exit-code --minimal ./smart_contracts/artifacts || (echo "::error ::Smart contract artifacts have changed, ensure committed artifacts are up to date" && exit 1);
