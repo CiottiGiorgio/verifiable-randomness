@@ -18,11 +18,8 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
   const [integersArgs, updateIntegersArgs] = useImmer<{
     round?: number
     user_data?: Uint8Array
-    randomness_beacon: bigint
     length?: number
-  }>({
-    randomness_beacon: BigInt(import.meta.env.VITE_RANDOMNESS_BEACON_ID),
-  })
+  }>({})
 
   const algodConfig = getAlgodConfigFromViteEnvironment()
   const algodClient = algokit.getAlgoClient({
@@ -63,14 +60,21 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
     //   return
     // })
 
-    if (integersArgs.round !== undefined && integersArgs.length !== undefined) {
-      const response = await appClient.integers({ user_data: new Uint8Array(), ...integersArgs })
+    if (integersArgs.round === undefined || integersArgs.length === undefined) {
+      enqueueSnackbar('Must set at least round and length fields', { variant: 'error' })
+    } else {
+      const response = await appClient.integers({
+        round: integersArgs.round,
+        user_data: integersArgs.user_data || new Uint8Array(),
+        randomness_beacon: BigInt(import.meta.env.VITE_RANDOMNESS_BEACON_ID),
+        length: integersArgs.length
+      })
       enqueueSnackbar(`Response from the contract: ${response?.return}`, { variant: 'success' })
-      setLoading(false)
-      return
     }
-    enqueueSnackbar('Must set all fields', { variant: 'error' })
+
     setLoading(false)
+    return
+
   }
 
   return (
