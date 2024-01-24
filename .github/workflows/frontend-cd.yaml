@@ -45,6 +45,8 @@ jobs:
             VITE_INDEXER_PORT:${{ vars.VITE_INDEXER_PORT }}
             VITE_INDEXER_TOKEN:${{ secrets.VITE_INDEXER_TOKEN }}
             VITE_ENVIRONMENT:${{ vars.VITE_ENVIRONMENT }}
+            VITE_RANDOMNESS_BEACON_ID:${{ vars.VITE_RANDOMNESS_BEACON_ID }}
+            VITE_VERIFIABLE_RANDOMNESS_ID:${{ vars.VITE_VERIFIABLE_RANDOMNESS_ID }}
 
       - name: Install netlify cli
         working-directory: ./frontend
