@@ -1,9 +1,9 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: 0.6.0
+_commit: 0.6.1
 _src_path: gh:algorandfoundation/algokit-fullstack-template
 author_email: giorgio.ciotti@algorand.foundation
 author_name: Giorgio Ciotti
-cloud_provider: none
+cloud_provider: netlify
 contract_name: verifiable_randomness
 deployment_language: typescript
 ide_vscode: true
