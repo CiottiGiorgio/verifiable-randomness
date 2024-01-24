@@ -1,30 +1,30 @@
 {
-  "name": "verifiable_randomness",
-  "methods": [
-    {
-      "name": "integers",
-      "args": [
+    "name": "verifiable_randomness",
+    "methods": [
         {
-          "type": "uint64",
-          "name": "round"
-        },
-        {
-          "type": "byte[]",
-          "name": "user_data"
-        },
-        {
-          "type": "application",
-          "name": "randomness_beacon"
-        },
-        {
-          "type": "uint16",
-          "name": "length"
+            "name": "integers",
+            "args": [
+                {
+                    "type": "uint64",
+                    "name": "round"
+                },
+                {
+                    "type": "byte[]",
+                    "name": "user_data"
+                },
+                {
+                    "type": "application",
+                    "name": "randomness_beacon"
+                },
+                {
+                    "type": "uint16",
+                    "name": "length"
+                }
+            ],
+            "returns": {
+                "type": "uint64[]"
+            }
         }
-      ],
-      "returns": {
-        "type": "uint64[]"
-      }
-    }
-  ],
-  "networks": {}
+    ],
+    "networks": {}
 }
