@@ -67,14 +67,12 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
         round: integersArgs.round,
         user_data: integersArgs.user_data || new Uint8Array(),
         randomness_beacon: BigInt(import.meta.env.VITE_RANDOMNESS_BEACON_ID),
-        length: integersArgs.length
+        length: integersArgs.length,
       })
       enqueueSnackbar(`Response from the contract: ${response?.return}`, { variant: 'success' })
     }
 
     setLoading(false)
-    return
-
   }
 
   return (
