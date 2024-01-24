@@ -31,7 +31,7 @@ def integers(
     initseq: pt.abi.StaticBytes[Literal[16]],
     length: pt.abi.Uint16,
     *,
-    output: pt.abi.DynamicArray[pt.abi.Uint64]
+    output: pt.abi.DynamicArray[pt.abi.Uint64],
 ) -> pt.Expr:
     opup = pt.OpUp(pt.OpUpMode.OnCall)
 
@@ -40,19 +40,11 @@ def integers(
 
     return pt.Seq(
         opup.maximize_budget(pt.Int(30_000)),
-
         prng_init(initstate.get(), initseq.get()),
-
         pt.For(
-            pt.Seq(
-                i.store(pt.Int(0)),
-                result.store(pt.Bytes(b""))
-            ),
+            pt.Seq(i.store(pt.Int(0)), result.store(pt.Bytes(b""))),
             i.load() < length.get(),
-            i.store(i.load() + pt.Int(1))
-        ).Do(
-            result.store(pt.Concat(result.load(), pt.Itob(prng_randint())))
-        ),
-
-        output.decode(pt.Concat(length.encode(), result.load()))
+            i.store(i.load() + pt.Int(1)),
+        ).Do(result.store(pt.Concat(result.load(), pt.Itob(prng_randint())))),
+        output.decode(pt.Concat(length.encode(), result.load())),
     )

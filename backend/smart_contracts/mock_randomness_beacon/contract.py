@@ -1,5 +1,3 @@
-from typing import Literal
-
 import beaker
 import pyteal as pt
 from algokit_utils import DELETABLE_TEMPLATE_NAME, UPDATABLE_TEMPLATE_NAME
@@ -24,5 +22,7 @@ def delete() -> pt.Expr:
 
 
 @app.external
-def must_get(block: pt.abi.Uint64, user_data: pt.abi.DynamicBytes, *, output: pt.abi.DynamicBytes) -> pt.Expr:
+def must_get(
+    block: pt.abi.Uint64, user_data: pt.abi.DynamicBytes, *, output: pt.abi.DynamicBytes
+) -> pt.Expr:
     return output.set(pt.Tmpl.Bytes("TMPL_MOCK_VRF_OUTPUT"))

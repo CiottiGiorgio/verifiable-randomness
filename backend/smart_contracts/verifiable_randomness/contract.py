@@ -40,7 +40,7 @@ def delete() -> pt.Expr:
 
 @app.external
 def integers(
-    round: pt.abi.Uint64,
+    round: pt.abi.Uint64,  # noqa: A002
     user_data: pt.abi.DynamicBytes,
     randomness_beacon: pt.abi.Application,
     length: pt.abi.Uint16,
