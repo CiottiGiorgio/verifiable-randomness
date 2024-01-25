@@ -57,6 +57,7 @@ def integers(
             app_id=app.state.randomness_beacon.get(),
             method_signature="must_get(uint64,byte[])byte[]",
             args=[round, user_data],
+            extra_fields={pt.TxnField.fee: pt.Int(0)},
         ),
         # This costs roughly 200 opcode budget.
         prng_init(
@@ -71,7 +72,7 @@ def integers(
             pt.Seq(
                 # Based on the cost of generating a new number, let's say we need at least 150 opcode budget to get
                 #  to the next iteration
-                opup.ensure_budget(pt.Int(150)),
+                opup.ensure_budget(pt.Int(150), pt.OpUpFeeSource.GroupCredit),
                 # prng_randint costs about 110 opcode budget.
                 random_uints.store(
                     pt.Concat(random_uints.load(), pt.Itob(prng_randint()))

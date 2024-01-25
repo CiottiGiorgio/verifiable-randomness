@@ -223,6 +223,8 @@ itob
 itxn_field ApplicationArgs
 frame_dig -3
 itxn_field ApplicationArgs
+intc_0 // 0
+itxn_field Fee
 itxn_submit
 itxn LastLog
 extract 6 16
@@ -261,6 +263,8 @@ integers_9_l5:
 itxn_begin
 intc_3 // appl
 itxn_field TypeEnum
+intc_0 // 0
+itxn_field Fee
 intc_2 // DeleteApplication
 itxn_field OnCompletion
 bytec 4 // 0x068101

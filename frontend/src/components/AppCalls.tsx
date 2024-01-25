@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { VerifiableRandomnessClient } from '../contracts/verifiable_randomness'
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 import { useImmer } from 'use-immer'
+import { microAlgos } from '@algorandfoundation/algokit-utils'
 
 interface AppCallsInterface {
   openModal: boolean
@@ -42,34 +43,25 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
 
     const appClient = new VerifiableRandomnessClient(appDetails, algodClient)
 
-    // Please note, in typical production scenarios,
-    // you wouldn't want to use deploy directly from your frontend.
-    // Instead, you would deploy your contract on your backend and reference it by id.
-    // Given the simplicity of the starter contract, we are deploying it on the frontend
-    // for demonstration purposes.
-    // const isLocal = await algokit.isLocalNet(algodClient)
-    // const deployParams: Parameters<typeof appClient.deploy>[0] = {
-    //   allowDelete: isLocal,
-    //   allowUpdate: isLocal,
-    //   onSchemaBreak: isLocal ? 'replace' : 'fail',
-    //   onUpdate: isLocal ? 'update' : 'fail',
-    // }
-    // await appClient.deploy(deployParams).catch((e: Error) => {
-    //   enqueueSnackbar(`Error deploying the contract: ${e.message}`, { variant: 'error' })
-    //   setLoading(false)
-    //   return
-    // })
-
     if (integersArgs.round === undefined || integersArgs.length === undefined) {
       enqueueSnackbar('Must set at least round and length fields', { variant: 'error' })
     } else {
-      const response = await appClient.integers({
-        round: integersArgs.round,
-        user_data: integersArgs.user_data || new Uint8Array(),
-        randomness_beacon: BigInt(import.meta.env.VITE_RANDOMNESS_BEACON_ID),
-        length: integersArgs.length,
-      })
-      enqueueSnackbar(`Response from the contract: ${response?.return}`, { variant: 'success' })
+      try {
+        const response = await appClient.integers(
+          {
+            round: integersArgs.round,
+            user_data: integersArgs.user_data || new Uint8Array(),
+            randomness_beacon: BigInt(import.meta.env.VITE_RANDOMNESS_BEACON_ID),
+            length: integersArgs.length,
+          },
+          // This call uses OpUp utility to ensure at least 150 opcode budget for each number.
+          // We are going to make a generous approximation.
+          { sendParams: { fee: microAlgos((Math.floor((integersArgs.length * 150) / 700) + 1) * 2_000) } },
+        )
+        enqueueSnackbar(`TxID: ${response.transaction.txID()}\nResponse from the contract: ${response?.return}`, { variant: 'success' })
+      } catch (e) {
+        enqueueSnackbar(`Error on integers method call: ${e}`, { variant: 'error' })
+      }
     }
 
     setLoading(false)
