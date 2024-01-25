@@ -47,18 +47,21 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
       enqueueSnackbar('Must set at least round and length fields', { variant: 'error' })
     } else {
       try {
-        const response = await appClient.integers(
-          {
-            round: integersArgs.round,
-            user_data: integersArgs.user_data || new Uint8Array(),
-            randomness_beacon: BigInt(import.meta.env.VITE_RANDOMNESS_BEACON_ID),
-            length: integersArgs.length,
-          },
-          // This call uses OpUp utility to ensure at least 150 opcode budget for each number.
-          // We are going to make a generous approximation.
-          { sendParams: { fee: microAlgos((Math.floor((integersArgs.length * 150) / 700) + 1) * 2_000) } },
-        )
-        enqueueSnackbar(`TxID: ${response.transaction.txID()}\nResponse from the contract: ${response?.return}`, { variant: 'success' })
+        const response = await appClient
+          .compose()
+          .integers(
+            {
+              round: integersArgs.round,
+              user_data: integersArgs.user_data || new Uint8Array(),
+              randomness_beacon: BigInt(import.meta.env.VITE_RANDOMNESS_BEACON_ID),
+              length: integersArgs.length,
+            },
+            // This call uses OpUp utility to ensure at least 150 opcode budget for each number.
+            // We are going to make a generous approximation.
+            { sendParams: { fee: microAlgos((Math.floor((integersArgs.length * 150) / 700) + 1) * 2_000) } },
+          )
+          .simulate()
+        enqueueSnackbar(`Response from the contract: ${response.methodResults[0].returnValue}`, { variant: 'success' })
       } catch (e) {
         enqueueSnackbar(`Error on integers method call: ${e}`, { variant: 'error' })
       }
