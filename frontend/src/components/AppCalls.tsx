@@ -74,10 +74,13 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
     <dialog id="appcalls_modal" className={`modal ${openModal ? 'modal-open' : ''} bg-slate-200`}>
       <form method="dialog" className="modal-box">
         <h3 className="font-bold text-lg">Extract a sequence of random uint64</h3>
+        <p className="py-6">
+          Round and Sequence length are mandatory fields. Use User data if you need to differentiate between equal queries.
+        </p>
         <br />
         <input
           type="text"
-          placeholder="Round number"
+          placeholder="Round"
           className="input input-bordered w-full"
           // value={integersArgs.round}
           onChange={(e) => {

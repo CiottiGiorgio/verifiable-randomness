@@ -34,10 +34,6 @@ export default function App() {
     setOpenWalletModal(!openWalletModal)
   }
 
-  const toggleDemoModal = () => {
-    setOpenDemoModal(!openDemoModal)
-  }
-
   const toggleAppCallsModal = () => {
     setAppCallsDemoModal(!appCallsDemoModal)
   }
@@ -62,7 +58,7 @@ export default function App() {
           <div className="hero-content text-center rounded-lg p-6 max-w-md bg-white mx-auto">
             <div className="max-w-md">
               <h1 className="text-4xl">
-                Welcome to <div className="font-bold">AlgoKit 🙂</div>
+                Welcome to <div className="font-bold">Verifiable Randomness</div>
               </h1>
               <p className="py-6">
                 This starter has been generated using official AlgoKit React template. Refer to the resource below for next steps.
@@ -84,14 +80,8 @@ export default function App() {
                 </button>
 
                 {activeAddress && (
-                  <button data-test-id="transactions-demo" className="btn m-2" onClick={toggleDemoModal}>
-                    Transactions Demo
-                  </button>
-                )}
-
-                {activeAddress && (
                   <button data-test-id="appcalls-demo" className="btn m-2" onClick={toggleAppCallsModal}>
-                    Contract Interactions Demo
+                    Get integer (uint64) sequence
                   </button>
                 )}
               </div>
