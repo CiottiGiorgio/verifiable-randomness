@@ -6,13 +6,15 @@
  */
 import * as algokit from '@algorandfoundation/algokit-utils'
 import type {
+  ABIAppCallArg,
   AppCallTransactionResult,
   AppCallTransactionResultOfType,
+  AppCompilationResult,
+  AppReference,
+  AppState,
   CoreAppCallArgs,
   RawAppCallArgs,
-  AppState,
   TealTemplateParams,
-  ABIAppCallArg,
 } from '@algorandfoundation/algokit-utils/types/app'
 import type {
   AppClientCallCoreParams,
@@ -23,8 +25,8 @@ import type {
 } from '@algorandfoundation/algokit-utils/types/app-client'
 import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import type { SendTransactionResult, TransactionToSign, SendTransactionFrom } from '@algorandfoundation/algokit-utils/types/transaction'
-import type { ABIResult, TransactionWithSigner, modelsv2 } from 'algosdk'
-import { Algodv2, OnApplicationComplete, Transaction, AtomicTransactionComposer } from 'algosdk'
+import type { ABIResult, TransactionWithSigner } from 'algosdk'
+import { Algodv2, OnApplicationComplete, Transaction, AtomicTransactionComposer, modelsv2 } from 'algosdk'
 export const APP_SPEC: AppSpec = {
   "hints": {
     "integers(uint64,byte[],application,uint16)uint64[]": {
@@ -152,6 +154,9 @@ export type BinaryState = {
    */
   asString(): string
 }
+
+export type AppCreateCallTransactionResult = AppCallTransactionResult & Partial<AppCompilationResult> & AppReference
+export type AppUpdateCallTransactionResult = AppCallTransactionResult & Partial<AppCompilationResult>
 
 /**
  * Defines the types of available calls and state of the VerifiableRandomness smart contract.
@@ -369,14 +374,14 @@ export class VerifiableRandomnessClient {
    * @param returnValueFormatter An optional delegate to format the return value if required
    * @returns The smart contract response with an updated return value
    */
-  protected mapReturnValue<TReturn>(result: AppCallTransactionResult, returnValueFormatter?: (value: any) => TReturn): AppCallTransactionResultOfType<TReturn> {
+  protected mapReturnValue<TReturn, TResult extends AppCallTransactionResult = AppCallTransactionResult>(result: AppCallTransactionResult, returnValueFormatter?: (value: any) => TReturn): AppCallTransactionResultOfType<TReturn> & TResult {
     if(result.return?.decodeError) {
       throw result.return.decodeError
     }
     const returnValue = result.return?.returnValue !== undefined && returnValueFormatter !== undefined
       ? returnValueFormatter(result.return.returnValue)
       : result.return?.returnValue as TReturn | undefined
-      return { ...result, return: returnValue }
+      return { ...result, return: returnValue } as AppCallTransactionResultOfType<TReturn> & TResult
   }
 
   /**
@@ -421,8 +426,8 @@ export class VerifiableRandomnessClient {
        * @param args The arguments for the bare call
        * @returns The create result
        */
-      bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs & (OnCompleteNoOp) = {}): Promise<AppCallTransactionResultOfType<undefined>> {
-        return $this.appClient.create(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
+      async bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs & (OnCompleteNoOp) = {}) {
+        return $this.mapReturnValue<undefined, AppCreateCallTransactionResult>(await $this.appClient.create(args))
       },
     }
   }
@@ -439,8 +444,8 @@ export class VerifiableRandomnessClient {
        * @param args The arguments for the bare call
        * @returns The update result
        */
-      bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
-        return $this.appClient.update(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
+      async bare(args: BareCallArgs & AppClientCallCoreParams & AppClientCompilationParams & CoreAppCallArgs = {}) {
+        return $this.mapReturnValue<undefined, AppUpdateCallTransactionResult>(await $this.appClient.update(args))
       },
     }
   }
@@ -457,8 +462,8 @@ export class VerifiableRandomnessClient {
        * @param args The arguments for the bare call
        * @returns The delete result
        */
-      bare(args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {}): Promise<AppCallTransactionResultOfType<undefined>> {
-        return $this.appClient.delete(args) as unknown as Promise<AppCallTransactionResultOfType<undefined>>
+      async bare(args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {}) {
+        return $this.mapReturnValue<undefined>(await $this.appClient.delete(args))
       },
     }
   }
@@ -584,10 +589,13 @@ export class VerifiableRandomnessClient {
         await promiseChain
         return atc
       },
-      async simulate() {
+      async simulate(options?: SimulateOptions) {
         await promiseChain
-        const result = await atc.simulate(client.algod)
-        return result
+        const result = await atc.simulate(client.algod, new modelsv2.SimulateRequest({ txnGroups: [], ...options }))
+        return {
+          ...result,
+          returns: result.methodResults?.map((val, i) => resultMappers[i] !== undefined ? resultMappers[i]!(val.returnValue) : val.returnValue)
+        }
       },
       async execute() {
         await promiseChain
@@ -658,13 +666,15 @@ export type VerifiableRandomnessComposer<TReturns extends [...any[]] = []> = {
   /**
    * Simulates the transaction group and returns the result
    */
-  simulate(): Promise<VerifiableRandomnessComposerSimulateResult>
+  simulate(options?: SimulateOptions): Promise<VerifiableRandomnessComposerSimulateResult<TReturns>>
   /**
    * Executes the transaction group and returns the results
    */
   execute(): Promise<VerifiableRandomnessComposerResults<TReturns>>
 }
-export type VerifiableRandomnessComposerSimulateResult = {
+export type SimulateOptions = Omit<ConstructorParameters<typeof modelsv2.SimulateRequest>[0], 'txnGroups'>
+export type VerifiableRandomnessComposerSimulateResult<TReturns extends [...any[]]> = {
+  returns: TReturns
   methodResults: ABIResult[]
   simulateResponse: modelsv2.SimulateResponse
 }

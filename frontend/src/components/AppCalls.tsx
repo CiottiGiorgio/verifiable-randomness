@@ -8,6 +8,7 @@ import { VerifiableRandomnessClient } from '../contracts/verifiable_randomness'
 import { getAlgodConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 import { useImmer } from 'use-immer'
 import { microAlgos } from '@algorandfoundation/algokit-utils'
+import { makeEmptyTransactionSigner } from 'algosdk'
 
 interface AppCallsInterface {
   openModal: boolean
@@ -56,11 +57,19 @@ const AppCalls = ({ openModal, setModalState }: AppCallsInterface) => {
               randomness_beacon: BigInt(import.meta.env.VITE_RANDOMNESS_BEACON_ID),
               length: integersArgs.length,
             },
-            // This call uses OpUp utility to ensure at least 150 opcode budget for each number.
-            // We are going to make a generous approximation.
-            { sendParams: { fee: microAlgos((Math.floor((integersArgs.length * 150) / 700) + 1) * 2_000) } },
+            {
+              sender: {
+                addr: activeAddress!,
+                signer: makeEmptyTransactionSigner(),
+              },
+              // This call uses OpUp utility to ensure at least 150 opcode budget for each number.
+              // We are going to make a generous approximation.
+              sendParams: { fee: microAlgos((Math.floor((integersArgs.length * 150) / 700) + 2) * 1_000) },
+            },
           )
-          .simulate()
+          .simulate({
+            allowEmptySignatures: true,
+          })
         enqueueSnackbar(`Response from the contract: ${response.methodResults[0].returnValue}`, { variant: 'success' })
       } catch (e) {
         enqueueSnackbar(`Error on integers method call: ${e}`, { variant: 'error' })
